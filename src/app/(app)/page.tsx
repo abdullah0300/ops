@@ -269,7 +269,7 @@ export default async function HomePage() {
                 }}>📦</div>
                 <div style={{ padding: '20px' }}>
                   <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#1a1a2e', marginBottom: '8px' }}>{product.title}</h3>
-                  {product.quantityPricing?.length > 0 && (
+                  {(product.quantityPricing?.length ?? 0) > 0 && (
                     <p style={{ color: '#c8a96e', fontSize: '14px', fontWeight: 600 }}>
                       From £{product.quantityPricing[0].price} / {product.quantityPricing[0].quantity} units
                     </p>
