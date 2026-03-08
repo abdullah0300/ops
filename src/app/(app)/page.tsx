@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import type { Category, Product } from '@/payload-types'
 
 export default async function HomePage() {
   const payload = await getPayload({ config: configPromise })
@@ -152,7 +153,7 @@ export default async function HomePage() {
           gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
           gap: '20px', maxWidth: '1200px', margin: '0 auto',
         }}>
-          {categories.length > 0 ? categories.map((cat: { id: string; slug: string; title: string }) => (
+          {categories.length > 0 ? categories.map((cat: Category) => (
             <Link key={cat.id} href={`/products?category=${cat.slug}`} style={{ textDecoration: 'none' }}>
               <div style={{
                 background: '#fff', borderRadius: '12px',
@@ -256,7 +257,7 @@ export default async function HomePage() {
           gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
           gap: '24px', maxWidth: '1200px', margin: '0 auto',
         }}>
-          {products.length > 0 ? products.map((product: { id: string; slug: string; title?: string; price?: number }) => (
+          {products.length > 0 ? products.map((product: Product) => (
             <Link key={product.id} href={`/products/${product.slug}`} style={{ textDecoration: 'none' }}>
               <div style={{
                 background: '#fff', borderRadius: '12px',
