@@ -132,7 +132,7 @@ export function CartModal() {
                             {isVariant && variant ? (
                               <p className="text-sm text-neutral-500 dark:text-neutral-400 capitalize">
                                 {variant.options
-                                  ?.map((option) => {
+                                  ?.map((option: number | VariantOption) => {
                                     if (typeof option === 'object') return option.label
                                     return null
                                   })
