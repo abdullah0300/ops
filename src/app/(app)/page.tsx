@@ -152,7 +152,7 @@ export default async function HomePage() {
           gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
           gap: '20px', maxWidth: '1200px', margin: '0 auto',
         }}>
-          {categories.length > 0 ? categories.map((cat: any) => (
+          {categories.length > 0 ? categories.map((cat: { id: string; slug: string; title: string }) => (
             <Link key={cat.id} href={`/products?category=${cat.slug}`} style={{ textDecoration: 'none' }}>
               <div style={{
                 background: '#fff', borderRadius: '12px',
@@ -256,7 +256,7 @@ export default async function HomePage() {
           gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
           gap: '24px', maxWidth: '1200px', margin: '0 auto',
         }}>
-          {products.length > 0 ? products.map((product: any) => (
+          {products.length > 0 ? products.map((product: { id: string; slug: string; title?: string; price?: number }) => (
             <Link key={product.id} href={`/products/${product.slug}`} style={{ textDecoration: 'none' }}>
               <div style={{
                 background: '#fff', borderRadius: '12px',
@@ -324,7 +324,7 @@ export default async function HomePage() {
           Get a Custom Quote Today
         </h2>
         <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '18px', marginBottom: '40px', maxWidth: '500px', margin: '0 auto 40px' }}>
-          Tell us what you need and we'll get back to you within 24 hours with a detailed quote.
+          Tell us what you need and we&apos;ll get back to you within 24 hours with a detailed quote.
         </p>
         <Link href="/quote" style={{
           background: '#c8a96e', color: '#1a1a2e',
