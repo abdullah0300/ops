@@ -144,23 +144,59 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
           fields: [
             ...defaultCollection.fields,
             {
+              name: 'quantityPricing',
+              type: 'array',
+              label: 'Quantity Pricing',
+              labels: {
+                singular: 'Pricing Tier',
+                plural: 'Pricing Tiers',
+              },
+              fields: [
+                {
+                  name: 'quantity',
+                  type: 'number',
+                  required: true,
+                  label: 'Quantity (e.g. 200, 500, 1000)',
+                },
+                {
+                  name: 'price',
+                  type: 'number',
+                  required: true,
+                  label: 'Price (£)',
+                },
+              ],
+            },
+            {
+              name: 'specifications',
+              type: 'array',
+              label: 'Product Specifications',
+              labels: {
+                singular: 'Specification',
+                plural: 'Specifications',
+              },
+              fields: [
+                {
+                  name: 'label',
+                  type: 'text',
+                  required: true,
+                  label: 'Label (e.g. Material, Size, Finish)',
+                },
+                {
+                  name: 'value',
+                  type: 'text',
+                  required: true,
+                  label: 'Value (e.g. Kraft Paper, A4, Matte)',
+                },
+              ],
+            },
+            {
               name: 'relatedProducts',
               type: 'relationship',
               filterOptions: ({ id }) => {
                 if (id) {
-                  return {
-                    id: {
-                      not_in: [id],
-                    },
-                  }
+                  return { id: { not_in: [id] } }
                 }
-
-                // ID comes back as undefined during seeding so we need to handle that case
-                return {
-                  id: {
-                    exists: true,
-                  },
-                }
+                return { id: { exists: true } }
               },
               hasMany: true,
               relationTo: 'products',
