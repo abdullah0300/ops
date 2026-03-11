@@ -266,6 +266,10 @@ export interface Order {
 export interface Product {
   id: number;
   title: string;
+  /**
+   * A brief 1-2 line description shown under the product title.
+   */
+  shortDescription?: string | null;
   description?: {
     root: {
       type: string;
@@ -1708,6 +1712,7 @@ export interface VariantOptionsSelect<T extends boolean = true> {
  */
 export interface ProductsSelect<T extends boolean = true> {
   title?: T;
+  shortDescription?: T;
   description?: T;
   gallery?:
     | T

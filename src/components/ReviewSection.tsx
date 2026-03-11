@@ -62,35 +62,54 @@ export function ReviewSection() {
     <section className="reviews-section">
       <style>{`
         .reviews-section {
-          background: #FCFBF7;
+          background: #f0bc2e;
           padding: 80px 0;
           display: flex;
           flex-direction: column;
           align-items: center;
           overflow: hidden;
+          position: relative;
         }
+        
+        /* Subtle radial gradient overlay for texture */
+        .reviews-section::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: radial-gradient(circle at top left, rgba(255,255,255,0.2) 0%, transparent 60%);
+          pointer-events: none;
+        }
+
         .reviews-header {
           text-align: center;
           margin-bottom: 60px;
           padding: 0 24px;
+          position: relative;
+          z-index: 2;
         }
         .reviews-header-sub {
           font-family: 'Arya', sans-serif;
-          font-size: 15px;
+          font-size: 14px;
           font-weight: 700;
-          color: #c48f10;
-          margin-bottom: 8px;
+          color: rgba(28, 28, 28, 0.7);
+          margin-bottom: 12px;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          background: rgba(255, 255, 255, 0.3);
+          display: inline-block;
+          padding: 6px 16px;
+          border-radius: 20px;
         }
         .reviews-header h2 {
           font-family: 'Amaranth', sans-serif;
-          font-size: 28px;
+          font-size: clamp(28px, 4vw, 42px);
           font-weight: 700;
-          color: #111;
-          text-transform: uppercase;
-          letter-spacing: 0.02em;
+          color: #1c1c1c;
+          letter-spacing: -0.02em;
         }
         .reviews-header h2 em {
           font-style: italic;
+          color: #fff;
         }
 
         /* Scrollable Track */
@@ -109,32 +128,34 @@ export function ReviewSection() {
 
         .review-card {
           flex: 0 0 320px;
-          scroll-snap-align: start;
+          scroll-snap-align: center;
           position: relative;
           background: #fff;
-          border: 1px solid #c8c8c8;
-          border-radius: 12px;
+          border: none;
+          border-radius: 20px;
           padding: 56px 32px 36px;
           text-align: center;
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 12px;
-          box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+          gap: 16px;
+          box-shadow: 0 12px 32px rgba(28, 28, 28, 0.1);
         }
 
         .review-text {
           font-family: 'Afacad', sans-serif;
-          font-size: 14px;
-          color: #555;
-          line-height: 1.7;
+          font-size: 15px;
+          color: #444;
+          line-height: 1.6;
           font-weight: 500;
         }
         .review-location {
           font-family: 'Arya', sans-serif;
           font-size: 13px;
-          color: #aaa;
-          margin-top: 4px;
+          color: #888;
+          margin-top: auto;
+          font-weight: 700;
+          letter-spacing: 0.05em;
         }
 
         /* Ribbon Banner */
@@ -160,9 +181,9 @@ export function ReviewSection() {
           position: relative;
           z-index: 2;
           font-family: 'Amaranth', sans-serif;
-          font-size: 14px;
+          font-size: 15px;
           font-weight: 700;
-          color: #333;
+          color: #fff;
           white-space: nowrap;
         }
 
@@ -172,6 +193,8 @@ export function ReviewSection() {
           align-items: center;
           gap: 24px;
           margin-top: 32px;
+          position: relative;
+          z-index: 2;
         }
         .rv-dots {
           display: flex;
@@ -182,7 +205,7 @@ export function ReviewSection() {
           width: 8px;
           height: 8px;
           border-radius: 4px;
-          background: #ccc;
+          background: rgba(255,255,255,0.5);
           border: none;
           padding: 0;
           cursor: pointer;
@@ -190,22 +213,22 @@ export function ReviewSection() {
         }
         .rv-dot.active {
           width: 24px;
-          background: #2b3a41;
+          background: #1c1c1c;
         }
         .rv-btn {
           width: 44px;
           height: 44px;
           border-radius: 50%;
-          border: 1.5px solid #111;
+          border: 1.5px solid #1c1c1c;
           background: transparent;
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
           transition: all 0.2s;
-          color: #111;
+          color: #1c1c1c;
         }
-        .rv-btn:hover { background: #111; color: #fff; }
+        .rv-btn:hover { background: #1c1c1c; color: #f0bc2e; }
         .rv-btn svg { width: 18px; height: 18px; }
       `}</style>
 
@@ -219,7 +242,7 @@ export function ReviewSection() {
           <div key={i} className="review-card">
             <div className="review-ribbon-wrap">
               <svg className="review-ribbon-bg" viewBox="0 0 180 40" fill="none" preserveAspectRatio="none">
-                <path d="M 0 1 L 180 1 L 165 20 L 180 39 L 0 39 L 15 20 Z" fill="#EAEAEA" stroke="#aaa" strokeWidth="1"/>
+                <path d="M 0 1 L 180 1 L 165 20 L 180 39 L 0 39 L 15 20 Z" fill="#1c1c1c" stroke="none" />
               </svg>
               <span className="review-name">{review.name}</span>
             </div>

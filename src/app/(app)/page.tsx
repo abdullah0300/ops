@@ -9,6 +9,7 @@ import { FactorySlider } from '@/components/FactorySlider'
 import { ReviewSection } from '@/components/ReviewSection'
 import { FAQSection } from '@/components/FAQSection'
 import { QuoteForm } from '@/components/QuoteForm'
+import { CategoryArc } from '@/components/CategoryArc'
 
 export default async function HomePage({
   searchParams,
@@ -135,17 +136,20 @@ export default async function HomePage({
            NAVBAR
         ══════════════════════════════════════ */
         .nav-outer {
-          width: 100%; padding: 18px 32px 0;
+          width: 100%; padding: 0 32px;
           display: flex; justify-content: center;
-          position: sticky; top: 14px; z-index: 200;
+          position: absolute; top: 60px; z-index: 200;
         }
         .navbar {
           width: 100%; max-width: 920px;
-          background: #FCFBF7; border: 1.5px solid #1c1c1c;
+          background: rgba(252, 251, 247, 0.85);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1.5px solid rgba(28, 28, 28, 0.1);
           border-radius: 100px; padding: 10px 12px 10px 20px;
           display: flex; align-items: center;
           justify-content: space-between; gap: 16px;
-          box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+          box-shadow: 0 4px 24px rgba(0,0,0,0.06);
         }
         .nav-logo { display: flex; align-items: center; gap: 6px; text-decoration: none; flex-shrink: 0; }
         .nav-logo-icon { width: 38px; height: 38px; }
@@ -162,21 +166,21 @@ export default async function HomePage({
         /* ══════════════════════════════════════
            HERO SLOT
         ══════════════════════════════════════ */
-        .hero-wrap { position: relative; width: 100%; margin-top: 24px; }
+        .hero-wrap { position: relative; width: 100%; border-radius: 0 0 40px 40px; overflow: hidden; }
         .hero-slot {
           width: 100%; background: #FCFBF7; overflow: hidden;
-          min-height: 420px; display: flex; align-items: center; justify-content: center;
+          min-height: 520px; display: flex; align-items: center; justify-content: center;
         }
         .hero-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .hero-placeholder { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; color: #bbb; font-size: 15px; }
-        .hero-cta-wrap { position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); z-index: 10; }
+        .hero-cta-wrap { position: absolute; bottom: 180px; left: 50%; transform: translateX(-50%); z-index: 10; }
         .hero-cta { display: inline-flex; align-items: center; justify-content: center; background: #f0bc2e; color: #1c1c1c; font-family: 'Afacad', sans-serif; font-weight: 700; font-size: 16px; padding: 14px 44px; border-radius: 100px; text-decoration: none; box-shadow: 0 6px 24px rgba(240,188,46,0.4); transition: background 0.18s, transform 0.2s; white-space: nowrap; }
-        .hero-cta:hover { background: #e6b020; }
+        .hero-cta:hover { background: #e6b020; transform: translateY(-4px); }
 
         /* ══════════════════════════════════════
            CATEGORIES ARC
         ══════════════════════════════════════ */
-        .categories-section { width: 100%; padding: 70px 24px 60px; display: flex; justify-content: center; }
+        .categories-section { width: 100%; padding: 0 24px 60px; display: flex; justify-content: center; margin-top: -140px; position: relative; z-index: 20; }
         .categories-row { display: flex; align-items: flex-end; justify-content: center; gap: var(--cat-gap); width: 100%; max-width: 1100px; }
         .cat-item { display: flex; flex-direction: column; align-items: center; gap: 10px; text-decoration: none; flex: 1; max-width: 220px; transition: filter 0.2s; }
         .cat-item:hover .cat-circle { box-shadow: 0 14px 40px rgba(0,0,0,0.15); transform: scale(1.04); }
@@ -184,16 +188,30 @@ export default async function HomePage({
         .cat-circle img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .cat-placeholder { font-size: 36px; }
         .cat-label { font-family: 'Afacad', sans-serif; font-size: 13px; font-weight: 600; color: #1c1c1c; text-align: center; }
+
+        /* Animation States */
+        .categories-section:not(.is-visible) .cat-item { opacity: 0; }
+        .categories-section:not(.is-visible) .cat-item:nth-child(1) { transform: translate(150px, calc(var(--cat-1-nudge) + 40px)) scale(0.6); }
+        .categories-section:not(.is-visible) .cat-item:nth-child(2) { transform: translate(80px, calc(var(--cat-2-nudge) + 40px)) scale(0.8); }
+        .categories-section:not(.is-visible) .cat-item:nth-child(3) { transform: translate(0, calc(var(--cat-3-nudge) + 50px)) scale(0.9); }
+        .categories-section:not(.is-visible) .cat-item:nth-child(4) { transform: translate(-80px, calc(var(--cat-4-nudge) + 40px)) scale(0.8); }
+        .categories-section:not(.is-visible) .cat-item:nth-child(5) { transform: translate(-150px, calc(var(--cat-5-nudge) + 40px)) scale(0.6); }
+
+        .categories-section.is-visible .cat-item { 
+          opacity: 1; 
+          transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .categories-section.is-visible .cat-item:nth-child(1) { transform: translate(0, var(--cat-1-nudge)) scale(1); transition-delay: 0s; }
+        .categories-section.is-visible .cat-item:nth-child(2) { transform: translate(0, var(--cat-2-nudge)) scale(1); transition-delay: 0.1s; }
+        .categories-section.is-visible .cat-item:nth-child(3) { transform: translate(0, var(--cat-3-nudge)) scale(1); transition-delay: 0.2s; }
+        .categories-section.is-visible .cat-item:nth-child(4) { transform: translate(0, var(--cat-4-nudge)) scale(1); transition-delay: 0.1s; }
+        .categories-section.is-visible .cat-item:nth-child(5) { transform: translate(0, var(--cat-5-nudge)) scale(1); transition-delay: 0s; }
+
         .cat-item:nth-child(1) .cat-circle { width: var(--cat-1-size); height: var(--cat-1-size); }
-        .cat-item:nth-child(1) { transform: translateY(var(--cat-1-nudge)); }
         .cat-item:nth-child(2) .cat-circle { width: var(--cat-2-size); height: var(--cat-2-size); }
-        .cat-item:nth-child(2) { transform: translateY(var(--cat-2-nudge)); }
         .cat-item:nth-child(3) .cat-circle { width: var(--cat-3-size); height: var(--cat-3-size); }
-        .cat-item:nth-child(3) { transform: translateY(var(--cat-3-nudge)); }
         .cat-item:nth-child(4) .cat-circle { width: var(--cat-4-size); height: var(--cat-4-size); }
-        .cat-item:nth-child(4) { transform: translateY(var(--cat-4-nudge)); }
         .cat-item:nth-child(5) .cat-circle { width: var(--cat-5-size); height: var(--cat-5-size); }
-        .cat-item:nth-child(5) { transform: translateY(var(--cat-5-nudge)); }
 
         /* ══════════════════════════════════════
            EXPLORE BY CATEGORY SECTION
@@ -557,10 +575,7 @@ export default async function HomePage({
       {/* ══ HERO ═════════════════════════════════════════════ */}
       <div className="hero-wrap">
         <div className="hero-slot">
-          <div className="hero-placeholder">
-            <span style={{fontSize:'48px'}}>🖼️</span>
-            <span>Your hero image goes here</span>
-          </div>
+          <img src="/media/hero.jpeg" alt="Online Packaging Store Hero" />
         </div>
         <div className="hero-cta-wrap">
           <Link href="/quote" className="hero-cta">Get Quote</Link>
@@ -569,24 +584,7 @@ export default async function HomePage({
 
       {/* ══ MYLAR PRODUCTS ARC ═══════════════════════════ */}
       {heroProducts.length > 0 && (
-        <div className="categories-section">
-          <div className="categories-row">
-            {heroProducts.slice(0, 5).map((p: any, i: number) => {
-              const imgUrl = p.meta?.image?.url || p.gallery?.[0]?.image?.url
-              return (
-                <Link key={String(p.id)} href={`/products/${String(p.slug)}`} className="cat-item">
-                  <div className="cat-circle" style={{ background: imgUrl ? 'transparent' : BG_COLORS[i % BG_COLORS.length] }}>
-                    {imgUrl
-                      ? <img src={String(imgUrl)} alt={String(p.title)} />
-                      : <span className="cat-placeholder">📦</span>
-                    }
-                  </div>
-                  <span className="cat-label">{String(p.title)}</span>
-                </Link>
-              )
-            })}
-          </div>
-        </div>
+        <CategoryArc heroProducts={heroProducts.slice(0, 5)} />
       )}
 
       {/* ══ PRODUCTS SECTION ════════════════════════════ */}

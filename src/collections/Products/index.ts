@@ -52,9 +52,17 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
     priceInUSD: true,
     inventory: true,
     meta: true,
+    shortDescription: true,
   },
   fields: [
     { name: 'title', type: 'text', required: true },
+    {
+      name: 'shortDescription',
+      type: 'textarea',
+      admin: {
+        description: 'A brief 1-2 line description shown under the product title.',
+      },
+    },
     {
       type: 'tabs',
       tabs: [

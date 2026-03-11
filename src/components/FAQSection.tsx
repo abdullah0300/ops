@@ -44,12 +44,19 @@ export function FAQSection() {
     <section className="faq-section">
       <style>{`
         .faq-section {
-          background: #FCFBF7;
-          padding: 80px 24px;
+          background: #f5f5f5;
+          padding: 80px 32px;
           display: flex;
           flex-direction: column;
           align-items: center;
-          border-top: 1px solid rgba(0,0,0,0.06);
+          border-radius: 32px;
+          margin: 60px 24px;
+          max-width: 1200px;
+        }
+        @media (min-width: 1248px) {
+          .faq-section {
+            margin: 60px auto;
+          }
         }
         .faq-header {
           text-align: center;
