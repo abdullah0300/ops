@@ -306,6 +306,13 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
+  addons?:
+    | {
+        label: string;
+        price: number;
+        id?: string | null;
+      }[]
+    | null;
   specifications?:
     | {
         label: string;
@@ -1726,6 +1733,13 @@ export interface ProductsSelect<T extends boolean = true> {
     | T
     | {
         quantity?: T;
+        price?: T;
+        id?: T;
+      };
+  addons?:
+    | T
+    | {
+        label?: T;
         price?: T;
         id?: T;
       };

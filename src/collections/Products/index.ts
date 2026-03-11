@@ -162,7 +162,30 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
                   name: 'price',
                   type: 'number',
                   required: true,
-                  label: 'Price (£)',
+                  label: 'Price ($)',
+                },
+              ],
+            },
+            {
+              name: 'addons',
+              type: 'array',
+              label: 'Product Add-ons',
+              labels: {
+                singular: 'Add-on',
+                plural: 'Add-ons',
+              },
+              fields: [
+                {
+                  name: 'label',
+                  type: 'text',
+                  required: true,
+                  label: 'Label (e.g. Child Resistance)',
+                },
+                {
+                  name: 'price',
+                  type: 'number',
+                  required: true,
+                  label: 'Price ($)',
                 },
               ],
             },

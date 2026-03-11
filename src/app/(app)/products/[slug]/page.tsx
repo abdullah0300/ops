@@ -12,6 +12,14 @@ export default async function ProductDetailPage({
   const payload = await getPayload({ config: configPromise })
   const { slug } = await params
 
+  // Fetch real categories for navbar
+  const categoriesData = await payload.find({
+    collection: 'categories',
+    limit: 20,
+    depth: 0,
+  })
+  const navCategories = (categoriesData.docs as any[]).slice(0, 4)
+
   const result = await payload.find({
     collection: 'products',
     where: { slug: { equals: slug } },
@@ -143,15 +151,15 @@ export default async function ProductDetailPage({
             <span className="nav-logo-wordmark">ops</span>
           </Link>
           <ul className="nav-links">
-            {[
-              ['Home', '/'],
-              ['Custom Boxes', '/products?category=retail-packaging-boxes'],
-              ['Mylar Bags', '/products?category=mylar-bags'],
-              ['Vape Boxes', '/products?category=vape-packaging-boxes'],
-              ['All Products', '/products'],
-            ].map(([label, href]) => (
-              <li key={label}><Link href={href}>{label}</Link></li>
+            <li><Link href="/">Home</Link></li>
+            {navCategories.map((cat: any) => (
+              <li key={String(cat.id)}>
+                <Link href={`/products?category=${String(cat.slug)}`}>
+                  {String(cat.title)}
+                </Link>
+              </li>
             ))}
+            <li><Link href="/products">All Products</Link></li>
           </ul>
           <Link href="/quote" className="nav-cta">Get Quote</Link>
         </nav>
