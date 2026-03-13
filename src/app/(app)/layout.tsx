@@ -9,35 +9,9 @@ import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
+import { FloatingWhatsApp } from '@/components/FloatingWhatsApp'
 import React from 'react'
 import './globals.css'
-
-/* const { SITE_NAME, TWITTER_CREATOR, TWITTER_SITE } = process.env
-const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-  : 'http://localhost:3000'
-const twitterCreator = TWITTER_CREATOR ? ensureStartsWith(TWITTER_CREATOR, '@') : undefined
-const twitterSite = TWITTER_SITE ? ensureStartsWith(TWITTER_SITE, 'https://') : undefined
- */
-/* export const metadata = {
-  metadataBase: new URL(baseUrl),
-  robots: {
-    follow: true,
-    index: true,
-  },
-  title: {
-    default: SITE_NAME,
-    template: `%s | ${SITE_NAME}`,
-  },
-  ...(twitterCreator &&
-    twitterSite && {
-      twitter: {
-        card: 'summary_large_image',
-        creator: twitterCreator,
-        site: twitterSite,
-      },
-    }),
-} */
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -50,6 +24,12 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=Afacad:ital,wght@0,400..700;1,400..700&family=Outfit:wght@100..900&display=swap" rel="stylesheet" />
+        {/* Start of packaglyhelp Zendesk Widget script */}
+        <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=81138e11-2d68-4e7d-8967-6050a14e9bad" async> </script>
+        {/* End of packaglyhelp Zendesk Widget script */}
       </head>
       <body>
         <Providers>
@@ -58,6 +38,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
 
           <Header />
           <main>{children}</main>
+          <FloatingWhatsApp />
           <Footer />
         </Providers>
       </body>

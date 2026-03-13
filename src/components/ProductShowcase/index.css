@@ -1,0 +1,91 @@
+.product-showcase {
+  padding: 100px 0;
+  background: #f3f3f3;
+  overflow: hidden;
+}
+
+.showcase-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.showcase-header h2 {
+  font-family: 'Amaranth', sans-serif;
+  font-size: clamp(32px, 5vw, 48px);
+  margin-bottom: 16px;
+  color: #111;
+}
+
+.showcase-header p {
+  font-size: 18px;
+  color: #666;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.showcase-rows-outer {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.showcase-row-wrap {
+  width: 100%;
+  overflow: hidden;
+}
+
+.showcase-track {
+  display: flex;
+  gap: 30px;
+  width: max-content;
+}
+
+.showcase-item {
+  width: 320px; /* Slightly more compact than featured slider */
+  flex-shrink: 0;
+}
+
+/* Animations */
+@keyframes scrollLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes scrollRight {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.marquee-left {
+  animation: scrollLeft 60s linear infinite;
+}
+
+.marquee-right {
+  animation: scrollRight 60s linear infinite;
+}
+
+/* Pause on hover for better UX */
+.showcase-row-wrap:hover .showcase-track {
+  animation-play-state: paused;
+}
+
+@media (max-width: 1024px) {
+  .showcase-item {
+    width: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-showcase {
+    padding: 60px 0;
+  }
+  .showcase-rows-outer {
+    gap: 20px;
+  }
+}

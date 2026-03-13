@@ -1,311 +1,135 @@
-import Link from 'next/link'
 import React from 'react'
-
-const MYLAR_LINKS = [
-  { label: 'Stand-Up Pouches', href: '/products' },
-  { label: 'Flat Zipper Bags', href: '/products' },
-  { label: 'Child-Resistant Bags', href: '/products' },
-  { label: 'Window Mylar Bags', href: '/products' },
-  { label: 'Custom Printed Bags', href: '/products' },
-  { label: 'Bulk Plain Bags', href: '/products' },
-]
-
-const COMPANY_LINKS = [
-  { label: 'About Us', href: '/' },
-  { label: 'Our Factory', href: '/' },
-  { label: 'Get a Quote', href: '/quote' },
-  { label: 'Contact Us', href: '/contact' },
-  { label: 'Privacy Policy', href: '/' },
-  { label: 'Terms of Service', href: '/' },
-]
+import Link from 'next/link'
+import { getPayload } from 'payload'
+import configPromise from '@payload-config'
+import { Logo } from '@/components/Logo/Logo'
+import { Mail, Phone, MapPin, Facebook, Instagram, Twitter, Send } from 'lucide-react'
+import './index.css'
 
 export async function Footer() {
-  const currentYear = new Date().getFullYear()
+  const payload = await getPayload({ config: configPromise })
+  
+  const { docs: products } = await payload.find({
+    collection: 'products',
+    limit: 5,
+    sort: '-createdAt',
+  })
 
   return (
-    <footer className="site-footer">
-      <style>{`
-        .site-footer {
-          background: #fff;
-          color: #111;
-          padding: 64px 24px 0;
-          font-family: 'Afacad', sans-serif;
-          border-top: 1px solid rgba(0,0,0,0.08);
-        }
-
-        .footer-inner {
-          max-width: 1100px;
-          margin: 0 auto;
-        }
-
-        /* Top Grid */
-        .footer-grid {
-          display: grid;
-          grid-template-columns: 2fr 1fr 1fr 1.4fr;
-          gap: 48px;
-          padding-bottom: 48px;
-          border-bottom: 1px solid rgba(0,0,0,0.08);
-        }
-        @media (max-width: 960px) {
-          .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
-        }
-        @media (max-width: 600px) {
-          .footer-grid { grid-template-columns: 1fr; gap: 32px; }
-        }
-
-        /* Brand Column */
-        .footer-brand-logo {
-          font-family: 'Amaranth', sans-serif;
-          font-size: 20px;
-          font-weight: 700;
-          color: #111;
-          text-decoration: none;
-          margin-bottom: 14px;
-          display: block;
-        }
-        .footer-brand-logo span { color: #c48f10; }
-        .footer-brand-desc {
-          font-family: 'Afacad', sans-serif;
-          font-size: 13px;
-          color: #888;
-          line-height: 1.7;
-          margin-bottom: 24px;
-        }
-
-        /* Contact Info */
-        .footer-contact-list {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 14px;
-        }
-        .footer-contact-item {
-          display: flex;
-          align-items: flex-start;
-          gap: 12px;
-        }
-        .fci-icon {
-          width: 32px;
-          height: 32px;
-          border-radius: 8px;
-          background: rgba(240, 188, 46, 0.12);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 14px;
-          flex-shrink: 0;
-          margin-top: 2px;
-        }
-        .fci-text {
-          display: flex;
-          flex-direction: column;
-        }
-        .fci-label {
-          font-family: 'Arya', sans-serif;
-          font-size: 13px;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.07em;
-          color: #aaa;
-          margin-bottom: 2px;
-        }
-        .fci-value {
-          font-family: 'Afacad', sans-serif;
-          font-size: 13px;
-          font-weight: 600;
-          color: #333;
-          line-height: 1.5;
-          text-decoration: none;
-        }
-        .fci-value:hover { color: #c48f10; }
-
-        /* Link Columns */
-        .footer-col-title {
-          font-family: 'Amaranth', sans-serif;
-          font-size: 14px;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-          color: #111;
-          margin-bottom: 20px;
-        }
-        .footer-links {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-        .footer-links a {
-          font-family: 'Afacad', sans-serif;
-          font-size: 13px;
-          color: #888;
-          text-decoration: none;
-          transition: color 0.2s;
-          font-weight: 500;
-        }
-        .footer-links a:hover { color: #c48f10; }
-
-        /* Bottom Bar */
-        .footer-bottom {
-          background: #FCFBF7;
-          margin: 0 -24px;
-          padding: 20px 24px;
-          display: flex;
-          flex-wrap: wrap;
-          align-items: center;
-          justify-content: space-between;
-          gap: 16px;
-        }
-        .footer-copyright {
-          font-family: 'Afacad', sans-serif;
-          font-size: 12px;
-          color: #aaa;
-        }
-
-        /* Payment Icons */
-        .footer-payments {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          flex-wrap: wrap;
-        }
-        .pay-badge {
-          background: #f4f4f4;
-          border: 1px solid #e0e0e0;
-          border-radius: 6px;
-          padding: 5px 10px;
-          font-family: 'Afacad', sans-serif;
-          font-size: 12px;
-          font-weight: 700;
-          color: #555;
-          white-space: nowrap;
-        }
-        .pay-badge.paypal { color: #009cde; }
-        .pay-badge.visa { color: #1a1f71; }
-        .pay-badge.amex { color: #2e77bc; }
-
-        /* Country Flags */
-        .footer-flags {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-        .flag-badge {
-          font-size: 22px;
-          line-height: 1;
-        }
-
-        @media (max-width: 600px) {
-          .footer-bottom {
-            flex-direction: column;
-            align-items: flex-start;
-          }
-        }
-      `}</style>
-
-      <div className="footer-inner">
-
-        {/* Top Section Grid */}
-        <div className="footer-grid">
-
-          {/* Brand + Contact */}
-          <div>
-            <Link href="/" className="footer-brand-logo">
-              Online<span>Packaging</span>Store
-            </Link>
-            <p className="footer-brand-desc">
-              Premium custom Mylar bags and flexible packaging solutions for brands across the United States. Low minimums, fast turnaround, full custom print support.
-            </p>
-            <ul className="footer-contact-list">
-              <li className="footer-contact-item">
-                <div className="fci-icon">📞</div>
-                <div className="fci-text">
-                  <span className="fci-label">24/7 Support</span>
-                  <a href="tel:5592057588" className="fci-value">559-205-7588</a>
-                </div>
-              </li>
-              <li className="footer-contact-item">
-                <div className="fci-icon">✉️</div>
-                <div className="fci-text">
-                  <span className="fci-label">Mail at</span>
-                  <a href="mailto:sales@onlinepackagingstore.com" className="fci-value">sales@onlinepackagingstore.com</a>
-                </div>
-              </li>
-              <li className="footer-contact-item">
-                <div className="fci-icon">📍</div>
-                <div className="fci-text">
-                  <span className="fci-label">Find Us</span>
-                  <span className="fci-value">1385 Keating Ave<br />Chicago, IL 60651, USA</span>
-                </div>
-              </li>
-            </ul>
+    <footer className="footer">
+      {/* Top Contact Bar */}
+      <div className="footer-top">
+        <div className="container footer-contact-grid">
+          <div className="footer-brand">
+            <Logo />
+          </div>
+          
+          <div className="contact-item">
+            <div className="contact-icon">
+              <Phone size={20} />
+            </div>
+            <div className="contact-info">
+              <span className="contact-label">24/7 Support</span>
+              <a href="tel:5592057588" className="contact-value">559-205-7588</a>
+            </div>
           </div>
 
-          {/* Mylar Products */}
-          <div>
-            <p className="footer-col-title">Our Products</p>
+          <div className="contact-item">
+            <div className="contact-icon">
+              <Mail size={20} />
+            </div>
+            <div className="contact-info">
+              <span className="contact-label">Mail at</span>
+              <a href="mailto:sales@onlinepackagingstore.com" className="contact-value">sales@onlinepackagingstore.com</a>
+            </div>
+          </div>
+
+          <div className="contact-item">
+            <div className="contact-icon">
+              <MapPin size={20} />
+            </div>
+            <div className="contact-info">
+              <span className="contact-label">Find Us</span>
+              <span className="contact-value">1385 Keating Ave Chicago, IL 60651, USA</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Middle Grid Section */}
+      <div className="footer-mid">
+        <div className="container footer-links-grid">
+          {/* Column 1: Our Products */}
+          <div className="footer-col">
+            <h4 className="footer-title">Our Products</h4>
             <ul className="footer-links">
-              {MYLAR_LINKS.map((link, i) => (
-                <li key={i}><Link href={link.href}>{link.label}</Link></li>
+              {products.map((product) => (
+                <li key={product.id}>
+                  <Link href={`/products/${product.slug}`}>{product.title}</Link>
+                </li>
               ))}
             </ul>
           </div>
 
-          {/* Company */}
-          <div>
-            <p className="footer-col-title">Company</p>
+          {/* Column 2: Informative Pages */}
+          <div className="footer-col">
+            <h4 className="footer-title">Informative Pages</h4>
             <ul className="footer-links">
-              {COMPANY_LINKS.map((link, i) => (
-                <li key={i}><Link href={link.href}>{link.label}</Link></li>
-              ))}
+              <li><Link href="/">Home</Link></li>
+              <li><Link href="/about">About Us</Link></li>
+              <li><Link href="/privacy">Privacy & Security</Link></li>
+              <li><Link href="/blog">Blog</Link></li>
+              <li><Link href="/contact">Need a Support?</Link></li>
             </ul>
           </div>
 
-          {/* Trust & Shipping */}
-          <div>
-            <p className="footer-col-title">We Ship To</p>
-            <div className="footer-flags" style={{ marginBottom: 24 }}>
-              <span className="flag-badge">🇺🇸</span>
-              <span style={{ fontSize: 12, color: '#aaa', fontWeight: 600 }}>United States</span>
-            </div>
-            <div className="footer-flags" style={{ marginBottom: 24 }}>
-              <span className="flag-badge">🇬🇧</span>
-              <span style={{ fontSize: 12, color: '#aaa', fontWeight: 600 }}>United Kingdom</span>
-            </div>
-            <div className="footer-flags" style={{ marginBottom: 36 }}>
-              <span className="flag-badge">🇦🇺</span>
-              <span style={{ fontSize: 12, color: '#aaa', fontWeight: 600 }}>Australia</span>
+          {/* Column 3: Social & Payments */}
+          <div className="footer-col">
+            <h4 className="footer-title">Follow us on:</h4>
+            <div className="social-links">
+              <a href="#" className="social-icon"><Facebook size={18} /></a>
+              <a href="#" className="social-icon"><Instagram size={18} /></a>
+              <a href="#" className="social-icon"><Twitter size={18} /></a>
             </div>
 
-            <p className="footer-col-title" style={{ marginBottom: 14 }}>We Accept</p>
-            <div className="footer-payments">
-              <span className="pay-badge paypal">PayPal</span>
-              <span className="pay-badge">Mastercard</span>
-              <span className="pay-badge visa">VISA</span>
-              <span className="pay-badge amex">Amex</span>
-              <span className="pay-badge">Cash App</span>
+            <div className="payment-icons">
+               {/* Real SVG Path for PayPal */}
+               <svg className="pm-icon" viewBox="0 0 24 24" width="32" height="32"><path fill="#003087" d="M20.067 8.178c-.622 3.125-2.73 4.54-5.525 4.54H12.33l-.8 4.02h-3.03l1.52-7.6h3.6c2.422 0 3.844-1.01 4.253-3.13.155-.83.053-1.465-.415-1.928-.276-.277-.694-.492-1.292-.58a9.498 9.498 0 0 0-1.458-.1h-5.46L7.41 11.23h1.77L10.66 4.3h3.58c.28 0 .524.015.74.043.19.023.36.06.5.114.3.11.527.315.65.615l.083.21.03.113c.067.318.067.665.01 1.05a4.42 4.42 0 0 1-.39 1.453l-.128.283c-.15.315-.357.575-.62.78l-.16.12c-.224.162-.48.288-.748.375-.24.08-.503.132-.786.155a8.7 8.7 0 0 1-.86.03h-.62l-.37 1.83z"/></svg>
+               {/* MasterCard */}
+               <svg className="pm-icon" viewBox="0 0 24 24" width="32" height="32"><circle fill="#EB001B" cx="9" cy="12" r="7" opacity=".8"/><circle fill="#F79E1B" cx="15" cy="12" r="7" opacity=".8"/></svg>
+               {/* AE */}
+               <div className="pm-text">AMEX</div>
+               {/* Visa */}
+               <div className="pm-text visa">VISA</div>
+            </div>
+
+            <div className="country-flags">
+              <span title="UK">🇬🇧</span>
+              <span title="USA">🇺🇸</span>
+              <span title="Australia">🇦🇺</span>
             </div>
           </div>
 
+          {/* Column 4: Newsletter */}
+          <div className="footer-col newsletter-col">
+            <h4 className="footer-title">Newsletter</h4>
+            <p>Sign up for exclusive offers and updates!</p>
+            <form className="newsletter-form">
+              <input type="email" placeholder="Enter Your Email" required />
+              <button type="submit" className="btn-subscribe">Subscribe</button>
+            </form>
+          </div>
         </div>
+      </div>
 
-        {/* Bottom Bar */}
-        <div className="footer-bottom">
-          <p className="footer-copyright">
-            © {currentYear} OnlinePackagingStore. All rights reserved.
-          </p>
-          <p className="footer-copyright" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            Designed &amp; Developed by{' '}
-            <a href="https://webcraftio.com" target="_blank" rel="noopener noreferrer" style={{ color: '#c48f10', fontWeight: 700, textDecoration: 'none' }}>
-              WebCraftio
-            </a>
+      {/* Bottom Copyright */}
+      <div className="footer-bottom">
+        <div className="container">
+          <p>
+            &copy; 2026 All Right Reserved <strong>Online Packaging Store</strong>. 
+            Design and Developed by <a href="https://webcraftio.com" target="_blank" rel="noopener noreferrer">WebCraftio</a>
           </p>
         </div>
-
       </div>
     </footer>
   )

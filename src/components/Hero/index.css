@@ -1,0 +1,27 @@
+.hero {
+  width: 100%;
+  position: relative;
+  background-color: #fff;
+}
+
+.hero-image-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-full-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  /* Use object-fit: contain if a specific aspect ratio is needed, 
+     but width 100% height auto is best for showing full image without cropping */
+}
+
+@media (max-width: 768px) {
+  /* Ensure image remains full width and undistorted on mobile */
+  .hero-full-image {
+    width: 100%;
+    height: auto;
+  }
+}

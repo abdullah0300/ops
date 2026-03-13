@@ -1,0 +1,139 @@
+.brand-section {
+  padding: 80px 0;
+  background: #fff;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.brand-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 60px;
+}
+
+.header-text h2 {
+  font-family: 'Amaranth', sans-serif;
+  font-size: clamp(32px, 4vw, 44px);
+  margin-bottom: 12px;
+  color: #111;
+  letter-spacing: -1px;
+}
+
+.header-text p {
+  color: #666;
+  font-size: 18px;
+  max-width: 500px;
+  line-height: 1.4;
+}
+
+.brand-nav {
+  display: flex;
+  gap: 12px;
+}
+
+.nav-arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid #eee;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #111;
+}
+
+.nav-arrow:hover {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.brand-marquee-outer {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  overflow: hidden;
+}
+
+.brand-marquee-container {
+  overflow: hidden;
+  width: 100%;
+}
+
+.brand-track {
+  display: flex;
+  width: max-content;
+  gap: 80px;
+  padding: 40px 0;
+}
+
+.marquee-left-to-right {
+  animation: scroll-left-to-right 120s linear infinite;
+}
+
+@keyframes scroll-left-to-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.brand-item {
+  flex: 0 0 auto;
+  min-width: 200px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+
+.brand-placeholder-logo {
+  font-family: 'Amaranth', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ccc;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  filter: grayscale(100%);
+  opacity: 0.5;
+  transition: all 0.4s ease;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.brand-item:hover .brand-placeholder-logo {
+  filter: grayscale(0%);
+  opacity: 1;
+  color: #F0BC2E;
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .brand-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  
+  .brand-nav {
+    display: none;
+  }
+  
+  .brand-track {
+    gap: 40px;
+    animation-duration: 80s;
+  }
+}

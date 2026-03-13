@@ -4,59 +4,84 @@ import Link from 'next/link'
 import React, { Suspense } from 'react'
 
 import { MobileMenu } from './MobileMenu'
-import type { Header } from 'src/payload-types'
+import type { Header as HeaderType } from 'src/payload-types'
 
 import { usePathname } from 'next/navigation'
-import { cn } from '@/utilities/cn'
-
+import { Logo } from '@/components/Logo/Logo'
+import { Mail, Phone } from 'lucide-react'
+import { Cart } from '@/components/Cart'
 
 type Props = {
-  header: Header
+  header: HeaderType
+  navProducts?: any[]
 }
 
-export function HeaderClient({ header }: Props) {
-  const menu = header.navItems || []
+export function HeaderClient({ header, navProducts }: Props) {
   const pathname = usePathname()
+  
+  // Use actual data if present, otherwise build dynamic fallback
+  const menu = header.navItems?.length 
+    ? header.navItems 
+    : [
+        { id: 'all', link: { type: 'custom', url: '/products', label: 'All Products' } },
+        ...(navProducts?.map(p => ({
+          id: p.id,
+          link: { type: 'custom', url: `/products/${p.slug}`, label: p.title }
+        })) || [])
+      ]
 
   return (
-    <div className="relative z-20 border-b">
-      <nav className="flex items-center md:items-end justify-between container pt-2">
-        <div className="block flex-none md:hidden">
-          <Suspense fallback={null}>
-            <MobileMenu menu={menu} />
-          </Suspense>
+    <div className="header-outer">
+      {/* Top Bar (Upper Bar) */}
+      <div className="top-bar">
+        <div className="top-bar-item">
+          <Mail className="top-bar-icon" />
+          <span>{header.topBarEmail || 'sales@onlinepackagingstore.com'}</span>
         </div>
-        <div className="flex w-full items-end justify-between">
-          <div className="flex w-full items-end gap-6 md:w-1/3">
-            {/* <Link className="flex w-full items-center justify-center pt-4 pb-4 md:w-auto" href="/">
-              <LogoIcon className="w-6 h-auto" />
-            </Link> */}
-            {menu.length ? (
-              <ul className="hidden gap-4 text-sm md:flex md:items-center">
-                {menu.map((item) => (
-                  <li key={item.id}>
-                    <CMSLink
-                      {...item.link}
-                      size={'clear'}
-                      className={cn('relative navLink', {
-                        active:
-                          item.link.url && item.link.url !== '/'
-                            ? pathname.includes(item.link.url)
-                            : false,
-                      })}
-                      appearance="nav"
-                    />
-                  </li>
-                ))}
-              </ul>
-            ) : null}
+        <div className="top-bar-item">
+          <Phone className="top-bar-icon" />
+          <div className="phone-details">
+            <span className="phone-label">{header.topBarPhoneLabel || '24/7 Support'}</span>
+            <span className="phone-number">{header.topBarPhone || 'Call: 559-205-7588'}</span>
           </div>
+        </div>
+      </div>
 
-          {/* <div className="flex justify-end md:w-1/3 gap-4">
-            <Suspense fallback={<OpenCartButton />}>
-              <Cart />
+      {/* Main Navbar */}
+      <nav className="navbar">
+        <Link href="/" className="nav-logo">
+          <Logo />
+        </Link>
+
+        <ul className="nav-links">
+          {menu.map((item: any) => (
+            <li key={item.id}>
+              <CMSLink
+                {...item.link}
+                className="nav-link"
+                label={item.link.label}
+              />
+            </li>
+          ))}
+        </ul>
+
+        <div className="nav-actions">
+          <Link href="/#quote" className="btn-get-quote">
+            Get Quote
+          </Link>
+          <Link href="/#quote" className="btn-beat-quote">
+            Beat My Quote
+          </Link>
+          
+          <div className="cart-wrapper">
+            <Cart />
+          </div>
+          
+          <div className="md:hidden">
+            <Suspense fallback={null}>
+              <MobileMenu menu={menu as any} />
             </Suspense>
-          </div> */}
+          </div>
         </div>
       </nav>
     </div>

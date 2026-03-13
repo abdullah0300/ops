@@ -14,14 +14,6 @@ export default async function ProductDetailPage({
   const payload = await getPayload({ config: configPromise })
   const { slug } = await params
 
-  // Fetch real categories for navbar
-  const categoriesData = await payload.find({
-    collection: 'categories',
-    limit: 20,
-    depth: 0,
-  })
-  const navCategories = (categoriesData.docs as any[]).slice(0, 4)
-
   const result = await payload.find({
     collection: 'products',
     where: { slug: { equals: slug } },
@@ -60,21 +52,10 @@ export default async function ProductDetailPage({
         @import url('https://fonts.googleapis.com/css2?family=Amaranth:wght@400;700&family=Arya:wght@400;700&family=Afacad:wght@400;500;600;700&display=swap');
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #FCFBF7; font-family: 'Afacad', sans-serif; color: #1c1c1c; }
-
-        /* ── Navbar ───────────────────── */
-        .nav-outer { padding: 20px 24px 0; max-width: 1200px; margin: 0 auto; }
-        .navbar { display: flex; align-items: center; gap: 20px; background: #FCFBF7; border: 1.5px solid #1c1c1c; border-radius: 100px; padding: 10px 16px 10px 14px; }
-        .nav-logo { display: flex; align-items: center; gap: 6px; text-decoration: none; flex-shrink: 0; }
-        .nav-logo-wordmark { font-family: 'Amaranth', sans-serif; font-weight: 700; font-size: 22px; color: #f0bc2e; letter-spacing: -0.5px; }
-        .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; flex: 1; justify-content: center; }
-        .nav-links li a { display: block; text-decoration: none; color: #1c1c1c; font-size: 15px; font-weight: 500; padding: 8px 16px; border-radius: 100px; transition: background 0.18s; white-space: nowrap; }
-        .nav-links li a:hover { background: rgba(0,0,0,0.07); }
-        .nav-cta { flex-shrink: 0; display: inline-flex; align-items: center; background: #f0bc2e; color: #1c1c1c; font-family: 'Afacad', sans-serif; font-weight: 600; font-size: 15px; padding: 11px 26px; border-radius: 100px; text-decoration: none; transition: background 0.18s; white-space: nowrap; }
-        .nav-cta:hover { background: #e6b020; }
+        body { background: #F3F3F3; font-family: 'Afacad', sans-serif; color: #1c1c1c; }
 
         /* ── Breadcrumb ──────────────── */
-        .breadcrumb { max-width: 1200px; margin: 28px auto 0; padding: 0 24px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #999; }
+        .breadcrumb { max-width: 1200px; margin: 40px auto 0; padding: 0 24px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #999; }
         .breadcrumb a { color: #999; text-decoration: none; }
         .breadcrumb a:hover { color: #1c1c1c; }
         .breadcrumb span { color: #1c1c1c; font-weight: 500; }
@@ -86,7 +67,7 @@ export default async function ProductDetailPage({
         .hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: start; }
 
         /* ── Image Side ──────────────── */
-        .product-image-wrap { position: sticky; top: 40px; border-radius: 24px; overflow: hidden; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border: 1.5px solid #e8e4d8; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+        .product-image-wrap { position: sticky; top: 120px; border-radius: 24px; overflow: hidden; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border: 1.5px solid #e8e4d8; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
         .product-image-wrap img { width: 100%; height: 100%; object-fit: cover; }
         .product-img-placeholder { font-size: 80px; }
 
@@ -110,8 +91,8 @@ export default async function ProductDetailPage({
 
         /* ── CTA Buttons ─────────────── */
         .cta-group { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
-        .btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #f0bc2e; color: #1c1c1c; font-family: 'Afacad', sans-serif; font-weight: 700; font-size: 16px; padding: 16px 32px; border-radius: 100px; text-decoration: none; transition: background 0.18s, transform 0.18s; border: none; cursor: pointer; }
-        .btn-primary:hover { background: #e6b020; transform: translateY(-2px); }
+        .btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #006838; color: #fff; font-family: 'Afacad', sans-serif; font-weight: 700; font-size: 16px; padding: 16px 32px; border-radius: 100px; text-decoration: none; transition: background 0.18s, transform 0.18s; border: none; cursor: pointer; }
+        .btn-primary:hover { background: #004d2a; transform: translateY(-2px); }
         .btn-whatsapp { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #25D366; color: #fff; font-family: 'Afacad', sans-serif; font-weight: 600; font-size: 16px; padding: 15px 28px; border-radius: 100px; text-decoration: none; transition: transform 0.18s; }
         .btn-whatsapp:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
@@ -131,7 +112,6 @@ export default async function ProductDetailPage({
           .hero-grid, .details-grid { grid-template-columns: 1fr; gap: 32px; }
           .product-image-wrap { position: static; }
           .related-grid { grid-template-columns: repeat(2, 1fr); }
-          .nav-links { display: none; }
         }
         @media (max-width: 640px) {
           .related-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -139,34 +119,6 @@ export default async function ProductDetailPage({
           .btn-primary, .btn-whatsapp { text-align: center; justify-content: center; width: 100%; }
         }
       `}</style>
-
-      {/* Navbar */}
-      <div className="nav-outer">
-        <nav className="navbar">
-          <Link href="/" className="nav-logo">
-            <div style={{width:38,height:38}}>
-              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="38" height="38">
-                <rect x="1" y="1" width="38" height="38" rx="9" fill="#F0BC2E"/>
-                <text x="50%" y="55%" dominantBaseline="middle" textAnchor="middle"
-                  fontFamily="Amaranth, sans-serif" fontWeight="700" fontSize="15" fill="#1c1c1c">ops</text>
-              </svg>
-            </div>
-            <span className="nav-logo-wordmark">ops</span>
-          </Link>
-          <ul className="nav-links">
-            <li><Link href="/">Home</Link></li>
-            {navCategories.map((cat: any) => (
-              <li key={String(cat.id)}>
-                <Link href={`/products?category=${String(cat.slug)}`}>
-                  {String(cat.title)}
-                </Link>
-              </li>
-            ))}
-            <li><Link href="/products">All Products</Link></li>
-          </ul>
-          <Link href="/quote" className="nav-cta">Get Quote</Link>
-        </nav>
-      </div>
 
       {/* Breadcrumb */}
       <div className="breadcrumb">
@@ -223,22 +175,22 @@ export default async function ProductDetailPage({
 
             {/* Price Calculator Component */}
             {pricing.length > 0 && (
-              <PriceCalculator quantityPricing={pricing} addons={addons} />
+              <PriceCalculator product={product} quantityPricing={pricing} addons={addons} />
             )}
 
             {/* CTA Group (Moved under calculator) */}
             <div className="cta-group">
-              <a
-                href={`mailto:sales@onlinepackagingstore.com?subject=Quote Request: ${encodeURIComponent(product.title)}`}
+              <Link
+                href="/#quote"
                 className="btn-primary"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                 </svg>
                 Get a Free Quote
-              </a>
+              </Link>
               <a
-                href="https://wa.me/15592057588"
+                href="https://wa.me/17737292243"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-whatsapp"
@@ -247,7 +199,7 @@ export default async function ProductDetailPage({
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
                   <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.531 5.854L0 24l6.335-1.51C8.055 23.447 9.987 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.859 0-3.587-.5-5.077-1.371l-.361-.214-3.762.897.934-3.658-.235-.374C2.538 15.591 2 13.855 2 12 2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
                 </svg>
-                WhatsApp Us
+                Chat on WhatsApp
               </a>
             </div>
           </div>

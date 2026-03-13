@@ -36,32 +36,29 @@ export function EditItemQuantityButton({ type, item }: { item: CartItem; type: '
   return (
     <form>
       <button
-        disabled={disabled || isLoading}
-        aria-label={type === 'plus' ? 'Increase item quantity' : 'Reduce item quantity'}
+        aria-label={type === 'plus' ? 'Increase quantity' : 'Decrease quantity'}
         className={clsx(
-          'ease hover:cursor-pointer flex h-full min-w-[36px] max-w-[36px] flex-none items-center justify-center rounded-full px-2 transition-all duration-200 hover:border-neutral-800 hover:opacity-80',
+          'ease flex h-9 w-9 items-center justify-center rounded-full transition-all duration-300 hover:bg-[#1c1c1c] hover:text-white active:scale-90 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-inherit',
           {
-            'cursor-not-allowed': disabled || isLoading,
-            'ml-auto': type === 'minus',
+            'cursor-not-allowed': isLoading,
           },
         )}
+        disabled={isLoading || (type === 'minus' && item.quantity === 1)}
         onClick={(e: React.FormEvent<HTMLButtonElement>) => {
           e.preventDefault()
-
-          if (item.id) {
-            if (type === 'plus') {
-              incrementItem(item.id)
-            } else {
-              decrementItem(item.id)
-            }
+          if (!item.id) return
+          if (type === 'plus') {
+            incrementItem(item.id)
+          } else {
+            decrementItem(item.id)
           }
         }}
         type="button"
       >
         {type === 'plus' ? (
-          <PlusIcon className="h-4 w-4 dark:text-neutral-500 hover:text-blue-300" />
+          <PlusIcon className="h-4 w-4" />
         ) : (
-          <MinusIcon className="h-4 w-4 dark:text-neutral-500 hover:text-blue-300" />
+          <MinusIcon className="h-4 w-4" />
         )}
       </button>
     </form>

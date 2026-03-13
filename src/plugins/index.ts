@@ -115,6 +115,36 @@ export const plugins: Plugin[] = [
         ],
       }),
     },
+    carts: {
+      cartsCollectionOverride: ({ defaultCollection }) => ({
+        ...defaultCollection,
+        fields: defaultCollection.fields.map((field) => {
+          if ('name' in field && field.name === 'items') {
+            return {
+              ...field,
+              fields: [
+                ...field.fields,
+                {
+                  name: 'customPrice',
+                  type: 'number',
+                  admin: {
+                    description: 'Final calculated price for this item',
+                  },
+                },
+                {
+                  name: 'selectedOptions',
+                  type: 'text',
+                  admin: {
+                    description: 'Comma separated list of selected addons',
+                  },
+                },
+              ],
+            }
+          }
+          return field
+        }),
+      }),
+    },
     payments: {
       paymentMethods: [
         stripeAdapter({

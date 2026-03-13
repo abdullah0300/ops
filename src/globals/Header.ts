@@ -11,6 +11,22 @@ export const Header: GlobalConfig = {
   },
   fields: [
     {
+      name: 'topBarEmail',
+      type: 'text',
+      label: 'Top Bar Email',
+    },
+    {
+      name: 'topBarPhone',
+      type: 'text',
+      label: 'Top Bar Phone',
+    },
+    {
+      name: 'topBarPhoneLabel',
+      type: 'text',
+      label: 'Top Bar Phone Label',
+      defaultValue: '24/7 Support',
+    },
+    {
       name: 'navItems',
       type: 'array',
       fields: [

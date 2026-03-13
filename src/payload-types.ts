@@ -1055,6 +1055,14 @@ export interface Cart {
         product?: (number | null) | Product;
         variant?: (number | null) | Variant;
         quantity: number;
+        /**
+         * Final calculated price for this item
+         */
+        customPrice?: number | null;
+        /**
+         * Comma separated list of selected addons
+         */
+        selectedOptions?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -1782,6 +1790,8 @@ export interface CartsSelect<T extends boolean = true> {
         product?: T;
         variant?: T;
         quantity?: T;
+        customPrice?: T;
+        selectedOptions?: T;
         id?: T;
       };
   secret?: T;
@@ -1922,6 +1932,9 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Header {
   id: number;
+  topBarEmail?: string | null;
+  topBarPhone?: string | null;
+  topBarPhoneLabel?: string | null;
   navItems?:
     | {
         link: {
@@ -1969,6 +1982,9 @@ export interface Footer {
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
+  topBarEmail?: T;
+  topBarPhone?: T;
+  topBarPhoneLabel?: T;
   navItems?:
     | T
     | {

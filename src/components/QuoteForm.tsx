@@ -32,7 +32,7 @@ export function QuoteForm() {
         .quote-left {
           flex: 1;
           padding: 100px 8%;
-          background: #f0bc2e; /* Brand Gold */
+          background: #EFFFE5; /* Light Green */
           color: #1c1c1c;
           display: flex;
           flex-direction: column;
@@ -44,14 +44,14 @@ export function QuoteForm() {
           content: '';
           position: absolute;
           top: 0; left: 0; right: 0; bottom: 0;
-          background: radial-gradient(circle at top right, rgba(255,255,255,0.15) 0%, transparent 60%);
+          background: radial-gradient(circle at top right, rgba(255,255,255,0.4) 0%, transparent 60%);
           pointer-events: none;
         }
 
         .quote-left-badge {
           display: inline-block;
-          background: rgba(28, 28, 28, 0.08); /* slight dark tint */
-          color: #1c1c1c;
+          background: rgba(12, 138, 36, 0.1); /* light green tint */
+          color: #0c8a24;
           font-family: 'Arya', sans-serif;
           font-size: 13px;
           font-weight: 700;
@@ -61,7 +61,7 @@ export function QuoteForm() {
           border-radius: 20px;
           margin-bottom: 24px;
           align-self: flex-start;
-          border: 1px solid rgba(28, 28, 28, 0.1);
+          border: 1px solid rgba(12, 138, 36, 0.2);
         }
 
         .quote-left h2 {
@@ -70,17 +70,17 @@ export function QuoteForm() {
           font-weight: 700;
           line-height: 1.1;
           margin-bottom: 20px;
-          color: #1c1c1c;
+          color: #111;
         }
         
         .quote-left h2 span {
-          color: #fff;
+          color: #0c8a24;
         }
 
         .quote-left p {
           font-family: 'Afacad', sans-serif;
           font-size: 18px;
-          color: rgba(28, 28, 28, 0.8);
+          color: #444;
           line-height: 1.6;
           margin-bottom: 40px;
           max-width: 480px;
@@ -99,15 +99,15 @@ export function QuoteForm() {
           font-family: 'Afacad', sans-serif;
           font-size: 16px;
           font-weight: 600;
-          color: #1c1c1c;
+          color: #111;
         }
 
         .quote-perk-icon {
           width: 24px;
           height: 24px;
           border-radius: 50%;
-          background: #1c1c1c;
-          color: #f0bc2e;
+          background: #0c8a24;
+          color: #fff;
           display: flex;
           align-items: center;
           justify-content: center;

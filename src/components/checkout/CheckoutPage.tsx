@@ -352,86 +352,79 @@ export const CheckoutPage: React.FC = () => {
       </div>
 
       {!cartIsEmpty && (
-        <div className="basis-full lg:basis-1/3 lg:pl-8 p-8 border-none bg-primary/5 flex flex-col gap-8 rounded-lg">
-          <h2 className="text-3xl font-medium">Your cart</h2>
-          {cart?.items?.map((item, index) => {
-            if (typeof item.product === 'object' && item.product) {
-              const {
-                product,
-                product: { id, meta, title, gallery },
-                quantity,
-                variant,
-              } = item
+        <div className="basis-full lg:basis-1/3 lg:pl-8 p-8 border border-[#e8e4d8] bg-white flex flex-col gap-8 rounded-[24px] shadow-sm font-afacad">
+          <h2 className="text-3xl font-bold font-amaranth text-[#1c1c1c]">Your Bag</h2>
+          <div className="flex flex-col gap-6">
+            {cart?.items?.map((item, index) => {
+              if (typeof item.product === 'object' && item.product) {
+                const {
+                  product,
+                  product: { title, gallery, meta },
+                  quantity,
+                } = item
 
-              if (!quantity) return null
+                if (!quantity) return null
 
-              let image = gallery?.[0]?.image || meta?.image
-              let price = product?.priceInUSD
+                const image = gallery?.[0]?.image || meta?.image
+                
+                // Manual price logic consistent with CartModal
+                let price = (product?.priceInUSD || 0) * 100
+                // @ts-ignore
+                if (item.customPrice) price = item.customPrice
 
-              const isVariant = Boolean(variant) && typeof variant === 'object'
-
-              if (isVariant) {
-                price = variant?.priceInUSD
-
-                const imageVariant = product.gallery?.find((item: any) => {
-                  if (!item.variantOption) return false
-                  const variantOptionID =
-                    typeof item.variantOption === 'object'
-                      ? item.variantOption.id
-                      : item.variantOption
-
-                  const hasMatch = variant?.options?.some((option) => {
-                    if (typeof option === 'object') return option.id === variantOptionID
-                    else return option === variantOptionID
-                  })
-
-                  return hasMatch
-                })
-
-                if (imageVariant && typeof imageVariant.image !== 'string') {
-                  image = imageVariant.image
-                }
-              }
-
-              return (
-                <div className="flex items-start gap-4" key={index}>
-                  <div className="flex items-stretch justify-stretch h-20 w-20 p-2 rounded-lg border">
-                    <div className="relative w-full h-full">
+                return (
+                  <div className="flex items-center gap-5 group" key={index}>
+                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-[#f0f0eb] bg-[#fcfcf9]">
                       {image && typeof image !== 'string' && (
-                        <Media className="" fill imgClassName="rounded-lg" resource={image} />
+                        <Media className="h-full w-full object-cover" fill imgClassName="rounded-xl" resource={image} />
                       )}
                     </div>
-                  </div>
-                  <div className="flex grow justify-between items-center">
-                    <div className="flex flex-col gap-1">
-                      <p className="font-medium text-lg">{title}</p>
-                      {variant && typeof variant === 'object' && (
-                        <p className="text-sm font-mono text-primary/50 tracking-widest">
-                          {variant.options
-                            ?.map((option) => {
-                              if (typeof option === 'object') return option.label
-                              return null
-                            })
-                            .join(', ')}
+                    <div className="flex grow justify-between items-center min-w-0">
+                      <div className="flex flex-col gap-0.5 min-w-0">
+                        <p className="font-bold text-[17px] text-[#1c1c1c] truncate font-amaranth">{title}</p>
+                        <p className="text-[14px] text-[#999] font-medium font-afacad">
+                          Qty: {quantity}
                         </p>
-                      )}
-                      <div>
-                        {'x'}
-                        {quantity}
+                      </div>
+
+                      <div className="flex flex-col items-end shrink-0">
+                        <Price 
+                            amount={price * quantity} 
+                            className="font-bold text-[18px] text-[#006838] font-amaranth" 
+                        />
+                        {quantity > 1 && (
+                            <span className="text-[11px] text-[#aaa] font-medium font-afacad">
+                                <Price amount={price} /> each
+                            </span>
+                        )}
                       </div>
                     </div>
-
-                    {typeof price === 'number' && <Price amount={price} />}
                   </div>
-                </div>
-              )
-            }
-            return null
-          })}
-          <hr />
-          <div className="flex justify-between items-center gap-2">
-            <span className="uppercase">Total</span>{' '}
-            <Price className="text-3xl font-medium" amount={cart.subtotal || 0} />
+                )
+              }
+              return null
+            })}
+          </div>
+          
+          <hr className="border-[#e8e4d8]" />
+          
+          <div className="flex flex-col gap-4">
+            <div className="flex justify-between items-center font-afacad">
+              <span className="text-[#999] font-medium">Estimated Subtotal</span>
+              <Price 
+                className="text-3xl font-bold text-[#1c1c1c] font-amaranth" 
+                amount={cart.items?.reduce((acc, item) => {
+                    const product = item.product as Product
+                    let p = (product?.priceInUSD || 0) * 100
+                    // @ts-ignore
+                    if (item.customPrice) p = item.customPrice
+                    return acc + (p * (item.quantity || 0))
+                }, 0) || 0} 
+              />
+            </div>
+            <p className="text-[13px] text-[#aaa] italic font-medium">
+              Tax and shipping will be calculated in the next step.
+            </p>
           </div>
         </div>
       )}

@@ -87,7 +87,7 @@
 }
 
 :root {
-  --background: oklch(100% 0 0deg);
+  --background: #F3F3F3;
   --foreground: oklch(14.5% 0 0deg);
   --card: oklch(96.5% 0.005 265deg);
   --card-foreground: oklch(14.5% 0 0deg);
@@ -210,8 +210,24 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground min-h-[100vh] flex flex-col;
+    @apply bg-background text-foreground min-h-[100vh] flex flex-col font-sans;
   }
+}
+
+.font-amaranth {
+  font-family: 'Amaranth', sans-serif;
+}
+.font-afacad {
+  font-family: 'Afacad', sans-serif;
+}
+.font-outfit {
+  font-family: 'Outfit', sans-serif;
+}
+/* Cart Sheet width override & Z-index */
+[data-slot="sheet-content"][data-side="right"] {
+  width: 480px !important;
+  max-width: 100vw !important;
+  z-index: 300 !important;
 }
 
 html {

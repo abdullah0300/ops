@@ -1,6 +1,10 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
+import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
+import { toast } from 'sonner'
+import type { Product } from '@/payload-types'
+import { ShoppingBag } from 'lucide-react'
 
 interface Addon {
   label: string
@@ -13,15 +17,18 @@ interface PricingTier {
 }
 
 interface PriceCalculatorProps {
+  product: Product
   quantityPricing: PricingTier[]
   addons: Addon[]
 }
 
-export const PriceCalculator: React.FC<PriceCalculatorProps> = ({ quantityPricing, addons }) => {
+export const PriceCalculator: React.FC<PriceCalculatorProps> = ({ product, quantityPricing, addons }) => {
+  const { cart, addItem, incrementItem } = useCart()
   const [selectedQty, setSelectedQty] = useState<number>(
     quantityPricing.length > 0 ? quantityPricing[0].quantity : 100
   )
   const [selectedAddons, setSelectedAddons] = useState<string[]>([])
+  const [isAdding, setIsAdding] = useState(false)
 
   const currentTier = useMemo(() => {
     return quantityPricing.find((p) => p.quantity === selectedQty) || quantityPricing[0]
@@ -43,6 +50,36 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({ quantityPricin
     setSelectedAddons((prev) =>
       prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label]
     )
+  }
+
+  const handleAddToCart = async () => {
+    setIsAdding(true)
+    try {
+      // Find if this exact item (same product AND same options) is already in cart
+      const existingItem = (cart?.items || []).find((item: any) => {
+        const itemProductId = typeof item.product === 'object' ? item.product.id : item.product
+        return itemProductId === product.id && item.selectedOptions === (selectedAddons.length > 0 ? selectedAddons.join(', ') : 'No special add-ons')
+      })
+
+      if (existingItem) {
+        // If it exists, we just increment quantity by 1 set
+        await incrementItem(existingItem.id)
+      } else {
+        await addItem({
+            product: product.id,
+            // @ts-ignore - custom fields added via plugin
+            customPrice: Math.round(totalPrice * 100),
+            // @ts-ignore - custom fields added via plugin
+            selectedOptions: selectedAddons.length > 0 ? selectedAddons.join(', ') : 'No special add-ons',
+        }, 1)
+      }
+      toast.success('Added to cart!')
+    } catch (error) {
+      console.error(error)
+      toast.error('Failed to add to cart')
+    } finally {
+      setIsAdding(false)
+    }
   }
 
   return (
@@ -186,7 +223,7 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({ quantityPricin
           transform: translateY(-2px);
         }
         .btn-add-to-cart svg {
-          stroke: #f0bc2e;
+          stroke: #fff;
         }
       `}</style>
       
@@ -244,15 +281,33 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({ quantityPricin
         <div className="action-buttons">
           <button 
             className="btn-add-to-cart"
-            onClick={() => console.log('Added to cart:', { quantity: selectedQty, addons: selectedAddons, total: totalPrice })}
+            onClick={handleAddToCart}
+            disabled={isAdding}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
-            </svg>
-            Add to Cart
+            {isAdding ? (
+               <div className="spinner" />
+            ) : (
+              <ShoppingBag size={20} />
+            )}
+            {isAdding ? 'Adding...' : 'Add to Cart / Buy Now'}
           </button>
         </div>
       </div>
+      
+      <style jsx>{`
+        .spinner {
+          width: 20px;
+          height: 20px;
+          border: 2.5px solid rgba(255,255,255,0.3);
+          border-top: 2.5px solid #fff;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   )
 }
