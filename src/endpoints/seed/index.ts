@@ -9,6 +9,7 @@ import { imageHatData } from './image-hat'
 import { imageTshirtBlackData } from './image-tshirt-black'
 import { imageTshirtWhiteData } from './image-tshirt-white'
 import { imageHero1Data } from './image-hero-1'
+import { quoteFormData } from './quote-form'
 import { Address, Transaction, VariantOption } from '@/payload-types'
 
 const collections: CollectionSlug[] = [
@@ -189,6 +190,13 @@ export const seed = async ({
       }),
     ),
   ])
+
+  payload.logger.info(`— Seeding Quote Request form...`)
+
+  await payload.create({
+    collection: 'forms',
+    data: quoteFormData(),
+  })
 
   payload.logger.info(`— Seeding variant types and options...`)
 
