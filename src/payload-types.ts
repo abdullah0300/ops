@@ -303,6 +303,9 @@ export interface Product {
   };
   priceInUSDEnabled?: boolean | null;
   priceInUSD?: number | null;
+  /**
+   * Default pricing tiers if no sizes are defined.
+   */
   quantityPricing?:
     | {
         quantity: number;
@@ -310,10 +313,28 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
+  sizes?:
+    | {
+        label: string;
+        quantityPricing: {
+          quantity: number;
+          price: number;
+          id?: string | null;
+        }[];
+        id?: string | null;
+      }[]
+    | null;
   addons?:
     | {
         label: string;
-        price: number;
+        price?: number | null;
+        tieredPricing?:
+          | {
+              quantity: number;
+              price: number;
+              id?: string | null;
+            }[]
+          | null;
         id?: string | null;
       }[]
     | null;
@@ -1749,11 +1770,31 @@ export interface ProductsSelect<T extends boolean = true> {
         price?: T;
         id?: T;
       };
+  sizes?:
+    | T
+    | {
+        label?: T;
+        quantityPricing?:
+          | T
+          | {
+              quantity?: T;
+              price?: T;
+              id?: T;
+            };
+        id?: T;
+      };
   addons?:
     | T
     | {
         label?: T;
         price?: T;
+        tieredPricing?:
+          | T
+          | {
+              quantity?: T;
+              price?: T;
+              id?: T;
+            };
         id?: T;
       };
   specifications?:

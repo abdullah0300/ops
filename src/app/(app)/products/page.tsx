@@ -2,6 +2,7 @@
 import React from 'react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import Link from 'next/link'
 import { ProductCard } from '@/components/FeaturedProducts/ProductCard'
 import '@/components/FeaturedProducts/index.css' // Reuse FeaturedProducts styles
 

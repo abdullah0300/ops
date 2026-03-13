@@ -154,10 +154,13 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
             {
               name: 'quantityPricing',
               type: 'array',
-              label: 'Quantity Pricing',
+              label: 'Default Quantity Pricing',
               labels: {
                 singular: 'Pricing Tier',
                 plural: 'Pricing Tiers',
+              },
+              admin: {
+                description: 'Default pricing tiers if no sizes are defined.',
               },
               fields: [
                 {
@@ -171,6 +174,41 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
                   type: 'number',
                   required: true,
                   label: 'Price ($)',
+                },
+              ],
+            },
+            {
+              name: 'sizes',
+              type: 'array',
+              label: 'Size-based Pricing',
+              labels: {
+                singular: 'Size Pricing',
+                plural: 'Size Pricings',
+              },
+              fields: [
+                {
+                  name: 'label',
+                  type: 'text',
+                  required: true,
+                  label: 'Size Label (e.g. 3.5 x 5)',
+                },
+                {
+                  name: 'quantityPricing',
+                  type: 'array',
+                  label: 'Pricing Tiers',
+                  required: true,
+                  fields: [
+                    {
+                      name: 'quantity',
+                      type: 'number',
+                      required: true,
+                    },
+                    {
+                      name: 'price',
+                      type: 'number',
+                      required: true,
+                    },
+                  ],
                 },
               ],
             },
@@ -192,8 +230,24 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
                 {
                   name: 'price',
                   type: 'number',
-                  required: true,
-                  label: 'Price ($)',
+                  label: 'Base Price ($) - fallback if tiered pricing not available',
+                },
+                {
+                  name: 'tieredPricing',
+                  type: 'array',
+                  label: 'Tiered Pricing',
+                  fields: [
+                    {
+                      name: 'quantity',
+                      type: 'number',
+                      required: true,
+                    },
+                    {
+                      name: 'price',
+                      type: 'number',
+                      required: true,
+                    },
+                  ],
                 },
               ],
             },

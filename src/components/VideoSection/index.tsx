@@ -71,7 +71,9 @@ export const VideoSection = () => {
           >
             <div className="video-background">
               <video
-                ref={(el) => (videoRefs.current[index] = el)}
+                ref={(el) => {
+                  videoRefs.current[index] = el
+                }}
                 src={slide.video}
                 autoPlay
                 muted

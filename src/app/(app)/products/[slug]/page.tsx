@@ -25,8 +25,9 @@ export default async function ProductDetailPage({
   const product = result.docs[0] as any
   const imgUrl = product.meta?.image?.url
   const specs: { label: string; value: string }[] = product.specifications || []
-  const pricing: { quantity: number; price: number }[] = product.quantityPricing || []
-  const addons: { label: string; price: number }[] = product.addons || []
+  const pricing = product.quantityPricing || []
+  const addons = product.addons || []
+  const sizes = product.sizes || []
 
   // Get related products from same category
   const catId = product.categories?.[0]?.id || product.categories?.[0]

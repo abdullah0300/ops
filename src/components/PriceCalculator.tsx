@@ -1,45 +1,94 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
 import { toast } from 'sonner'
 import type { Product } from '@/payload-types'
-import { ShoppingBag } from 'lucide-react'
-
-interface Addon {
-  label: string
-  price: number
-}
+import { ShoppingBag, ChevronDown } from 'lucide-react'
 
 interface PricingTier {
   quantity: number
   price: number
+  id?: string | null
+}
+
+interface TieredAddon {
+  label: string
+  price?: number | null
+  tieredPricing?: PricingTier[] | null
+  id?: string | null
+}
+
+interface SizePricing {
+  label: string
+  quantityPricing: PricingTier[]
+  id?: string | null
 }
 
 interface PriceCalculatorProps {
   product: Product
-  quantityPricing: PricingTier[]
-  addons: Addon[]
+  // We keep these for backward compatibility if needed, 
+  // but we'll prioritize the new schema fields
+  quantityPricing?: PricingTier[] | null
+  addons?: TieredAddon[] | null
 }
 
-export const PriceCalculator: React.FC<PriceCalculatorProps> = ({ product, quantityPricing, addons }) => {
+export const PriceCalculator: React.FC<PriceCalculatorProps> = ({ 
+  product, 
+  quantityPricing: defaultQuantityPricing, 
+  addons: productAddons 
+}) => {
   const { cart, addItem, incrementItem } = useCart()
-  const [selectedQty, setSelectedQty] = useState<number>(
-    quantityPricing.length > 0 ? quantityPricing[0].quantity : 100
-  )
+  
+  // Use new schema fields if available
+  const sizes = (product as any).sizes as SizePricing[] | undefined
+  const hasSizes = sizes && sizes.length > 0
+  
+  const [selectedSizeIndex, setSelectedSizeIndex] = useState<number>(0)
+  
+  const currentPricingTable = useMemo(() => {
+    if (hasSizes) {
+      return sizes[selectedSizeIndex].quantityPricing
+    }
+    return defaultQuantityPricing || []
+  }, [hasSizes, sizes, selectedSizeIndex, defaultQuantityPricing])
+
+  const [selectedQty, setSelectedQty] = useState<number>(100)
+  
+  // Update selectedQty when pricing table changes if current qty isn't in new table
+  useEffect(() => {
+    if (currentPricingTable.length > 0) {
+      const exists = currentPricingTable.some(p => p.quantity === selectedQty)
+      if (!exists) {
+        setSelectedQty(currentPricingTable[0].quantity)
+      }
+    }
+  }, [currentPricingTable])
+
   const [selectedAddons, setSelectedAddons] = useState<string[]>([])
   const [isAdding, setIsAdding] = useState(false)
 
   const currentTier = useMemo(() => {
-    return quantityPricing.find((p) => p.quantity === selectedQty) || quantityPricing[0]
-  }, [selectedQty, quantityPricing])
+    return currentPricingTable.find((p) => p.quantity === selectedQty) || currentPricingTable[0]
+  }, [selectedQty, currentPricingTable])
+
+  const getAddonPrice = (addon: TieredAddon, qty: number): number => {
+    if (addon.tieredPricing && addon.tieredPricing.length > 0) {
+      // Find the best match tier (exact or closest lower)
+      const sortedTiers = [...addon.tieredPricing].sort((a, b) => b.quantity - a.quantity)
+      const tier = sortedTiers.find(t => qty >= t.quantity) || sortedTiers[sortedTiers.length - 1]
+      return tier.price
+    }
+    return addon.price || 0
+  }
 
   const totalAddonsPrice = useMemo(() => {
     return selectedAddons.reduce((sum, label) => {
-      const addon = addons.find((a) => a.label === label)
-      return sum + (addon?.price || 0)
+      const addon = (productAddons || []).find((a) => a.label === label)
+      if (!addon) return sum
+      return sum + getAddonPrice(addon, selectedQty)
     }, 0)
-  }, [selectedAddons, addons])
+  }, [selectedAddons, productAddons, selectedQty])
 
   const totalPrice = useMemo(() => {
     if (!currentTier) return 0
@@ -55,14 +104,20 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({ product, quant
   const handleAddToCart = async () => {
     setIsAdding(true)
     try {
+      const sizeLabel = hasSizes ? ` (${sizes[selectedSizeIndex].label})` : ''
+      const optionsString = selectedAddons.length > 0 
+        ? selectedAddons.join(', ') 
+        : 'No special add-ons'
+      
+      const finalOptions = `${optionsString}${sizeLabel}`
+
       // Find if this exact item (same product AND same options) is already in cart
       const existingItem = (cart?.items || []).find((item: any) => {
         const itemProductId = typeof item.product === 'object' ? item.product.id : item.product
-        return itemProductId === product.id && item.selectedOptions === (selectedAddons.length > 0 ? selectedAddons.join(', ') : 'No special add-ons')
+        return itemProductId === product.id && item.selectedOptions === finalOptions
       })
 
       if (existingItem) {
-        // If it exists, we just increment quantity by 1 set
         await incrementItem(existingItem.id)
       } else {
         await addItem({
@@ -70,7 +125,7 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({ product, quant
             // @ts-ignore - custom fields added via plugin
             customPrice: Math.round(totalPrice * 100),
             // @ts-ignore - custom fields added via plugin
-            selectedOptions: selectedAddons.length > 0 ? selectedAddons.join(', ') : 'No special add-ons',
+            selectedOptions: finalOptions,
         }, 1)
       }
       toast.success('Added to cart!')
@@ -122,6 +177,10 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({ product, quant
           font-weight: 600;
           color: #1c1c1c;
         }
+        .custom-select {
+          position: relative;
+          width: 100%;
+        }
         .qty-select {
           width: 100%;
           padding: 12px 16px;
@@ -132,6 +191,15 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({ product, quant
           font-size: 16px;
           outline: none;
           cursor: pointer;
+          appearance: none;
+        }
+        .select-icon {
+          position: absolute;
+          right: 16px;
+          top: 50%;
+          transform: translateY(-50%);
+          pointer-events: none;
+          color: #888;
         }
         .addons-list {
           display: flex;
@@ -222,79 +290,11 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({ product, quant
           background: #333;
           transform: translateY(-2px);
         }
-        .btn-add-to-cart svg {
-          stroke: #fff;
+        .btn-add-to-cart:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+          background: #666;
         }
-      `}</style>
-      
-      <div className="calc-header">
-        <h3 className="calc-title">Price Calculator</h3>
-        <p className="calc-subtitle">Select quantity and options</p>
-      </div>
-
-      <div className="calc-group">
-        <label className="calc-label">Select Quantity</label>
-        <select 
-          className="qty-select"
-          value={selectedQty}
-          onChange={(e) => setSelectedQty(Number(e.target.value))}
-        >
-          {quantityPricing.map((tier) => (
-            <option key={tier.quantity} value={tier.quantity}>
-              {tier.quantity.toLocaleString()}+ Units
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="calc-group">
-        <label className="calc-label">Add-ons & Extras</label>
-        <div className="addons-list">
-          {addons.map((addon) => (
-            <div 
-              key={addon.label}
-              className={`addon-item ${selectedAddons.includes(addon.label) ? 'selected' : ''}`}
-              onClick={() => toggleAddon(addon.label)}
-            >
-              <input 
-                type="checkbox" 
-                className="addon-checkbox"
-                checked={selectedAddons.includes(addon.label)}
-                readOnly
-              />
-              <span className="addon-label">{addon.label}</span>
-              <span className="addon-price">
-                {addon.price > 0 ? `+$${addon.price}` : 'Free'}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-      {/* Total Section */}
-      <div className="summary-section">
-        <div className="total-display">
-          <div className="total-label">Estimated Total:</div>
-          <div className="total-value">${totalPrice.toLocaleString()}</div>
-        </div>
-        <div className="unit-note">Based on {selectedQty.toLocaleString()} units</div>
-
-        <div className="action-buttons">
-          <button 
-            className="btn-add-to-cart"
-            onClick={handleAddToCart}
-            disabled={isAdding}
-          >
-            {isAdding ? (
-               <div className="spinner" />
-            ) : (
-              <ShoppingBag size={20} />
-            )}
-            {isAdding ? 'Adding...' : 'Add to Cart / Buy Now'}
-          </button>
-        </div>
-      </div>
-      
-      <style jsx>{`
         .spinner {
           width: 20px;
           height: 20px;
@@ -308,6 +308,98 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({ product, quant
           100% { transform: rotate(360deg); }
         }
       `}</style>
+      
+      <div className="calc-header">
+        <h3 className="calc-title">Price Calculator</h3>
+        <p className="calc-subtitle">Customize your packaging</p>
+      </div>
+
+      {hasSizes && (
+        <div className="calc-group">
+          <label className="calc-label">Select Size</label>
+          <div className="custom-select">
+            <select 
+              className="qty-select"
+              value={selectedSizeIndex}
+              onChange={(e) => setSelectedSizeIndex(Number(e.target.value))}
+            >
+              {sizes.map((size, idx) => (
+                <option key={idx} value={idx}>
+                  {size.label}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="select-icon" size={18} />
+          </div>
+        </div>
+      )}
+
+      <div className="calc-group">
+        <label className="calc-label">Select Quantity</label>
+        <div className="custom-select">
+          <select 
+            className="qty-select"
+            value={selectedQty}
+            onChange={(e) => setSelectedQty(Number(e.target.value))}
+          >
+            {currentPricingTable.map((tier) => (
+              <option key={tier.quantity} value={tier.quantity}>
+                {tier.quantity.toLocaleString()} Units
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="select-icon" size={18} />
+        </div>
+      </div>
+
+      {(productAddons && productAddons.length > 0) && (
+        <div className="calc-group">
+          <label className="calc-label">Add-ons & Options</label>
+          <div className="addons-list">
+            {productAddons.map((addon) => {
+              const addonPrice = getAddonPrice(addon, selectedQty)
+              return (
+                <div 
+                  key={addon.label}
+                  className={`addon-item ${selectedAddons.includes(addon.label) ? 'selected' : ''}`}
+                  onClick={() => toggleAddon(addon.label)}
+                >
+                  <input 
+                    type="checkbox" 
+                    className="addon-checkbox"
+                    checked={selectedAddons.includes(addon.label)}
+                    readOnly
+                  />
+                  <span className="addon-label">{addon.label}</span>
+                  <span className="addon-price">
+                    {addonPrice > 0 ? `+$${addonPrice}` : '—'}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+      
+      <div className="summary-section">
+        <div className="total-display">
+          <div className="total-label">Estimated Total:</div>
+          <div className="total-value">${totalPrice.toLocaleString()}</div>
+        </div>
+        <div className="unit-note">
+          Based on {selectedQty.toLocaleString()} units 
+          {hasSizes ? ` (${sizes[selectedSizeIndex].label})` : ''}
+        </div>
+
+        <button 
+          className="btn-add-to-cart"
+          onClick={handleAddToCart}
+          disabled={isAdding || currentPricingTable.length === 0}
+        >
+          {isAdding ? <div className="spinner" /> : <ShoppingBag size={20} />}
+          {isAdding ? 'Adding to Cart...' : 'Add to Cart / Buy Now'}
+        </button>
+      </div>
     </div>
   )
 }

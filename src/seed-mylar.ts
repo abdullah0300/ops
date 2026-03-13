@@ -22,11 +22,133 @@ const IMAGE_BASE = 'https://onlinepackagingstore.com/assets/images/products/'
 const TMP_DIR = path.resolve(process.cwd(), '.mylar-tmp')
 
 const GLOBAL_ADDONS = [
-  { label: 'Child resistance', price: 80 },
-  { label: 'Spot Gloss / UV', price: 375 },
-  { label: 'Silver Metallic Printing', price: 0 },
-  { label: 'Gold Metallic Printing', price: 490 },
-  { label: 'Inside/Interior Bag Printing', price: 532 },
+  {
+    label: 'Child Resistance',
+    tieredPricing: [
+      { quantity: 250, price: 12 },
+      { quantity: 500, price: 12 },
+      { quantity: 1000, price: 14 },
+      { quantity: 2500, price: 19 },
+      { quantity: 5000, price: 23 },
+      { quantity: 10000, price: 35 },
+      { quantity: 25000, price: 80 },
+    ],
+  },
+  {
+    label: 'Spot Gloss / UV',
+    tieredPricing: [
+      { quantity: 250, price: 36 },
+      { quantity: 500, price: 36 },
+      { quantity: 1000, price: 44 },
+      { quantity: 2500, price: 75 },
+      { quantity: 5000, price: 91 },
+      { quantity: 10000, price: 155 },
+      { quantity: 25000, price: 375 },
+    ],
+  },
+  {
+    label: 'Silver Metallic Printing',
+    price: 0,
+  },
+  {
+    label: 'Gold Metallic Printing',
+    tieredPricing: [
+      { quantity: 250, price: 40 },
+      { quantity: 500, price: 40 },
+      { quantity: 1000, price: 53 },
+      { quantity: 2500, price: 85 },
+      { quantity: 5000, price: 125 },
+      { quantity: 10000, price: 240 },
+      { quantity: 25000, price: 490 },
+    ],
+  },
+  {
+    label: 'Inside / Interior Bag Printing',
+    tieredPricing: [
+      { quantity: 250, price: 32 },
+      { quantity: 500, price: 32 },
+      { quantity: 1000, price: 42 },
+      { quantity: 2500, price: 82 },
+      { quantity: 5000, price: 124 },
+      { quantity: 10000, price: 310 },
+      { quantity: 25000, price: 532 },
+    ],
+  },
+]
+
+const TIERED_SIZES = [
+  {
+    label: '3.5 x 5',
+    quantityPricing: [
+      { quantity: 250, price: 400 },
+      { quantity: 500, price: 520 },
+      { quantity: 1000, price: 600 },
+      { quantity: 2500, price: 1190 },
+      { quantity: 5000, price: 1855 },
+      { quantity: 10000, price: 1990 },
+      { quantity: 25000, price: 3370 },
+    ],
+  },
+  {
+    label: '3.5 x 5 x 2',
+    quantityPricing: [
+      { quantity: 250, price: 420 },
+      { quantity: 500, price: 548 },
+      { quantity: 1000, price: 635 },
+      { quantity: 2500, price: 1270 },
+      { quantity: 5000, price: 1925 },
+      { quantity: 10000, price: 2049 },
+      { quantity: 25000, price: 3429 },
+    ],
+  },
+  {
+    label: '6 x 4 x 2',
+    quantityPricing: [
+      { quantity: 250, price: 470 },
+      { quantity: 500, price: 660 },
+      { quantity: 1000, price: 790 },
+      { quantity: 2500, price: 1380 },
+      { quantity: 5000, price: 2040 },
+      { quantity: 10000, price: 2595 },
+      { quantity: 25000, price: 3745 },
+    ],
+  },
+  {
+    label: '8 x 5 x 2',
+    quantityPricing: [
+      { quantity: 250, price: 680 },
+      { quantity: 500, price: 830 },
+      { quantity: 1000, price: 955 },
+      { quantity: 2500, price: 1720 },
+      { quantity: 5000, price: 2430 },
+      { quantity: 10000, price: 3599 },
+      { quantity: 25000, price: 5480 },
+    ],
+  },
+  {
+    label: '9 x 6 x 3',
+    quantityPricing: [
+      { quantity: 250, price: 530 },
+      { quantity: 500, price: 740 },
+      { quantity: 1000, price: 880 },
+      { quantity: 2500, price: 1770 },
+      { quantity: 5000, price: 2430 },
+      { quantity: 10000, price: 3945 },
+      { quantity: 25000, price: 6220 },
+    ],
+  },
+  {
+    label: '13 x 9 x 6',
+    quantityPricing: [
+      { quantity: 250, price: 725 },
+      { quantity: 500, price: 880 },
+      { quantity: 1000, price: 1170 },
+      { quantity: 2500, price: 2390 },
+      { quantity: 5000, price: 3590 },
+      { quantity: 10000, price: 5985 },
+      { quantity: 25000, price: 10450 },
+    ],
+  },
 ]
 
 // ─── All 34 Mylar Bag products from SQL dump ────────────────────────────────
@@ -693,11 +815,6 @@ async function main() {
       where: { slug: { equals: p.slug } },
       limit: 1,
     })
-    if (existing.docs.length > 0) {
-      console.log(`  ⏭  Skipping (exists)`)
-      skipped++
-      continue
-    }
 
     // Download + upload main image
     let metaImageId: string | null = null
@@ -724,42 +841,40 @@ async function main() {
       { label: 'Turnaround', value: p.turnaround || '4 - 8 Business Days' },
     ]
 
-    // Build quantity pricing from size_pricing
-    const quantityPricing: { quantity: number; price: number }[] = []
-    if (p.size_pricing && p.size_pricing.length > 0) {
-      const firstSize: any = p.size_pricing[0]
-      for (const [qty, price] of Object.entries(firstSize.prices)) {
-        quantityPricing.push({ quantity: parseInt(qty), price: price as number })
-      }
-    } else {
-      // Default pricing if none provided
-      quantityPricing.push({ quantity: 100, price: 450 })
-      quantityPricing.push({ quantity: 500, price: 850 })
-      quantityPricing.push({ quantity: 1000, price: 1400 })
-    }
+    const productData = {
+      title: p.title,
+      slug: p.slug,
+      _status: 'published',
+      shortDescription: (p as any).shortDescription || '',
+      categories: [categoryId],
+      description: convertToLexical(p.description),
+      gallery: galleryIds,
+      specifications,
+      sizes: TIERED_SIZES,
+      addons: GLOBAL_ADDONS,
+      meta: {
+        title: p.title,
+        description: p.description?.substring(0, 200) || '',
+        ...(metaImageId ? { image: metaImageId } : {}),
+      },
+    } as any
 
     try {
-      await payload.create({
-        collection: 'products',
-        data: {
-          title: p.title,
-          slug: p.slug,
-          _status: 'published',
-          shortDescription: (p as any).shortDescription || '',
-          categories: [categoryId],
-          description: convertToLexical(p.description),
-          gallery: galleryIds,
-          specifications,
-          quantityPricing,
-          addons: GLOBAL_ADDONS,
-          meta: {
-            title: p.title,
-            description: p.description?.substring(0, 200) || '',
-            ...(metaImageId ? { image: metaImageId } : {}),
-          },
-        } as any,
-      })
-      console.log(`  ✅ Created`)
+      if (existing.docs.length > 0) {
+        const id = existing.docs[0].id
+        await payload.update({
+          collection: 'products',
+          id,
+          data: productData,
+        })
+        console.log(`  ✅ Updated`)
+      } else {
+        await payload.create({
+          collection: 'products',
+          data: productData,
+        })
+        console.log(`  ✅ Created`)
+      }
       created++
     } catch (err: any) {
       console.log(`  ❌ Failed: ${err.message}`)
