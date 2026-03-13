@@ -1,0 +1,27 @@
+.promo-banner-modal {
+  pointer-events: none;
+}
+
+.promo-banner-content {
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+}
+
+@media (max-width: 640px) {
+  .promo-banner-modal {
+    right: 16px;
+    bottom: 24px;
+    top: auto;
+    transform: none;
+  }
+  
+  .promo-banner-content {
+    height: auto;
+    width: calc(100vw - 32px);
+    border-radius: 30px;
+  }
+
+  .promo-banner-content h2 {
+    font-size: 32px;
+  }
+}

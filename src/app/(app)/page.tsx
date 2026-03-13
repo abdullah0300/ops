@@ -8,6 +8,7 @@ import { ProductShowcase } from '@/components/ProductShowcase'
 import { ReviewSection } from '@/components/ReviewSection/index'
 import { FAQSection } from '@/components/FAQSection/index'
 import { QuoteForm } from '@/components/QuoteForm'
+import { PromoBannerModal } from '@/components/PromoBannerModal'
 
 export default async function HomePage() {
   return (
@@ -21,6 +22,7 @@ export default async function HomePage() {
       <ReviewSection />
       <FAQSection />
       <QuoteForm />
+      <PromoBannerModal />
     </>
   )
 }
