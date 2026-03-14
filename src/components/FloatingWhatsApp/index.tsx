@@ -1,11 +1,33 @@
 'use client'
 
-import React from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
+import React, { useEffect } from 'react'
 import { cn } from '@/utilities/cn'
 
 export const FloatingWhatsApp: React.FC = () => {
+  const searchParams = useSearchParams()
+  const router = useRouter()
   const whatsappNumber = '17737292243'
   const whatsappUrl = `https://wa.me/${whatsappNumber}`
+
+  useEffect(() => {
+    const openChat = searchParams.get('openChat')
+    if (openChat === 'true') {
+      // @ts-ignore
+      if (typeof window !== 'undefined' && window.zE) {
+        // @ts-ignore
+        window.zE('messenger', 'open')
+        
+        // Clear the param after opening to avoid re-triggering on reload
+        const newParams = new URLSearchParams(searchParams.toString())
+        newParams.delete('openChat')
+        router.replace(`?${newParams.toString()}`)
+      } else {
+        // Fallback to WhatsApp if Zendesk is not loaded
+        window.open(whatsappUrl, '_blank')
+      }
+    }
+  }, [searchParams, router, whatsappUrl])
 
   return (
     <a

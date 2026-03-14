@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import React, { useCallback, FormEvent, useState } from 'react'
 import { Address } from '@/payload-types'
+import { CheckoutErrorModal } from '../../checkout/CheckoutErrorModal'
 
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
 
@@ -74,7 +75,7 @@ export const CheckoutForm: React.FC<Props> = ({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 max-w-md">
-      {error && <Message error={error} />}
+      <CheckoutErrorModal isOpen={!!error} message={error || ''} />
       
       <div className="grid gap-4">
         <div className="grid gap-2">

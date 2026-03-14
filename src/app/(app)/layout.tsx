@@ -39,7 +39,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <div className="header-spacer" aria-hidden="true" />
 
           <main>{children}</main>
-          <FloatingWhatsApp />
+          <React.Suspense fallback={null}>
+            <FloatingWhatsApp />
+          </React.Suspense>
           <Footer />
         </Providers>
       </body>
