@@ -31,9 +31,9 @@ export const PromoBannerModal: React.FC = () => {
   return (
     <div
       className={cn(
-        'promo-banner-modal fixed right-6 top-1/2 z-[400] -translate-y-1/2 transition-all duration-700 ease-out',
-        isVisible ? 'translate-x-0 opacity-100' : 'translate-x-[150%] opacity-0'
-      )}
+  'promo-banner-modal',
+  isVisible ? 'promo-visible' : 'promo-hidden'
+)}
     >
       <div className="promo-banner-content relative flex h-[580px] w-[280px] flex-col overflow-hidden rounded-[40px] border border-[#e8e4d8] bg-white shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
         {/* Background Accent */}

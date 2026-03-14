@@ -6,6 +6,53 @@
   pointer-events: auto;
   backdrop-filter: blur(8px);
 }
+/* ── Desktop: vertically centered on right ── */
+.promo-banner-modal {
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%) translateX(0);
+  z-index: 400;
+  transition: transform 0.7s ease, opacity 0.5s ease;
+}
+
+/* Slide in/out states */
+.promo-banner-modal.promo-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(-50%) translateX(0);
+}
+
+.promo-banner-modal.promo-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%) translateX(150%);
+}
+
+/* ── Mobile: anchored to bottom, no vertical centering ── */
+@media (max-width: 640px) {
+  .promo-banner-modal {
+    right: 16px;
+    top: auto;           /* ← removes vertical center */
+    bottom: 24px;        /* ← anchors to bottom */
+    transform: none;     /* ← removes translateY(-50%) */
+  }
+
+  .promo-banner-modal.promo-visible {
+    transform: translateX(0);
+  }
+
+  .promo-banner-modal.promo-hidden {
+    transform: translateX(150%);
+  }
+
+  .promo-banner-content {
+    width: calc(100vw - 32px);
+    border-radius: 24px;
+    max-height: calc(100vh - 120px); /* never taller than viewport */
+    overflow-y: auto;
+  }
+}
 
 @media (max-width: 640px) {
   .promo-banner-modal {
