@@ -18,7 +18,7 @@ export default async function ProductsPage({
 }: {
   searchParams: Promise<SearchParams>
 }) {
-  const { category } = await searchParams
+  const { category, q } = await searchParams
   const payload = await getPayload({ config: configPromise })
 
   // Build query
@@ -46,11 +46,22 @@ export default async function ProductsPage({
     })
   }
 
+  // Add search filter if present
+  if (q && typeof q === 'string') {
+    query.where.and.push({
+      title: {
+        contains: q,
+      },
+    })
+  }
+
   const { docs: products } = await payload.find(query)
 
   // Fetch category title if filtering
   let pageTitle = 'All Products'
-  if (category) {
+  if (q && typeof q === 'string') {
+    pageTitle = `Search Results for "${q}"`
+  } else if (category) {
     const catDoc = await payload.find({
       collection: 'categories',
       where: {
@@ -116,9 +127,11 @@ export default async function ProductsPage({
         <div className="container">
           <h1 className="listing-title">{pageTitle}</h1>
           <p className="listing-subtitle">
-            {category 
-              ? `Explore our high-quality ${pageTitle} solutions tailored for your brand.`
-              : 'Discover our premium range of packaging and custom printing products designed to elevate your business.'}
+            {q 
+              ? `Showing results for "${q}". Explore our range of high-quality packaging solutions.`
+              : category 
+                ? `Explore our high-quality ${pageTitle} solutions tailored for your brand.`
+                : 'Discover our premium range of packaging and custom printing products designed to elevate your business.'}
           </p>
         </div>
       </header>

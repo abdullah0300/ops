@@ -10,6 +10,7 @@ import { usePathname } from 'next/navigation'
 import { Logo } from '@/components/Logo/Logo'
 import { Mail, Phone } from 'lucide-react'
 import { Cart } from '@/components/Cart'
+import { HeaderSearch } from './HeaderSearch'
 
 type Props = {
   header: HeaderType
@@ -35,15 +36,19 @@ export function HeaderClient({ header, navProducts }: Props) {
       {/* Top Bar */}
       <div className="top-bar">
         <div className="container top-bar-container">
-          <div className="top-bar-item">
-            <Mail className="top-bar-icon" />
-            <span>{header.topBarEmail || 'sales@onlinepackagingstore.com'}</span>
-          </div>
-          <div className="top-bar-item">
-            <Phone className="top-bar-icon" />
-            <div className="phone-details">
-              <span className="phone-label">{header.topBarPhoneLabel || '24/7 Support'}</span>
-              <span className="phone-number">{header.topBarPhone || 'Call: 559-205-7588'}</span>
+          <HeaderSearch />
+          
+          <div className="top-bar-details">
+            <div className="top-bar-item">
+              <Mail className="top-bar-icon" />
+              <span>{header.topBarEmail || 'sales@onlinepackagingstore.com'}</span>
+            </div>
+            <div className="top-bar-item">
+              <Phone className="top-bar-icon" />
+              <div className="phone-details">
+                <span className="phone-label">{header.topBarPhoneLabel || '24/7 Support'}</span>
+                <span className="phone-number">{header.topBarPhone || 'Call: 559-205-7588'}</span>
+              </div>
             </div>
           </div>
         </div>
