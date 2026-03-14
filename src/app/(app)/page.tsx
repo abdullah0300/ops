@@ -24,7 +24,6 @@ export default async function HomePage() {
       <Hero media={homePageData?.hero?.heroImage} />
       <FeaturedProducts />
       <VideoSection slides={homePageData?.videoSection?.slides} />
-      <FactorySlider slides={homePageData?.factorySlider?.slides} />
       <BrandSection />
       <ProductShowcase />
       <BenefitsSection />
