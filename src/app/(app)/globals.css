@@ -223,12 +223,6 @@
 .font-outfit {
   font-family: 'Outfit', sans-serif;
 }
-/* Cart Sheet width override & Z-index */
-[data-slot="sheet-content"][data-side="right"] {
-  width: 480px !important;
-  max-width: 100vw !important;
-  z-index: 300 !important;
-}
 
 html {
   opacity: 0;
@@ -243,4 +237,34 @@ a,
 input,
 button {
   @apply focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-50 dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-900;
+}
+
+/* ── Header spacer ── */
+.header-spacer {
+  height: 124px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1024px) {
+  .header-spacer {
+    height: 80px;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-spacer {
+    height: 64px;
+  }
+}
+
+/* ── Cart sheet — keep shadcn defaults, just fix width ──
+   shadcn portals sheets/dialogs directly into <body> at z-index 50.
+   Navbar is z-index 50 in Header/index.css.
+   They are siblings in the DOM so DOM order wins — portal always renders
+   AFTER the navbar in the DOM, so it naturally appears on top.
+   We only need to fix the width. Do NOT override z-index here.
+*/
+[data-slot="sheet-content"][data-side="right"] {
+  width: 480px !important;
+  max-width: 100vw !important;
 }
