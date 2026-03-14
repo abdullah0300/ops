@@ -34,50 +34,54 @@ export function HeaderClient({ header, navProducts }: Props) {
     <div className="header-outer">
       {/* Top Bar */}
       <div className="top-bar">
-        <div className="top-bar-item">
-          <Mail className="top-bar-icon" />
-          <span>{header.topBarEmail || 'sales@onlinepackagingstore.com'}</span>
-        </div>
-        <div className="top-bar-item">
-          <Phone className="top-bar-icon" />
-          <div className="phone-details">
-            <span className="phone-label">{header.topBarPhoneLabel || '24/7 Support'}</span>
-            <span className="phone-number">{header.topBarPhone || 'Call: 559-205-7588'}</span>
+        <div className="container top-bar-container">
+          <div className="top-bar-item">
+            <Mail className="top-bar-icon" />
+            <span>{header.topBarEmail || 'sales@onlinepackagingstore.com'}</span>
+          </div>
+          <div className="top-bar-item">
+            <Phone className="top-bar-icon" />
+            <div className="phone-details">
+              <span className="phone-label">{header.topBarPhoneLabel || '24/7 Support'}</span>
+              <span className="phone-number">{header.topBarPhone || 'Call: 559-205-7588'}</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Navbar */}
       <nav className="navbar">
-        <Link href="/" className="nav-logo">
-          <Logo />
-        </Link>
-
-        <ul className="nav-links">
-          {menu.map((item: any) => (
-            <li key={item.id}>
-              <CMSLink {...item.link} className="nav-link" label={item.link.label} />
-            </li>
-          ))}
-        </ul>
-
-        <div className="nav-actions">
-          <Link href="/#quote" className="btn-get-quote">
-            Get Quote
-          </Link>
-          <Link href="/#quote" className="btn-beat-quote">
-            Beat My Quote
+        <div className="container navbar-container">
+          <Link href="/" className="nav-logo">
+            <Logo />
           </Link>
 
-          <div className="cart-wrapper">
-            <Cart />
-          </div>
+          <ul className="nav-links">
+            {menu.map((item: any) => (
+              <li key={item.id}>
+                <CMSLink {...item.link} className="nav-link" label={item.link.label} />
+              </li>
+            ))}
+          </ul>
 
-          {/* Mobile menu toggle — controlled purely by CSS (.mobile-menu-toggle) */}
-          <div className="mobile-menu-toggle">
-            <Suspense fallback={null}>
-              <MobileMenu menu={menu as any} />
-            </Suspense>
+          <div className="nav-actions">
+            <Link href="/#quote" className="btn-get-quote">
+              Get Quote
+            </Link>
+            <Link href="/#quote" className="btn-beat-quote">
+              Beat My Quote
+            </Link>
+
+            <div className="cart-wrapper">
+              <Cart />
+            </div>
+
+            {/* Mobile menu toggle — controlled purely by CSS (.mobile-menu-toggle) */}
+            <div className="mobile-menu-toggle">
+              <Suspense fallback={null}>
+                <MobileMenu menu={menu as any} />
+              </Suspense>
+            </div>
           </div>
         </div>
       </nav>

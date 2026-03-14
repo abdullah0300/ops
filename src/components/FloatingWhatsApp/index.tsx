@@ -13,7 +13,7 @@ export const FloatingWhatsApp: React.FC = () => {
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'fixed bottom-8 left-8 z-[300] flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl active:scale-95'
+        'group fixed bottom-[100px] right-8 z-[300] flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl active:scale-95'
       )}
       aria-label="Contact us on WhatsApp"
     >
@@ -29,9 +29,9 @@ export const FloatingWhatsApp: React.FC = () => {
       </svg>
       
       {/* Tooltip */}
-      <span className="absolute bottom-full left-1/2 mb-3 -translate-x-1/2 whitespace-nowrap rounded-lg bg-[#1c1c1c] px-3 py-1.5 text-[13px] font-bold text-white opacity-0 transition-opacity group-hover:opacity-100 font-afacad shadow-lg">
+      <span className="absolute bottom-full right-0 mb-3 whitespace-nowrap rounded-lg bg-[#1c1c1c] px-3 py-1.5 text-[13px] font-bold text-white opacity-0 transition-opacity group-hover:opacity-100 font-afacad shadow-lg">
         Chat on WhatsApp
-        <span className="absolute top-full left-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1 rotate-45 bg-[#1c1c1c]" />
+        <span className="absolute top-full right-5 h-2 w-2 -translate-y-1 rotate-45 bg-[#1c1c1c]" />
       </span>
     </a>
   )

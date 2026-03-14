@@ -18,12 +18,15 @@
 .top-bar {
   height: 71px;
   background-color: var(--top-bar-bg);
+  font-family: var(--font-sans);
+}
+
+.top-bar-container {
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 0 40px;
   gap: 32px;
-  font-family: var(--font-sans);
 }
 
 .top-bar-item {
@@ -62,13 +65,16 @@
   height: 80px;
   background-color: var(--navbar-bg);
   border-bottom: 1px solid var(--header-border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 40px;
   position: sticky;
   top: 0;
   z-index: 100;
+}
+
+.navbar-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .nav-logo {

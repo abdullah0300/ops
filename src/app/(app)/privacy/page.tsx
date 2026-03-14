@@ -47,12 +47,17 @@ export default function PrivacyPage() {
       title: 'Legal Disclaimer',
       content: 'Though we make every effort to preserve user privacy, we may need to disclose personal information when required by law wherein we have a good-faith belief that such action is necessary to comply with a current judicial proceeding, a court order or legal process served on Online Packaging Store Web site.'
     },
-    {
-      id: 'offers',
-      title: 'Updates about special offers',
-      content: 'This is the part of policy of Online Packaging Store only for Established members, they will occasionally receive information on products, services, special deals, and a newsletter. Out of respect for the privacy of our users, we present the option to not receive these types of communications. Moreover you can request manually to get such types of e-mails.'
-    }
-  ]
+      {
+        id: 'offers',
+        title: 'Updates about special offers',
+        content: 'This is the part of policy of Online Packaging Store only for Established members, they will occasionally receive information on products, services, special deals, and a newsletter. Out of respect for the privacy of our users, we present the option to not receive these types of communications. Moreover you can request manually to get such types of e-mails.'
+      },
+      {
+        id: 'payment-terms',
+        title: 'Payment Terms & Methods',
+        content: 'We offer multiple secure payment options for our customers’ convenience. We currently accept payments via PayPal, MasterCard, Visa, American Express, Payoneer, and Cash App. Additionally, we facilitate direct Wire Transfers for bulk orders. All financial transactions are processed through secure, industry-standard gateways to ensure your data is protected at all times.'
+      }
+    ]
 
   return (
     <div className="privacy-page">

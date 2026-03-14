@@ -78,35 +78,27 @@ export async function Footer() {
               <li><Link href="/">Home</Link></li>
               <li><Link href="/about">About Us</Link></li>
               <li><Link href="/privacy">Privacy & Security</Link></li>
+              <li><Link href="/terms">Terms & Conditions</Link></li>
               <li><Link href="/blog">Blog</Link></li>
-              <li><Link href="/contact">Need a Support?</Link></li>
             </ul>
           </div>
 
-          {/* Column 3: Social & Payments */}
+          {/* Column 3: Social & Trust */}
           <div className="footer-col">
-            <h4 className="footer-title">Follow us on:</h4>
+            <h4 className="footer-title">Connect With Us</h4>
             <div className="social-links">
-              <a href="#" className="social-icon"><Facebook size={18} /></a>
-              <a href="#" className="social-icon"><Instagram size={18} /></a>
-              <a href="#" className="social-icon"><Twitter size={18} /></a>
+              <a href="#" className="social-icon" aria-label="Facebook"><Facebook size={18} /></a>
+              <a href="#" className="social-icon" aria-label="Instagram"><Instagram size={18} /></a>
+              <a href="#" className="social-icon" aria-label="Twitter"><Twitter size={18} /></a>
             </div>
 
-            <div className="payment-icons">
-               {/* Real SVG Path for PayPal */}
-               <svg className="pm-icon" viewBox="0 0 24 24" width="32" height="32"><path fill="#003087" d="M20.067 8.178c-.622 3.125-2.73 4.54-5.525 4.54H12.33l-.8 4.02h-3.03l1.52-7.6h3.6c2.422 0 3.844-1.01 4.253-3.13.155-.83.053-1.465-.415-1.928-.276-.277-.694-.492-1.292-.58a9.498 9.498 0 0 0-1.458-.1h-5.46L7.41 11.23h1.77L10.66 4.3h3.58c.28 0 .524.015.74.043.19.023.36.06.5.114.3.11.527.315.65.615l.083.21.03.113c.067.318.067.665.01 1.05a4.42 4.42 0 0 1-.39 1.453l-.128.283c-.15.315-.357.575-.62.78l-.16.12c-.224.162-.48.288-.748.375-.24.08-.503.132-.786.155a8.7 8.7 0 0 1-.86.03h-.62l-.37 1.83z"/></svg>
-               {/* MasterCard */}
-               <svg className="pm-icon" viewBox="0 0 24 24" width="32" height="32"><circle fill="#EB001B" cx="9" cy="12" r="7" opacity=".8"/><circle fill="#F79E1B" cx="15" cy="12" r="7" opacity=".8"/></svg>
-               {/* AE */}
-               <div className="pm-text">AMEX</div>
-               {/* Visa */}
-               <div className="pm-text visa">VISA</div>
-            </div>
-
-            <div className="country-flags">
-              <span title="UK">🇬🇧</span>
-              <span title="USA">🇺🇸</span>
-              <span title="Australia">🇦🇺</span>
+            <div className="trust-badges">
+              <h5 className="footer-subtitle">Global Presence</h5>
+              <div className="country-flags">
+                <span title="United Kingdom">🇬🇧</span>
+                <span title="United States">🇺🇸</span>
+                <span title="Australia">🇦🇺</span>
+              </div>
             </div>
           </div>
 
@@ -125,10 +117,38 @@ export async function Footer() {
       {/* Bottom Copyright */}
       <div className="footer-bottom">
         <div className="container">
-          <p>
-            &copy; 2026 All Right Reserved <strong>Online Packaging Store</strong>. 
-            Design and Developed by <a href="https://webcraftio.com" target="_blank" rel="noopener noreferrer">WebCraftio</a>
-          </p>
+          <div className="footer-bottom-flex">
+            <div className="payment-icons-wrapper">
+              <span className="payment-label">Accepted Payments:</span>
+              <div className="payment-icons">
+                 {/* PayPal */}
+                 <svg className="pm-icon" viewBox="0 0 24 24" width="32" height="32"><title>PayPal</title><path fill="#003087" d="M20.067 8.178c-.622 3.125-2.73 4.54-5.525 4.54H12.33l-.8 4.02h-3.03l1.52-7.6h3.6c2.422 0 3.844-1.01 4.253-3.13.155-.83.053-1.465-.415-1.928-.276-.277-.694-.492-1.292-.58a9.498 9.498 0 0 0-1.458-.1h-5.46L7.41 11.23h1.77L10.66 4.3h3.58c.28 0 .524.015.74.043.19.023.36.06.5.114.3.11.527.315.65.615l.083.21.03.113c.067.318.067.665.01 1.05a4.42 4.42 0 0 1-.39 1.453l-.128.283c-.15.315-.357.575-.62.78l-.16.12c-.224.162-.48.288-.748.375-.24.08-.503.132-.786.155a8.7 8.7 0 0 1-.86.03h-.62l-.37 1.83z"/></svg>
+                 {/* MasterCard */}
+                 <svg className="pm-icon" viewBox="0 0 24 24" width="32" height="32"><title>MasterCard</title><circle fill="#EB001B" cx="9" cy="12" r="7" opacity=".8"/><circle fill="#F79E1B" cx="15" cy="12" r="7" opacity=".8"/></svg>
+                 {/* Visa */}
+                 <div className="pm-text visa" title="Visa">VISA</div>
+                 {/* American Express */}
+                 <div className="pm-text amex" title="American Express">AMEX</div>
+                 {/* Payoneer */}
+                 <div className="pm-text payoneer" title="Payoneer">Payoneer</div>
+                 {/* Cash App */}
+                 <div className="pm-text cashapp" title="Cash App">$ Cash App</div>
+                 {/* Wire Transfer */}
+                 <div className="pm-text wire" title="Wire Transfer">Wire Transfer</div>
+              </div>
+            </div>
+
+            <div className="bottom-credits-grid">
+              <p className="copyright-text">
+                &copy; {new Date().getFullYear()} <strong>Online Packaging Store</strong>. All Rights Reserved.
+              </p>
+              <p className="footer-credits">
+                <span className="packagly-credit">A project by <strong>Packagly</strong></span>
+                <span className="separator">|</span>
+                Design & Developed by <a href="https://webcraftio.com" target="_blank" rel="noopener noreferrer">WebCraftio</a>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
