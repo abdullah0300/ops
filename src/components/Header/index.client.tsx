@@ -36,7 +36,9 @@ export function HeaderClient({ header, navProducts }: Props) {
       {/* Top Bar */}
       <div className="top-bar">
         <div className="container top-bar-container">
-          <HeaderSearch />
+          <Suspense fallback={null}>
+            <HeaderSearch />
+          </Suspense>
           
           <div className="top-bar-details">
             <div className="top-bar-item">

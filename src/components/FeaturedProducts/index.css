@@ -1,8 +1,10 @@
 /* ── Featured Products Section ── */
+/* AFTER */
 .featured-products {
   padding: 80px 0;
-  background-color: transparent;
+  background-color: #F3F3F3 !important;
   overflow: hidden;
+  color-scheme: light;
 }
 
 .featured-products-header {

@@ -81,18 +81,20 @@ export default buildConfig({
       ]
     },
   }),
-  email: nodemailerAdapter({
-    defaultFromAddress: process.env.SMTP_FROM_ADDRESS || 'info@webcraftio.com',
-    defaultFromName: process.env.SMTP_FROM_NAME || 'Webcraftio',
-    transportOptions: {
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT) || 587,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    },
-  }),
+  email: process.env.SMTP_HOST
+    ? nodemailerAdapter({
+        defaultFromAddress: process.env.SMTP_FROM_ADDRESS || 'info@webcraftio.com',
+        defaultFromName: process.env.SMTP_FROM_NAME || 'Webcraftio',
+        transportOptions: {
+          host: process.env.SMTP_HOST,
+          port: Number(process.env.SMTP_PORT) || 587,
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+          },
+        },
+      })
+    : undefined,
   endpoints: [],
   globals: [Header, Footer, HomePage],
   plugins,
