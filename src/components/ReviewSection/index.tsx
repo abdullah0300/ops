@@ -54,7 +54,8 @@ export const ReviewSection = () => {
           </div>
 
           <div className="review-actions">
-            <a href="/#quote" className="btn-get-quote">Get your Quote</a>
+            {/* ✅ Updated className from btn-get-quote to review-btn-quote */}
+            <a href="/#quote" className="review-btn-quote">Get your Quote</a>
             <a href="tel:5592057588" className="phone-link">
               <Phone size={16} />
               <span>Call Now: 559-205-7588</span>

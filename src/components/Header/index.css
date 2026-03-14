@@ -36,7 +36,61 @@
   color: var(--text-main);
   font-size: 14px;
 }
+/* Add these rules to your Header/index.css */
 
+/* ── Prevent badge clipping through the entire navbar chain ── */
+.header-outer,
+.navbar,
+.navbar-container,
+.nav-actions,
+.cart-wrapper {
+  overflow: visible !important;
+}
+
+/* ── Cart wrapper sizing and alignment ── */
+.cart-wrapper {
+  margin-left: 4px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 4px; /* gives badge room to bleed outside without clipping */
+}
+
+/* ── Make the cart button a proper tappable target ── */
+.cart-wrapper button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+  overflow: visible !important;
+}
+
+.cart-wrapper button:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* ── Ensure the icon itself is the right size ── */
+.cart-wrapper svg {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+/* ── Badge must never be clipped ── */
+.cart-wrapper span {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  z-index: 10;
+  overflow: visible;
+}
 .top-bar-icon {
   width: 20px;
   height: 20px;

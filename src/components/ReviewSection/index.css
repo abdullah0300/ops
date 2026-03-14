@@ -1,6 +1,6 @@
 .review-section {
   padding: 120px 0;
-  background-color: #f2ffed; /* Light mint green */
+  background-color: #f2ffed;
   overflow: hidden;
 }
 
@@ -68,8 +68,9 @@
   align-items: flex-start;
 }
 
-.btn-get-quote {
-  background-color: #0c8a24; /* Forest green */
+/* ✅ Renamed from .btn-get-quote to .review-btn-quote to avoid navbar collision */
+.review-btn-quote {
+  background-color: #0c8a24;
   color: #fff;
   padding: 18px 48px;
   border-radius: 40px;
@@ -80,7 +81,7 @@
   box-shadow: 0 4px 15px rgba(12, 138, 36, 0.2);
 }
 
-.btn-get-quote:hover {
+.review-btn-quote:hover {
   background-color: #0a731e;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(12, 138, 36, 0.3);

@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button'
-import clsx from 'clsx'
 import { ShoppingCart } from 'lucide-react'
 import React from 'react'
 
@@ -12,20 +11,28 @@ export function OpenCartButton({
   quantity?: number
 }) {
   return (
-    <Button
-      variant="nav"
-      size="clear"
-      className="navLink relative items-end hover:cursor-pointer"
+    <button
+      className="relative flex items-center justify-center w-11 h-11 rounded-full hover:bg-black/5 transition-colors cursor-pointer border-none bg-transparent"
+      aria-label={`Open cart${quantity ? `, ${quantity} items` : ''}`}
       {...rest}
     >
-      <div className="relative">
-        <ShoppingCart size={24} className="text-[#1c1c1c]" strokeWidth={2} />
-        {quantity ? (
-          <span className="absolute -top-2 -right-2 bg-[#f0bc2e] text-[#1c1c1c] text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center rounded-full border-2 border-white">
-            {quantity}
-          </span>
-        ) : null}
-      </div>
-    </Button>
+      {/* Icon */}
+      <ShoppingCart size={26} className="text-[#1c1c1c]" strokeWidth={1.8} />
+
+      {/* Badge — positioned relative to button, never clipped */}
+      {quantity ? (
+        <span
+          style={{
+            position: 'absolute',
+            top: '-2px',
+            right: '-2px',
+            zIndex: 9999,
+          }}
+          className="bg-[#f0bc2e] text-[#1c1c1c] text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center rounded-full border-2 border-white leading-none"
+        >
+          {quantity > 99 ? '99+' : quantity}
+        </span>
+      ) : null}
+    </button>
   )
 }
