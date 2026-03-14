@@ -131,10 +131,12 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    'home-page': HomePage;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    'home-page': HomePageSelect<false> | HomePageSelect<true>;
   };
   locale: null;
   widgets: {
@@ -2020,6 +2022,48 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page".
+ */
+export interface HomePage {
+  id: number;
+  hero: {
+    heroImage: number | Media;
+  };
+  videoSection?: {
+    slides?:
+      | {
+          video: number | Media;
+          title: string;
+          subtitle?: string | null;
+          body?: string | null;
+          tagline?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  factorySlider?: {
+    slides?:
+      | {
+          video: number | Media;
+          title: string;
+          subtitle?: string | null;
+          desc?: string | null;
+          highlight?: string | null;
+          bgLeft?: string | null;
+          bgRight?: string | null;
+          textColor?: string | null;
+          highlightColor?: string | null;
+          btnBg?: string | null;
+          btnColor?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -2062,6 +2106,54 @@ export interface FooterSelect<T extends boolean = true> {
               label?: T;
             };
         id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page_select".
+ */
+export interface HomePageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        heroImage?: T;
+      };
+  videoSection?:
+    | T
+    | {
+        slides?:
+          | T
+          | {
+              video?: T;
+              title?: T;
+              subtitle?: T;
+              body?: T;
+              tagline?: T;
+              id?: T;
+            };
+      };
+  factorySlider?:
+    | T
+    | {
+        slides?:
+          | T
+          | {
+              video?: T;
+              title?: T;
+              subtitle?: T;
+              desc?: T;
+              highlight?: T;
+              bgLeft?: T;
+              bgRight?: T;
+              textColor?: T;
+              highlightColor?: T;
+              btnBg?: T;
+              btnColor?: T;
+              id?: T;
+            };
       };
   updatedAt?: T;
   createdAt?: T;

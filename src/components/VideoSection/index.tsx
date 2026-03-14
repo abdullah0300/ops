@@ -3,8 +3,18 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import './index.css'
+import type { Media as MediaType } from '@/payload-types'
 
-const SLIDES = [
+interface SlideData {
+  id?: string | number
+  video: string | MediaType
+  title: string
+  subtitle?: string | null
+  body?: string | null
+  tagline?: string | null
+}
+
+const DEFAULT_SLIDES = [
   {
     id: 1,
     video: '/media/first.mp4',
@@ -31,21 +41,23 @@ const SLIDES = [
   },
 ]
 
-export const VideoSection = () => {
+export const VideoSection = ({ slides }: { slides?: SlideData[] | null }) => {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([])
 
+  const displaySlides = (slides && slides.length > 0) ? slides : DEFAULT_SLIDES
+
   const nextSlide = () => {
     if (isAnimating) return
     setIsAnimating(true)
-    setCurrentSlide((prev) => (prev + 1) % SLIDES.length)
+    setCurrentSlide((prev) => (prev + 1) % displaySlides.length)
   }
 
   const prevSlide = () => {
     if (isAnimating) return
     setIsAnimating(true)
-    setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length)
+    setCurrentSlide((prev) => (prev - 1 + displaySlides.length) % displaySlides.length)
   }
 
   useEffect(() => {
@@ -62,41 +74,45 @@ export const VideoSection = () => {
       </div>
 
       <div className="video-slider">
-        {SLIDES.map((slide, index) => (
-          <div
-            key={slide.id}
-            className={`video-slide ${index === currentSlide ? 'active' : ''} ${
-              index < currentSlide ? 'prev' : ''
-            } ${index > currentSlide ? 'next' : ''}`}
-          >
-            <div className="video-background">
-              <video
-                ref={(el) => {
-                  videoRefs.current[index] = el
-                }}
-                src={slide.video}
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="bg-video"
-              />
-              <div className="video-overlay" />
-            </div>
+        {displaySlides.map((slide, index) => {
+          const videoUrl = typeof slide.video === 'object' ? slide.video.url : slide.video
+          
+          return (
+            <div
+              key={slide.id || index}
+              className={`video-slide ${index === currentSlide ? 'active' : ''} ${
+                index < currentSlide ? 'prev' : ''
+              } ${index > currentSlide ? 'next' : ''}`}
+            >
+              <div className="video-background">
+                <video
+                  ref={(el) => {
+                    videoRefs.current[index] = el
+                  }}
+                  src={videoUrl || ''}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="bg-video"
+                />
+                <div className="video-overlay" />
+              </div>
 
-            <div className="slide-content container">
-              <div className="content-inner">
-                <span className="slide-subtitle">{slide.subtitle}</span>
-                <h3 className="slide-title">{slide.title}</h3>
-                <p className="slide-body">{slide.body}</p>
-                <div className="slide-tagline">
-                  <span className="tagline-icon">✦</span>
-                  {slide.tagline}
+              <div className="slide-content container">
+                <div className="content-inner">
+                  <span className="slide-subtitle">{slide.subtitle}</span>
+                  <h3 className="slide-title">{slide.title}</h3>
+                  <p className="slide-body">{slide.body}</p>
+                  <div className="slide-tagline">
+                    <span className="tagline-icon">✦</span>
+                    {slide.tagline}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
 
         <div className="slider-controls">
           <button className="nav-btn prev" onClick={prevSlide} aria-label="Previous slide">
@@ -104,7 +120,7 @@ export const VideoSection = () => {
           </button>
           
           <div className="slide-indicators">
-            {SLIDES.map((_, index) => (
+            {displaySlides.map((_, index) => (
               <button
                 key={index}
                 className={`indicator ${index === currentSlide ? 'active' : ''}`}

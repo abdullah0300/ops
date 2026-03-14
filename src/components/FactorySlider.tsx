@@ -2,8 +2,24 @@
 
 import React, { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
+import type { Media as MediaType } from '@/payload-types'
 
-const SLIDES = [
+interface FactorySlideData {
+  id?: string | number
+  title: string
+  subtitle?: string | null
+  desc?: string | null
+  highlight?: string | null
+  video: string | MediaType
+  bgLeft?: string | null
+  bgRight?: string | null
+  textColor?: string | null
+  highlightColor?: string | null
+  btnBg?: string | null
+  btnColor?: string | null
+}
+
+const DEFAULT_SLIDES: FactorySlideData[] = [
   {
     id: 1,
     title: 'It All Starts With Quality',
@@ -48,9 +64,11 @@ const SLIDES = [
   }
 ]
 
-export function FactorySlider() {
+export function FactorySlider({ slides }: { slides?: FactorySlideData[] | null }) {
   const trackRef = useRef<HTMLDivElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
+  
+  const displaySlides = (slides && slides.length > 0) ? slides : DEFAULT_SLIDES
 
   // Track scroll position to update dots
   const handleScroll = () => {
@@ -66,7 +84,7 @@ export function FactorySlider() {
     if (!trackRef.current) return;
     const cardWidth = trackRef.current.children[0].clientWidth;
     const gap = 24;
-    const nextIndex = (activeIndex + 1) % SLIDES.length;
+    const nextIndex = (activeIndex + 1) % displaySlides.length;
     
     trackRef.current.scrollTo({
       left: nextIndex * (cardWidth + gap),
@@ -295,48 +313,52 @@ export function FactorySlider() {
         ref={trackRef}
         onScroll={handleScroll}
       >
-        {SLIDES.map((slide) => (
-          <div key={slide.id} className="fs-card" style={{ background: slide.bgRight }}>
-            
-            {/* Left Side: Video */}
-            <div className="fs-left" style={{ background: slide.bgLeft }}>
-              <div className="fs-video-frame">
-                <video 
-                  src={slide.video} 
-                  autoPlay 
-                  muted 
-                  loop 
-                  playsInline
-                />
-              </div>
-            </div>
-
-            {/* Right Side: Text Information */}
-            <div className="fs-right" style={{ color: slide.textColor }}>
-              <h3 className="fs-title">{slide.title}</h3>
-              <p className="fs-subtitle">{slide.subtitle}</p>
-              <p className="fs-desc" style={{ color: slide.textColor }}>{slide.desc}</p>
-              <p className="fs-highlight" style={{ color: slide.highlightColor }}>{slide.highlight}</p>
+        {displaySlides.map((slide, index) => {
+           const videoUrl = typeof slide.video === 'object' ? slide.video.url : slide.video
+           
+           return (
+            <div key={slide.id || index} className="fs-card" style={{ background: slide.bgRight || '#f4f4f4' }}>
               
-              <div className="fs-action">
-                <Link 
-                  href="/quote" 
-                  className="fs-btn" 
-                  style={{ background: slide.btnBg, color: slide.btnColor }}
-                >
-                  Get a Custom Quote
-                </Link>
+              {/* Left Side: Video */}
+              <div className="fs-left" style={{ background: slide.bgLeft || '#f0bc2e' }}>
+                <div className="fs-video-frame">
+                  <video 
+                    src={videoUrl || ''} 
+                    autoPlay 
+                    muted 
+                    loop 
+                    playsInline
+                  />
+                </div>
               </div>
-            </div>
 
-          </div>
-        ))}
+              {/* Right Side: Text Information */}
+              <div className="fs-right" style={{ color: slide.textColor || '#111' }}>
+                <h3 className="fs-title">{slide.title}</h3>
+                <p className="fs-subtitle">{slide.subtitle}</p>
+                <p className="fs-desc" style={{ color: slide.textColor || '#111' }}>{slide.desc}</p>
+                <p className="fs-highlight" style={{ color: slide.highlightColor || '#0b5fb0' }}>{slide.highlight}</p>
+                
+                <div className="fs-action">
+                  <Link 
+                    href="/quote" 
+                    className="fs-btn" 
+                    style={{ background: slide.btnBg || '#111', color: slide.btnColor || '#fff' }}
+                  >
+                    Get a Custom Quote
+                  </Link>
+                </div>
+              </div>
+
+            </div>
+          )
+        })}
       </div>
 
       {/* Navigation Controls */}
       <div className="fs-nav">
         <div className="fs-dots">
-          {SLIDES.map((_, idx) => (
+          {displaySlides.map((_, idx) => (
             <button 
               key={idx}
               className={`fs-dot ${idx === activeIndex ? 'active' : ''}`}

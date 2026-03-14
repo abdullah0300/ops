@@ -676,14 +676,25 @@ function downloadFile(url: string, dest: string): Promise<void> {
     const file = fs.createWriteStream(dest)
     const protocol = url.startsWith('https') ? https : http
     protocol.get(url, (res) => {
+      // Handle redirects
       if (res.statusCode === 301 || res.statusCode === 302) {
         file.close()
         downloadFile(res.headers.location!, dest).then(resolve).catch(reject)
         return
       }
+
+      // Check for success
+      if (res.statusCode !== 200) {
+        file.close()
+        fs.unlink(dest, () => {})
+        reject(new Error(`Failed to download: ${res.statusCode} ${res.statusMessage}`))
+        return
+      }
+
       res.pipe(file)
       file.on('finish', () => file.close(() => resolve()))
     }).on('error', (err) => {
+      file.close()
       fs.unlink(dest, () => {})
       reject(err)
     })
@@ -695,48 +706,68 @@ async function downloadAndUploadImage(
   filename: string,
   label: string
 ): Promise<string | null> {
-  // Check if already uploaded
+  const jpgFilename = filename.replace('.webp', '.jpg')
+  const localPath = path.resolve(process.cwd(), 'public/media', jpgFilename)
+
+  // 1. Check if already in DB
   const existing = await payload.find({
     collection: 'media',
-    where: { filename: { equals: filename.replace('.webp', '.jpg') } },
+    where: { filename: { equals: jpgFilename } },
     limit: 1,
   })
-  if (existing.docs.length > 0) {
-    console.log(`  ✓ Already uploaded: ${filename}`)
+
+  // If already uploaded and NOT forcing cloud migration, skip
+  if (existing.docs.length > 0 && !process.env.FORCE_CLOUD_UPLOAD) {
+    console.log(`  ✓ Already exists in DB: ${jpgFilename}`)
     return existing.docs[0].id
   }
 
-  const webpPath = path.join(TMP_DIR, filename)
-  const jpgFilename = filename.replace('.webp', '.jpg')
-  const jpgPath = path.join(TMP_DIR, jpgFilename)
-  const url = IMAGE_BASE + filename.replace(/ /g, '%20')
-
   try {
-    console.log(`  ↓ Downloading: ${filename}`)
-    await downloadFile(url, webpPath)
+    let fileBuffer: Buffer
+    let mimeType = 'image/jpeg'
 
-    // Convert webp -> jpg
-    await sharp(webpPath).jpeg({ quality: 90 }).toFile(jpgPath)
+    // 2. Try to use local file first (to avoid redirects/network issues)
+    if (fs.existsSync(localPath)) {
+      console.log(`  ✓ Using local file: ${jpgFilename}`)
+      fileBuffer = fs.readFileSync(localPath)
+    } else {
+      // 3. Fallback to download if local is missing
+      const webpPath = path.join(TMP_DIR, filename)
+      const internalJpgPath = path.join(TMP_DIR, jpgFilename)
+      const url = IMAGE_BASE + filename.replace(/ /g, '%20')
 
-    console.log(`  ↑ Uploading: ${jpgFilename}`)
-    const fileBuffer = fs.readFileSync(jpgPath)
+      console.log(`  ↓ Downloading: ${filename}`)
+      await downloadFile(url, webpPath)
+
+      const stats = fs.statSync(webpPath)
+      if (stats.size < 100) {
+        throw new Error(`Downloaded file is suspiciously small (${stats.size} bytes)`)
+      }
+
+      console.log(`  ⟳ Converting: ${filename} to JPG`)
+      await sharp(webpPath).jpeg({ quality: 90 }).toFile(internalJpgPath)
+      fileBuffer = fs.readFileSync(internalJpgPath)
+
+      if (fs.existsSync(webpPath)) fs.unlinkSync(webpPath)
+      if (fs.existsSync(internalJpgPath)) fs.unlinkSync(internalJpgPath)
+    }
+
+    // 4. Create in Payload (this triggers upload to Vercel Blob)
+    console.log(`  ↑ Uploading to Cloud: ${jpgFilename}`)
     const result = await payload.create({
       collection: 'media',
       data: { alt: label },
       file: {
         data: fileBuffer,
-        mimetype: 'image/jpeg',
+        mimetype: mimeType,
         name: jpgFilename,
         size: fileBuffer.length,
       },
     })
 
-    fs.unlinkSync(webpPath)
-    if (fs.existsSync(jpgPath)) fs.unlinkSync(jpgPath)
-
     return result.id
   } catch (err: any) {
-    console.log(`  ✗ Failed ${filename}: ${err.message}`)
+    console.log(`  ✗ Failed ${jpgFilename}: ${err.message}`)
     return null
   }
 }

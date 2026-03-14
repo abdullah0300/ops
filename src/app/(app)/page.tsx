@@ -9,13 +9,22 @@ import { ReviewSection } from '@/components/ReviewSection/index'
 import { FAQSection } from '@/components/FAQSection/index'
 import { QuoteForm } from '@/components/QuoteForm'
 import { PromoBannerModal } from '@/components/PromoBannerModal'
+import { FactorySlider } from '@/components/FactorySlider'
+import { getPayload } from 'payload'
+import configPromise from '@payload-config'
 
 export default async function HomePage() {
+  const payload = await getPayload({ config: configPromise })
+  const homePageData = await payload.findGlobal({
+    slug: 'home-page',
+  })
+
   return (
     <>
-      <Hero />
+      <Hero media={homePageData?.hero?.heroImage} />
       <FeaturedProducts />
-      <VideoSection />
+      <VideoSection slides={homePageData?.videoSection?.slides} />
+      <FactorySlider slides={homePageData?.factorySlider?.slides} />
       <BrandSection />
       <ProductShowcase />
       <BenefitsSection />
