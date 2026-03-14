@@ -4,7 +4,7 @@ import React, { useState, useMemo, useEffect } from 'react'
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
 import { toast } from 'sonner'
 import type { Product } from '@/payload-types'
-import { ShoppingBag, ChevronDown } from 'lucide-react'
+import { ShoppingBag } from 'lucide-react'
 
 interface PricingTier {
   quantity: number
@@ -27,68 +27,62 @@ interface SizePricing {
 
 interface PriceCalculatorProps {
   product: Product
-  // We keep these for backward compatibility if needed, 
-  // but we'll prioritize the new schema fields
   quantityPricing?: PricingTier[] | null
   addons?: TieredAddon[] | null
 }
 
-export const PriceCalculator: React.FC<PriceCalculatorProps> = ({ 
-  product, 
-  quantityPricing: defaultQuantityPricing, 
-  addons: productAddons 
+export const PriceCalculator: React.FC<PriceCalculatorProps> = ({
+  product,
+  quantityPricing: defaultQuantityPricing,
+  addons: productAddons,
 }) => {
   const { cart, addItem, incrementItem } = useCart()
-  
-  // Use new schema fields if available
+
   const sizes = (product as any).sizes as SizePricing[] | undefined
   const hasSizes = sizes && sizes.length > 0
-  
+
   const [selectedSizeIndex, setSelectedSizeIndex] = useState<number>(0)
-  
+
   const currentPricingTable = useMemo(() => {
-    if (hasSizes) {
-      return sizes[selectedSizeIndex].quantityPricing
-    }
+    if (hasSizes) return sizes[selectedSizeIndex].quantityPricing
     return defaultQuantityPricing || []
   }, [hasSizes, sizes, selectedSizeIndex, defaultQuantityPricing])
 
   const [selectedQty, setSelectedQty] = useState<number>(100)
-  
-  // Update selectedQty when pricing table changes if current qty isn't in new table
+
   useEffect(() => {
     if (currentPricingTable.length > 0) {
-      const exists = currentPricingTable.some(p => p.quantity === selectedQty)
-      if (!exists) {
-        setSelectedQty(currentPricingTable[0].quantity)
-      }
+      const exists = currentPricingTable.some((p) => p.quantity === selectedQty)
+      if (!exists) setSelectedQty(currentPricingTable[0].quantity)
     }
   }, [currentPricingTable])
 
   const [selectedAddons, setSelectedAddons] = useState<string[]>([])
   const [isAdding, setIsAdding] = useState(false)
 
-  const currentTier = useMemo(() => {
-    return currentPricingTable.find((p) => p.quantity === selectedQty) || currentPricingTable[0]
-  }, [selectedQty, currentPricingTable])
+  const currentTier = useMemo(
+    () => currentPricingTable.find((p) => p.quantity === selectedQty) || currentPricingTable[0],
+    [selectedQty, currentPricingTable],
+  )
 
   const getAddonPrice = (addon: TieredAddon, qty: number): number => {
     if (addon.tieredPricing && addon.tieredPricing.length > 0) {
-      // Find the best match tier (exact or closest lower)
       const sortedTiers = [...addon.tieredPricing].sort((a, b) => b.quantity - a.quantity)
-      const tier = sortedTiers.find(t => qty >= t.quantity) || sortedTiers[sortedTiers.length - 1]
+      const tier = sortedTiers.find((t) => qty >= t.quantity) || sortedTiers[sortedTiers.length - 1]
       return tier.price
     }
     return addon.price || 0
   }
 
-  const totalAddonsPrice = useMemo(() => {
-    return selectedAddons.reduce((sum, label) => {
-      const addon = (productAddons || []).find((a) => a.label === label)
-      if (!addon) return sum
-      return sum + getAddonPrice(addon, selectedQty)
-    }, 0)
-  }, [selectedAddons, productAddons, selectedQty])
+  const totalAddonsPrice = useMemo(
+    () =>
+      selectedAddons.reduce((sum, label) => {
+        const addon = (productAddons || []).find((a) => a.label === label)
+        if (!addon) return sum
+        return sum + getAddonPrice(addon, selectedQty)
+      }, 0),
+    [selectedAddons, productAddons, selectedQty],
+  )
 
   const totalPrice = useMemo(() => {
     if (!currentTier) return 0
@@ -97,7 +91,7 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({
 
   const toggleAddon = (label: string) => {
     setSelectedAddons((prev) =>
-      prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label]
+      prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label],
     )
   }
 
@@ -105,13 +99,10 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({
     setIsAdding(true)
     try {
       const sizeLabel = hasSizes ? ` (${sizes[selectedSizeIndex].label})` : ''
-      const optionsString = selectedAddons.length > 0 
-        ? selectedAddons.join(', ') 
-        : 'No special add-ons'
-      
+      const optionsString =
+        selectedAddons.length > 0 ? selectedAddons.join(', ') : 'No special add-ons'
       const finalOptions = `${optionsString}${sizeLabel}`
 
-      // Find if this exact item (same product AND same options) is already in cart
       const existingItem = (cart?.items || []).find((item: any) => {
         const itemProductId = typeof item.product === 'object' ? item.product.id : item.product
         return itemProductId === product.id && item.selectedOptions === finalOptions
@@ -120,13 +111,16 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({
       if (existingItem) {
         await incrementItem(existingItem.id)
       } else {
-        await addItem({
+        await addItem(
+          {
             product: product.id,
-            // @ts-ignore - custom fields added via plugin
+            // @ts-ignore
             customPrice: Math.round(totalPrice * 100),
-            // @ts-ignore - custom fields added via plugin
+            // @ts-ignore
             selectedOptions: finalOptions,
-        }, 1)
+          },
+          1,
+        )
       }
       toast.success('Added to cart!')
     } catch (error) {
@@ -138,140 +132,188 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({
   }
 
   return (
-    <div className="calculator-card">
+    <div className="pc-wrap">
       <style jsx>{`
-        .calculator-card {
-          background: #fff;
-          border: 1.5px solid #e8e4d8;
-          border-radius: 20px;
-          padding: 24px;
+        .pc-wrap {
           display: flex;
           flex-direction: column;
-          gap: 20px;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+          gap: 18px;
           font-family: 'Afacad', sans-serif;
         }
-        .calc-header {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-        .calc-title {
-          font-family: 'Amaranth', sans-serif;
-          font-size: 20px;
-          color: #1c1c1c;
-        }
-        .calc-subtitle {
-          font-family: 'Arya', sans-serif;
-          font-size: 14px;
-          color: #888;
-        }
-        .calc-group {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-        .calc-label {
-          font-family: 'Arya', sans-serif;
-          font-size: 14px;
-          font-weight: 600;
-          color: #1c1c1c;
-        }
-        .custom-select {
-          position: relative;
-          width: 100%;
-        }
-        .qty-select {
-          width: 100%;
-          padding: 12px 16px;
-          border-radius: 12px;
-          border: 1.5px solid #e8e4d8;
-          background: #fcfbf7;
-          font-family: 'Afacad', sans-serif;
-          font-size: 16px;
-          outline: none;
-          cursor: pointer;
-          appearance: none;
-        }
-        .select-icon {
-          position: absolute;
-          right: 16px;
-          top: 50%;
-          transform: translateY(-50%);
-          pointer-events: none;
-          color: #888;
-        }
-        .addons-list {
+
+        /* ── Group ── */
+        .pc-group {
           display: flex;
           flex-direction: column;
           gap: 8px;
         }
-        .addon-item {
+
+        .pc-label {
+          font-family: 'Arya', sans-serif;
+          font-size: 13px;
+          font-weight: 700;
+          color: #1c1c1c;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+        }
+
+        /* ── Select ── */
+        .pc-select-wrap {
+          position: relative;
+          width: 100%;
+        }
+
+        .pc-select {
+          width: 100%;
+          padding: 12px 42px 12px 16px;
+          border-radius: 12px;
+          border: 1.5px solid #e8e8e0;
+          background: #f8f8f4;
+          font-family: 'Afacad', sans-serif;
+          font-size: 15px;
+          font-weight: 600;
+          color: #1c1c1c;
+          outline: none;
+          cursor: pointer;
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          transition: border-color 0.2s;
+        }
+
+        .pc-select:focus {
+          border-color: #8ca62d;
+          background: #fff;
+        }
+
+        /* Arrow — absolutely positioned INSIDE the wrapper, overlapping the select */
+        .pc-select-arrow {
+          position: absolute;
+          right: 14px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 18px;
+          height: 18px;
+          pointer-events: none;
+          color: #8ca62d;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        /* ── Addons ── */
+        .pc-addons {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .pc-addon {
           display: flex;
           align-items: center;
           gap: 10px;
           padding: 10px 14px;
-          border-radius: 12px;
-          border: 1.5px solid #f0f0eb;
+          border-radius: 10px;
+          border: 1.5px solid #e8e8e0;
+          background: #fafaf8;
           cursor: pointer;
           transition: all 0.2s;
+          user-select: none;
         }
-        .addon-item:hover {
-          background: #fcfbf7;
+
+        .pc-addon:hover {
+          border-color: #c8e6a0;
+          background: #f5fff0;
         }
-        .addon-item.selected {
-          border-color: #f0bc2e;
-          background: #fffcf5;
+
+        .pc-addon.active {
+          border-color: #8ca62d;
+          background: #efffe5;
         }
-        .addon-checkbox {
+
+        .pc-addon-check {
           width: 18px;
           height: 18px;
-          accent-color: #f0bc2e;
-        }
-        .addon-label {
-          flex: 1;
-          font-size: 14px;
-          color: #444;
-        }
-        .addon-price {
-          font-weight: 700;
-          color: #1c1c1c;
-        }
-        .summary-section {
-          margin-top: 10px;
-          padding: 20px;
-          background: #fcfbf7;
-          border-radius: 16px;
-          border: 1.5px solid #e8e4d8;
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
-        .total-display {
+          border-radius: 5px;
+          border: 1.5px solid #ccc;
+          background: #fff;
           display: flex;
           align-items: center;
-          justify-content: space-between;
+          justify-content: center;
+          flex-shrink: 0;
+          transition: all 0.2s;
         }
-        .total-label {
-          font-family: 'Arya', sans-serif;
-          font-size: 16px;
+
+        .pc-addon.active .pc-addon-check {
+          background: #8ca62d;
+          border-color: #8ca62d;
+        }
+
+        .pc-addon-label {
+          flex: 1;
+          font-size: 14px;
           font-weight: 600;
-          color: #666;
+          color: #444;
         }
-        .total-value {
+
+        .pc-addon-price {
+          font-size: 13px;
+          font-weight: 700;
+          color: #8ca62d;
+        }
+
+        /* ── Summary ── */
+        .pc-summary {
+          background: #efffe5;
+          border: 1.5px solid #c8e6a0;
+          border-radius: 16px;
+          padding: 18px 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        }
+
+        .pc-total-row {
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          gap: 8px;
+        }
+
+        .pc-total-left {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+
+        .pc-total-label {
+          font-family: 'Arya', sans-serif;
+          font-size: 12px;
+          font-weight: 700;
+          color: #5a7a1a;
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+        }
+
+        .pc-unit-note {
+          font-size: 12px;
+          color: #6a8a2a;
+          font-style: italic;
+        }
+
+        .pc-total-price {
           font-family: 'Amaranth', sans-serif;
-          font-size: 32px;
+          font-size: 38px;
+          font-weight: 700;
           color: #1c1c1c;
           line-height: 1;
+          letter-spacing: -0.02em;
         }
-        .unit-note {
-          font-size: 13px;
-          color: #999;
-          margin-top: -8px;
-        }
-        .btn-add-to-cart {
+
+        /* ── Add to Cart button — only one allowed to be black ── */
+        .pc-btn-cart {
           width: 100%;
-          display: inline-flex;
+          display: flex;
           align-items: center;
           justify-content: center;
           gap: 10px;
@@ -280,46 +322,45 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({
           font-family: 'Afacad', sans-serif;
           font-weight: 700;
           font-size: 16px;
-          padding: 16px;
+          padding: 15px 24px;
           border-radius: 100px;
           border: none;
           cursor: pointer;
-          transition: transform 0.2s, background 0.2s;
+          transition: background 0.2s, transform 0.2s;
         }
-        .btn-add-to-cart:hover {
+
+        .pc-btn-cart:hover:not(:disabled) {
           background: #333;
-          transform: translateY(-2px);
+          transform: translateY(-1px);
         }
-        .btn-add-to-cart:disabled {
-          opacity: 0.7;
+
+        .pc-btn-cart:disabled {
+          opacity: 0.6;
           cursor: not-allowed;
-          background: #666;
         }
-        .spinner {
-          width: 20px;
-          height: 20px;
-          border: 2.5px solid rgba(255,255,255,0.3);
-          border-top: 2.5px solid #fff;
+
+        .pc-spinner {
+          width: 18px;
+          height: 18px;
+          border: 2px solid rgba(255,255,255,0.3);
+          border-top-color: #fff;
           border-radius: 50%;
-          animation: spin 0.8s linear infinite;
+          animation: pc-spin 0.7s linear infinite;
+          flex-shrink: 0;
         }
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+
+        @keyframes pc-spin {
+          to { transform: rotate(360deg); }
         }
       `}</style>
-      
-      <div className="calc-header">
-        <h3 className="calc-title">Price Calculator</h3>
-        <p className="calc-subtitle">Customize your packaging</p>
-      </div>
 
+      {/* Size selector */}
       {hasSizes && (
-        <div className="calc-group">
-          <label className="calc-label">Select Size</label>
-          <div className="custom-select">
-            <select 
-              className="qty-select"
+        <div className="pc-group">
+          <label className="pc-label">Select Size</label>
+          <div className="pc-select-wrap">
+            <select
+              className="pc-select"
               value={selectedSizeIndex}
               onChange={(e) => setSelectedSizeIndex(Number(e.target.value))}
             >
@@ -329,16 +370,22 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({
                 </option>
               ))}
             </select>
-            <ChevronDown className="select-icon" size={18} />
+            {/* Arrow SVG — always inside wrapper, always correctly positioned */}
+            <span className="pc-select-arrow">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </span>
           </div>
         </div>
       )}
 
-      <div className="calc-group">
-        <label className="calc-label">Select Quantity</label>
-        <div className="custom-select">
-          <select 
-            className="qty-select"
+      {/* Quantity selector */}
+      <div className="pc-group">
+        <label className="pc-label">Select Quantity</label>
+        <div className="pc-select-wrap">
+          <select
+            className="pc-select"
             value={selectedQty}
             onChange={(e) => setSelectedQty(Number(e.target.value))}
           >
@@ -348,31 +395,38 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({
               </option>
             ))}
           </select>
-          <ChevronDown className="select-icon" size={18} />
+          <span className="pc-select-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </span>
         </div>
       </div>
 
-      {(productAddons && productAddons.length > 0) && (
-        <div className="calc-group">
-          <label className="calc-label">Add-ons & Options</label>
-          <div className="addons-list">
+      {/* Addons */}
+      {productAddons && productAddons.length > 0 && (
+        <div className="pc-group">
+          <label className="pc-label">Add-ons & Options</label>
+          <div className="pc-addons">
             {productAddons.map((addon) => {
               const addonPrice = getAddonPrice(addon, selectedQty)
+              const isActive = selectedAddons.includes(addon.label)
               return (
-                <div 
+                <div
                   key={addon.label}
-                  className={`addon-item ${selectedAddons.includes(addon.label) ? 'selected' : ''}`}
+                  className={`pc-addon${isActive ? ' active' : ''}`}
                   onClick={() => toggleAddon(addon.label)}
                 >
-                  <input 
-                    type="checkbox" 
-                    className="addon-checkbox"
-                    checked={selectedAddons.includes(addon.label)}
-                    readOnly
-                  />
-                  <span className="addon-label">{addon.label}</span>
-                  <span className="addon-price">
-                    {addonPrice > 0 ? `+$${addonPrice}` : '—'}
+                  <div className="pc-addon-check">
+                    {isActive && (
+                      <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                        <path d="M2 6l3 3 5-5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </div>
+                  <span className="pc-addon-label">{addon.label}</span>
+                  <span className="pc-addon-price">
+                    {addonPrice > 0 ? `+$${addonPrice}` : 'Free'}
                   </span>
                 </div>
               )
@@ -380,23 +434,30 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({
           </div>
         </div>
       )}
-      
-      <div className="summary-section">
-        <div className="total-display">
-          <div className="total-label">Estimated Total:</div>
-          <div className="total-value">${totalPrice.toLocaleString()}</div>
-        </div>
-        <div className="unit-note">
-          Based on {selectedQty.toLocaleString()} units 
-          {hasSizes ? ` (${sizes[selectedSizeIndex].label})` : ''}
+
+      {/* Summary + CTA */}
+      <div className="pc-summary">
+        <div className="pc-total-row">
+          <div className="pc-total-left">
+            <span className="pc-total-label">Estimated Total</span>
+            <span className="pc-unit-note">
+              {selectedQty.toLocaleString()} units
+              {hasSizes ? ` · ${sizes[selectedSizeIndex].label}` : ''}
+            </span>
+          </div>
+          <div className="pc-total-price">${totalPrice.toLocaleString()}</div>
         </div>
 
-        <button 
-          className="btn-add-to-cart"
+        <button
+          className="pc-btn-cart"
           onClick={handleAddToCart}
           disabled={isAdding || currentPricingTable.length === 0}
         >
-          {isAdding ? <div className="spinner" /> : <ShoppingBag size={20} />}
+          {isAdding ? (
+            <div className="pc-spinner" />
+          ) : (
+            <ShoppingBag size={18} />
+          )}
           {isAdding ? 'Adding to Cart...' : 'Add to Cart / Buy Now'}
         </button>
       </div>
