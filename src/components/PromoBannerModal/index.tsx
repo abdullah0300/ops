@@ -26,14 +26,25 @@ export const PromoBannerModal: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [isDismissed])
 
+  const handleTalkToAgent = () => {
+    // @ts-ignore
+    if (typeof window !== 'undefined' && window.zE) {
+      // @ts-ignore
+      window.zE('messenger', 'open')
+    } else {
+      // Fallback to WhatsApp
+      window.open('https://wa.me/17737292243', '_blank')
+    }
+  }
+
   if (isDismissed) return null
 
   return (
     <div
       className={cn(
-  'promo-banner-modal',
-  isVisible ? 'promo-visible' : 'promo-hidden'
-)}
+        'promo-banner-modal',
+        isVisible ? 'promo-visible' : 'promo-hidden',
+      )}
     >
       <div className="promo-banner-content relative flex h-[580px] w-[280px] flex-col overflow-hidden rounded-[40px] border border-[#e8e4d8] bg-white shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
         {/* Background Accent */}
@@ -63,18 +74,16 @@ export const PromoBannerModal: React.FC = () => {
           </p>
 
           <div className="mt-auto space-y-4 pb-10">
-            <a
-              href="https://wa.me/17737292243"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex w-full items-center justify-between rounded-full bg-[#1c1c1c] px-6 py-4 text-white transition-all hover:bg-[#333] active:scale-95"
+            <button
+              onClick={handleTalkToAgent}
+              className="group flex w-full items-center justify-between rounded-full bg-[#1c1c1c] px-6 py-4 text-white transition-all hover:bg-[#333] active:scale-95 cursor-pointer"
             >
               <div className="flex items-center gap-3">
                 <MessageSquare size={18} className="text-[#f0bc2e]" />
                 <span className="font-bold text-[15px] font-afacad">Talk to Agent</span>
               </div>
               <ArrowRight size={18} className="opacity-0 transition-all group-hover:translate-x-1 group-hover:opacity-100" />
-            </a>
+            </button>
 
             <Link
               href="/#quote"
