@@ -181,7 +181,7 @@ export const VideoSection = ({ slides }: { slides?: SlideData[] | null }) => {
         </div>
 
         {/* Thumbnail strip — desktop only */}
-        <div className="video-thumbs">
+        {/* <div className="video-thumbs">
           {displaySlides.map((slide, index) => (
             <button
               key={index}
@@ -194,7 +194,7 @@ export const VideoSection = ({ slides }: { slides?: SlideData[] | null }) => {
               <div className="video-thumb-title">{slide.title}</div>
             </button>
           ))}
-        </div>
+        </div> */}
       </div>
     </section>
   )
