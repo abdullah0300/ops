@@ -177,6 +177,7 @@
 .pm-text.payoneer { color: #FF4800; }
 .pm-text.cashapp { color: #00D632; font-family: monospace; font-size: 15px; }
 .pm-text.wire { font-size: 10px; white-space: nowrap; background: #1c1c1c; color: #fff; padding: 2px 6px; border-radius: 4px; }
+.pm-text.zelle { color: #6d1ed4; font-weight: 800; font-family: 'Arya', sans-serif; font-size: 16px; letter-spacing: -0.5px; }
 
 .country-flags {
   display: flex;

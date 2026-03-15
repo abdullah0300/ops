@@ -135,6 +135,8 @@ export async function Footer() {
                  <div className="pm-text cashapp" title="Cash App">$ Cash App</div>
                  {/* Wire Transfer */}
                  <div className="pm-text wire" title="Wire Transfer">Wire Transfer</div>
+                 {/* Zelle */}
+                 <div className="pm-text zelle" title="Zelle">Zelle</div>
               </div>
             </div>
 
