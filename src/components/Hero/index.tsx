@@ -9,12 +9,12 @@ import type { Media as MediaType, Product } from '@/payload-types'
 const DEFAULT_PRODUCTS = [
   {
     id: '1',
-    name: 'Cannabis Packaging',
-    tag: 'Best Seller',
-    emoji: '🌿',
-    bg: '#2D4A1E',
-    chips: ['Smell Proof', 'Custom Print', 'Child Resistant'],
-    imageUrl: '/media/cannabis.jpg',
+    name: 'Roasted Coffee',
+    tag: 'Degassing Valve',
+    emoji: '☕',
+    bg: '#2A3318',
+    chips: ['Valve Support', 'Block Bottom', 'Foil Lined'],
+    imageUrl: '/media/coffee.jpg',
   },
   {
     id: '2',
@@ -36,12 +36,12 @@ const DEFAULT_PRODUCTS = [
   },
   {
     id: '4',
-    name: 'Roasted Coffee',
-    tag: 'Degassing Valve',
-    emoji: '☕',
-    bg: '#2A3318',
-    chips: ['Valve Support', 'Block Bottom', 'Foil Lined'],
-    imageUrl: '/media/coffee.jpg',
+    name: 'Cannabis Packaging',
+    tag: 'Best Seller',
+    emoji: '🌿',
+    bg: '#2D4A1E',
+    chips: ['Smell Proof', 'Custom Print', 'Child Resistant'],
+    imageUrl: '/media/cannabis.jpg',
   },
   {
     id: '5',
@@ -71,29 +71,49 @@ interface ShowcaseProduct {
 }
 
 interface HeroProps {
-  media?: MediaType | string | null
+  media?: MediaType | string | number | null
   products?: Product[]
+  showcase?: {
+    image: MediaType | string | number
+    title: string
+    tag?: string | null
+    chips?: { chip?: string | null }[] | null
+  }[] | null
 }
 
-export const Hero = ({ media, products }: HeroProps) => {
-  // Build showcase from real products if available
-  const showcaseProducts: ShowcaseProduct[] = products && products.length > 0
-    ? products.slice(0, 5).map((p, i) => {
-        const img = (p as any).gallery?.[0]?.image
+export const Hero = ({ media, products, showcase }: HeroProps) => {
+  // Build showcase from showcase array if provided, else products, else fallbacks
+  const showcaseProducts: ShowcaseProduct[] = showcase && showcase.length > 0
+    ? showcase.map((item, i) => {
+        const img = item.image
         const imgUrl = typeof img === 'object' ? img?.url : null
-        const metaImg = (p as any).meta?.image
-        const metaUrl = typeof metaImg === 'object' ? metaImg?.url : null
         return {
-          id: p.id,
-          name: p.title,
-          tag: ['Best Seller', 'Custom Print', 'Premium', 'Eco-Friendly', 'Low MOQ'][i % 5],
+          id: `showcase-${i}`,
+          name: item.title,
+          tag: item.tag || ['Best Seller', 'Custom Print', 'Premium'][i % 3],
           emoji: ['🛍️', '📦', '🎁', '🌿', '⭐'][i % 5],
           bg: ['#2D4A1E', '#3D3020', '#1A2D40', '#2A3318', '#2D1F40'][i % 5],
-          chips: ['Custom Size', 'CMYK Print', 'Fast Ship'],
-          imageUrl: imgUrl || metaUrl || null,
+          chips: item.chips?.map(c => c.chip).filter(Boolean) as string[] || ['Custom Size', 'CMYK Print'],
+          imageUrl: imgUrl || null,
         }
       })
-    : DEFAULT_PRODUCTS
+    : products && products.length > 0
+      ? products.slice(0, 5).map((p, i) => {
+          const img = (p as any).gallery?.[0]?.image
+          const imgUrl = typeof img === 'object' ? img?.url : null
+          const metaImg = (p as any).meta?.image
+          const metaUrl = typeof metaImg === 'object' ? metaImg?.url : null
+          return {
+            id: p.id,
+            name: p.title,
+            tag: ['Best Seller', 'Custom Print', 'Premium', 'Eco-Friendly', 'Low MOQ'][i % 5],
+            emoji: ['🛍️', '📦', '🎁', '🌿', '⭐'][i % 5],
+            bg: ['#2D4A1E', '#3D3020', '#1A2D40', '#2A3318', '#2D1F40'][i % 5],
+            chips: ['Custom Size', 'CMYK Print', 'Fast Ship'],
+            imageUrl: imgUrl || metaUrl || null,
+          }
+        })
+      : DEFAULT_PRODUCTS
 
   const total = showcaseProducts.length
   const [cur, setCur] = useState(0)

@@ -21,7 +21,10 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero media={homePageData?.hero?.heroImage} />
+      <Hero 
+        media={homePageData?.hero?.heroImage} 
+        showcase={homePageData?.hero?.showcase}
+      />
       <FeaturedProducts />
       <VideoSection slides={homePageData?.videoSection?.slides} />
       <BrandSection />

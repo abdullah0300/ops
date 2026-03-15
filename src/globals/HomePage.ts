@@ -21,6 +21,37 @@ export const HomePage: GlobalConfig = {
           relationTo: 'media',
           required: true,
         },
+        {
+          name: 'showcase',
+          type: 'array',
+          fields: [
+            {
+              name: 'image',
+              type: 'upload',
+              relationTo: 'media',
+              required: true,
+            },
+            {
+              name: 'title',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'tag',
+              type: 'text',
+            },
+            {
+              name: 'chips',
+              type: 'array',
+              fields: [
+                {
+                  name: 'chip',
+                  type: 'text',
+                },
+              ],
+            },
+          ],
+        },
       ],
     },
     {

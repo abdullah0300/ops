@@ -2083,6 +2083,20 @@ export interface HomePage {
   id: number;
   hero: {
     heroImage: number | Media;
+    showcase?:
+      | {
+          image: number | Media;
+          title: string;
+          tag?: string | null;
+          chips?:
+            | {
+                chip?: string | null;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
   };
   videoSection?: {
     slides?:
@@ -2175,6 +2189,20 @@ export interface HomePageSelect<T extends boolean = true> {
     | T
     | {
         heroImage?: T;
+        showcase?:
+          | T
+          | {
+              image?: T;
+              title?: T;
+              tag?: T;
+              chips?:
+                | T
+                | {
+                    chip?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
       };
   videoSection?:
     | T
