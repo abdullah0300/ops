@@ -1,16 +1,17 @@
 'use client'
 
-import React from 'react'
+import React, { useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import type { Product, Media } from '@/payload-types'
 
 export const ProductCard = ({ product }: { product: Product }) => {
   const router = useRouter()
+  const cardRef = useRef<HTMLDivElement>(null)
+
   const mainImage = (product.gallery?.[0]?.image as Media) || product.meta?.image
   const imageUrl = typeof mainImage === 'object' ? mainImage?.url : null
 
-  // Get category name if available
   const categoryName =
     product.categories?.[0] && typeof product.categories[0] === 'object'
       ? (product.categories[0] as any).title
@@ -22,14 +23,48 @@ export const ProductCard = ({ product }: { product: Product }) => {
     router.push('/#quote')
   }
 
+  // 3D tilt on mouse move
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = cardRef.current
+    if (!card) return
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    const cx = rect.width / 2
+    const cy = rect.height / 2
+    const rotY = ((x - cx) / cx) * 10
+    const rotX = -((y - cy) / cy) * 8
+    card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(8px)`
+  }
+
+  const handleMouseLeave = () => {
+    const card = cardRef.current
+    if (!card) return
+    card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateZ(0)'
+  }
+
   return (
-    <div className="product-card-v2">
+    <div
+      className="product-card-v2"
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      {/* 3D shadow */}
+      <div className="product-card-shadow" />
+
       <Link href={`/products/${product.slug}`} className="product-card-link">
 
         {/* Image */}
         <div className="product-card-image-wrap">
-          {/* Bg clip layer — keeps dot pattern contained while image escapes */}
-          <div className="product-card-image-bg-clip" />
+
+          {/* CMYK registration bar */}
+          <div className="product-card-reg">
+            <div className="reg-c" />
+            <div className="reg-m" />
+            <div className="reg-y" />
+            <div className="reg-k" />
+          </div>
 
           {/* Category tag */}
           <span className="product-card-tag">{categoryName}</span>
@@ -43,16 +78,22 @@ export const ProductCard = ({ product }: { product: Product }) => {
 
         {/* Info */}
         <div className="product-card-info">
-          <h3 className="product-card-title">{product.title}</h3>
-
-          {/* Feature chips */}
-          <div className="product-card-chips">
-            <span className="product-card-chip">Custom Print</span>
-            <span className="product-card-chip">Low MOQ</span>
-            <span className="product-card-chip">Fast Ship</span>
+          {/* CMYK swatches */}
+          <div className="product-card-swatches">
+            <span className="product-card-swatch sw-g" />
+            <span className="product-card-swatch sw-y" />
+            <span className="product-card-swatch sw-b" />
+            <span className="product-card-swatch sw-k" />
           </div>
 
-          {/* CTA row */}
+          <div className="product-card-chips">
+            <span className="product-card-chip">Custom Print</span>
+            <span className="product-card-chip">Eco-Friendly</span>
+            <span className="product-card-chip">Premium Finish</span>
+          </div>
+
+          <h3 className="product-card-title">{product.title}</h3>
+
           <div className="product-card-cta">
             <div
               className="btn-request-quote"
@@ -60,16 +101,14 @@ export const ProductCard = ({ product }: { product: Product }) => {
               role="button"
               tabIndex={0}
             >
-              {/* Quote icon */}
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-              </svg>
               Get Quote
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
             </div>
 
-            {/* Arrow button — view product */}
             <div className="btn-view-product" aria-label="View product">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
             </div>
