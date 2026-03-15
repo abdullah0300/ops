@@ -1,0 +1,14 @@
+src/app/(app)/page.tsx(24,13): error TS2322: Type 'number | Media' is not assignable to type 'string | Media | null | undefined'.
+  Type 'number' is not assignable to type 'string | Media | null | undefined'.
+src/app/(app)/page.tsx(26,21): error TS2322: Type '{ video: number | Media; title: string; subtitle?: string | null | undefined; body?: string | null | undefined; tagline?: string | null | undefined; id?: string | null | undefined; }[] | null | undefined' is not assignable to type 'SlideData[] | null | undefined'.
+  Type '{ video: number | Media; title: string; subtitle?: string | null | undefined; body?: string | null | undefined; tagline?: string | null | undefined; id?: string | null | undefined; }[]' is not assignable to type 'SlideData[]'.
+    Type '{ video: number | Media; title: string; subtitle?: string | null | undefined; body?: string | null | undefined; tagline?: string | null | undefined; id?: string | null | undefined; }' is not assignable to type 'SlideData'.
+      Types of property 'id' are incompatible.
+        Type 'string | null | undefined' is not assignable to type 'string | number | undefined'.
+          Type 'null' is not assignable to type 'string | number | undefined'.
+src/endpoints/seed/index.ts(97,11): error TS2353: Object literal may only specify known properties, and 'navItems' does not exist in type '{ createdAt?: string | null | undefined; updatedAt?: string | null | undefined; }'.
+src/plugins/index.ts(134,26): error TS2339: Property 'fields' does not exist on type 'ArrayField | BlocksField | CheckboxField | CodeField | DateField | EmailField | NamedGroupField | ... 20 more ... | ({ ...; } & ... 3 more ... & Omit<...>)'.
+  Property 'fields' does not exist on type 'BlocksField'.
+src/seed-homepage.ts(109,13): error TS1117: An object literal cannot have multiple properties with the same name.
+src/seed-products.ts(634,18): error TS2352: Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+src/seed-products.ts(641,18): error TS2352: Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.

@@ -17,34 +17,44 @@ const ORIGINAL_BRANDS = [
   'FLYING MONKEY',
 ]
 
-// Simple shuffle function
 const shuffle = (array: string[]) => {
   const newArray = [...array]
   for (let i = newArray.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [newArray[i], newArray[j]] = [newArray[j], newArray[i]]
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[newArray[i], newArray[j]] = [newArray[j], newArray[i]]
   }
   return newArray
 }
+
+const STATS = [
+  { number: '4M', suffix: '+', label: 'Units Printed' },
+  { number: '500', suffix: '+', label: 'Brand Partners' },
+  { number: '99', suffix: '%', label: 'Satisfaction Rate' },
+  { number: '5', suffix: '-8', label: 'Day Turnaround' },
+]
 
 export const BrandSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [mounted, setMounted] = React.useState(false)
 
-  // Generate a large shuffled list for seamless looping
   const displayBrands = useMemo(() => {
-    // During SSR and first paint, we return a non-shuffled list
-    // This ensures server and client match.
     if (!mounted) {
-      return [...ORIGINAL_BRANDS, ...ORIGINAL_BRANDS, ...ORIGINAL_BRANDS, ...ORIGINAL_BRANDS, ...ORIGINAL_BRANDS, ...ORIGINAL_BRANDS, ...ORIGINAL_BRANDS, ...ORIGINAL_BRANDS]
+      return [
+        ...ORIGINAL_BRANDS,
+        ...ORIGINAL_BRANDS,
+        ...ORIGINAL_BRANDS,
+        ...ORIGINAL_BRANDS,
+        ...ORIGINAL_BRANDS,
+        ...ORIGINAL_BRANDS,
+        ...ORIGINAL_BRANDS,
+        ...ORIGINAL_BRANDS,
+      ]
     }
-
-    const shuffle1 = shuffle(ORIGINAL_BRANDS)
-    const shuffle2 = shuffle(ORIGINAL_BRANDS)
-    const shuffle3 = shuffle(ORIGINAL_BRANDS)
-    const shuffle4 = shuffle(ORIGINAL_BRANDS)
-    // We concatenate them twice to ensure seamless overflow
-    return [...shuffle1, ...shuffle2, ...shuffle3, ...shuffle4, ...shuffle1, ...shuffle2, ...shuffle3, ...shuffle4]
+    const s1 = shuffle(ORIGINAL_BRANDS)
+    const s2 = shuffle(ORIGINAL_BRANDS)
+    const s3 = shuffle(ORIGINAL_BRANDS)
+    const s4 = shuffle(ORIGINAL_BRANDS)
+    return [...s1, ...s2, ...s3, ...s4, ...s1, ...s2, ...s3, ...s4]
   }, [mounted])
 
   React.useEffect(() => {
@@ -54,7 +64,8 @@ export const BrandSection = () => {
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
       const { scrollLeft, clientWidth } = scrollRef.current
-      const scrollTo = direction === 'left' ? scrollLeft - clientWidth / 2 : scrollLeft + clientWidth / 2
+      const scrollTo =
+        direction === 'left' ? scrollLeft - clientWidth / 2 : scrollLeft + clientWidth / 2
       scrollRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' })
     }
   }
@@ -62,31 +73,48 @@ export const BrandSection = () => {
   return (
     <section className="brand-section">
       <div className="container">
+        {/* Header */}
         <div className="brand-header">
-          <div className="header-text">
-            <h2>Trusted by the best.</h2>
-            <p>Our growth hackers are experts in identifying and capitalizing on the most effective brand strategies.</p>
+          <div className="brand-header-left">
+            <span className="brand-eyebrow">Trusted By Brands</span>
+            <h2>Printed for the best.</h2>
+            <p>Premium custom packaging trusted by leading brands across the US.</p>
           </div>
           <div className="brand-nav">
             <button onClick={() => scroll('left')} aria-label="Scroll left" className="nav-arrow">
-              <ChevronLeft size={20} />
+              <ChevronLeft size={18} />
             </button>
             <button onClick={() => scroll('right')} aria-label="Scroll right" className="nav-arrow">
-              <ChevronRight size={20} />
+              <ChevronRight size={18} />
             </button>
           </div>
         </div>
+      </div>
 
-        <div className="brand-marquee-outer">
-          <div className="brand-marquee-container" ref={scrollRef}>
-            <div className="brand-track marquee-left-to-right">
-              {displayBrands.map((name, index) => (
-                <div key={`${name}-${index}`} className="brand-item">
-                  <span className="brand-placeholder-logo">{name}</span>
-                </div>
-              ))}
-            </div>
+      {/* Marquee — full bleed */}
+      <div className="brand-marquee-outer">
+        <div className="brand-marquee-container" ref={scrollRef}>
+          <div className="brand-track marquee-left-to-right">
+            {displayBrands.map((name, index) => (
+              <div key={`${name}-${index}`} className="brand-item">
+                <span className="brand-placeholder-logo">{name}</span>
+              </div>
+            ))}
           </div>
+        </div>
+      </div>
+
+      {/* Stats strip */}
+      <div className="container">
+        <div className="brand-stats">
+          {STATS.map((stat) => (
+            <div key={stat.label} className="brand-stat">
+              <div className="brand-stat-number">
+                {stat.number}<span>{stat.suffix}</span>
+              </div>
+              <div className="brand-stat-label">{stat.label}</div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

@@ -1,10 +1,28 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { PriceCalculator } from '@/components/PriceCalculator'
 import { RichText } from '@/components/RichText'
+import { generateMeta } from '@/utilities/generateMeta'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const payload = await getPayload({ config: configPromise })
+
+  const result = await payload.find({
+    collection: 'products',
+    where: { slug: { equals: slug } },
+    limit: 1,
+  })
+
+  return generateMeta({ doc: result.docs?.[0] as any })
+}
 
 export default async function ProductDetailPage({
   params,
