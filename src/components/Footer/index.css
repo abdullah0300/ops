@@ -11,7 +11,7 @@
   padding: 0 24px;
 }
 
-/* Tip Contact Bar */
+/* ── Top Contact Bar ── */
 .footer-top {
   padding-bottom: 50px;
   border-bottom: 1px solid #e8e4d8;
@@ -45,6 +45,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .contact-info {
@@ -72,7 +73,7 @@
   color: #B35656;
 }
 
-/* Mid Grid */
+/* ── Mid Grid ── */
 .footer-mid {
   padding: 80px 0;
 }
@@ -113,7 +114,7 @@
   transform: translateX(5px);
 }
 
-/* Social & Payments */
+/* ── Social & Payments ── */
 .social-links {
   display: flex;
   gap: 12px;
@@ -170,43 +171,12 @@
   cursor: default;
 }
 
-.pm-text:hover {
-  color: #1c1c1c;
-}
-
-.pm-text.visa {
-  color: #1A1F71;
-  font-style: italic;
-  font-size: 16px;
-  letter-spacing: -0.5px;
-}
-
-.pm-text.amex {
-  color: #016FD0;
-  border: 1px solid #016FD0;
-  padding: 2px 4px;
-  font-size: 11px;
-  border-radius: 2px;
-}
-
-.pm-text.payoneer {
-  color: #FF4800;
-}
-
-.pm-text.cashapp {
-  color: #00D632;
-  font-family: monospace;
-  font-size: 15px;
-}
-
-.pm-text.wire {
-  font-size: 10px;
-  white-space: nowrap;
-  background: #1c1c1c;
-  color: #fff;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
+.pm-text:hover { color: #1c1c1c; }
+.pm-text.visa { color: #1A1F71; font-style: italic; font-size: 16px; letter-spacing: -0.5px; }
+.pm-text.amex { color: #016FD0; border: 1px solid #016FD0; padding: 2px 4px; font-size: 11px; border-radius: 2px; }
+.pm-text.payoneer { color: #FF4800; }
+.pm-text.cashapp { color: #00D632; font-family: monospace; font-size: 15px; }
+.pm-text.wire { font-size: 10px; white-space: nowrap; background: #1c1c1c; color: #fff; padding: 2px 6px; border-radius: 4px; }
 
 .country-flags {
   display: flex;
@@ -214,11 +184,9 @@
   font-size: 24px;
 }
 
-.country-flags span {
-  cursor: help;
-}
+.country-flags span { cursor: help; }
 
-/* Newsletter */
+/* ── Newsletter ── */
 .newsletter-col p {
   color: #666;
   margin-bottom: 24px;
@@ -242,12 +210,13 @@
 .btn-subscribe {
   padding: 12px 28px;
   border-radius: 100px;
-  background-color: #006838; /* Dark Green from Ref */
+  background-color: #006838;
   color: #fff;
   font-weight: 700;
   border: none;
   cursor: pointer;
   transition: transform 0.2s, background 0.2s;
+  white-space: nowrap;
 }
 
 .btn-subscribe:hover {
@@ -255,7 +224,7 @@
   transform: translateY(-2px);
 }
 
-/* Bottom Copyright */
+/* ── Bottom Copyright ── */
 .footer-bottom {
   border-top: 1px solid #e8e4d8;
   padding: 40px 0;
@@ -341,50 +310,188 @@
   opacity: 1;
 }
 
-/* Responsive */
+/* ══════════════════════════════
+   TABLET (≤1024px)
+   ══════════════════════════════ */
 @media (max-width: 1024px) {
   .footer-links-grid {
     grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  /* Put newsletter full width at bottom */
+  .newsletter-col {
+    grid-column: 1 / -1;
   }
 }
 
+/* ══════════════════════════════
+   MOBILE (≤768px)
+   ══════════════════════════════ */
 @media (max-width: 768px) {
+  .footer {
+    padding-top: 36px;
+  }
+
+  /* ── Contact bar: show only phone + email, hide address ── */
+  .footer-top {
+    padding-bottom: 28px;
+  }
+
   .footer-contact-grid {
-    justify-content: center;
-    text-align: center;
-  }
-  .contact-item {
     flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
   }
+
+  /* Hide address on mobile — too long */
+  .footer-contact-grid .contact-item:last-child {
+    display: none;
+  }
+
+  .contact-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .contact-value {
+    font-size: 15px;
+  }
+
+  /* ── Mid section ── */
+  .footer-mid {
+    padding: 32px 0;
+  }
+
   .footer-links-grid {
-    grid-template-columns: 1fr;
-    text-align: center;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 20px;
   }
+
+  .footer-title {
+    font-size: 16px;
+    margin-bottom: 14px;
+  }
+
+  .footer-links {
+    gap: 8px;
+  }
+
+  .footer-links a {
+    font-size: 14px;
+  }
+
   .footer-links a:hover {
     transform: none;
   }
+
+  /* Newsletter full width */
+  .newsletter-col {
+    grid-column: 1 / -1;
+  }
+
+  .newsletter-col p {
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+
   .newsletter-form {
-    flex-direction: column;
+    gap: 8px;
   }
-  .social-links, .payment-icons, .country-flags {
-    justify-content: center;
+
+  .newsletter-form input {
+    padding: 10px 16px;
+    font-size: 14px;
   }
+
+  .btn-subscribe {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  /* Social + flags: side by side */
+  .social-links {
+    margin-bottom: 16px;
+  }
+
+  .country-flags {
+    font-size: 20px;
+    gap: 8px;
+  }
+
+  /* ── Bottom bar ── */
+  .footer-bottom {
+    padding: 24px 0;
+  }
+
+  /* Hide the payment wrapper on mobile — too wide */
   .payment-icons-wrapper {
-    flex-direction: column;
-    border-radius: 20px;
-    padding: 20px;
-    width: 100%;
+    display: none;
   }
+
+  .footer-bottom-flex {
+    gap: 16px;
+  }
+
   .bottom-credits-grid {
     flex-direction: column;
+    align-items: center;
     text-align: center;
-    justify-content: center;
+    gap: 8px;
+    padding-top: 16px;
   }
+
   .footer-credits {
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
+    align-items: center;
+    font-size: 13px;
   }
+
   .footer-credits .separator {
     display: none;
+  }
+
+  .footer-bottom p {
+    font-size: 13px;
+  }
+
+  .packagly-credit {
+    font-size: 13px;
+  }
+}
+
+/* ══════════════════════════════
+   SMALL MOBILE (≤480px)
+   ══════════════════════════════ */
+@media (max-width: 480px) {
+  .footer-links-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 16px;
+  }
+
+  /* Stack columns if too narrow */
+  .footer-links-grid > .footer-col:nth-child(3) {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #e8e4d8;
+    padding-top: 16px;
+  }
+
+  .footer-links-grid > .footer-col:nth-child(3) .footer-title {
+    margin-bottom: 0;
+    font-size: 14px;
+  }
+
+  .social-links {
+    margin-bottom: 0;
+  }
+
+  /* Compact contact */
+  .contact-item:not(:first-child) {
+    gap: 10px;
   }
 }
