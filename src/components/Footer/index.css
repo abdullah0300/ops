@@ -174,7 +174,8 @@
 .pm-text:hover { color: #1c1c1c; }
 .pm-text.visa { color: #1A1F71; font-style: italic; font-size: 16px; letter-spacing: -0.5px; }
 .pm-text.amex { color: #016FD0; border: 1px solid #016FD0; padding: 2px 4px; font-size: 11px; border-radius: 2px; }
-.pm-text.payoneer { color: #FF4800; }
+.payoneer-logo { height: 18px; width: auto; object-fit: contain; margin-top: -8px; margin-bottom: -4px; }
+.pm-text.payoneer { color: #FF4800; display: none; }
 .pm-text.cashapp { color: #00D632; font-family: monospace; font-size: 15px; }
 .pm-text.wire { font-size: 10px; white-space: nowrap; background: #1c1c1c; color: #fff; padding: 2px 6px; border-radius: 4px; }
 .pm-text.zelle { color: #6d1ed4; font-weight: 800; font-family: 'Arya', sans-serif; font-size: 16px; letter-spacing: -0.5px; }

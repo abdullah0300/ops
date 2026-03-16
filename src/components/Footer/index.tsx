@@ -150,7 +150,12 @@ export async function Footer() {
                  {/* American Express */}
                  <div className="pm-text amex" title="American Express">AMEX</div>
                  {/* Payoneer */}
-                 <div className="pm-text payoneer" title="Payoneer">Payoneer</div>
+                 <img 
+                   src="https://cdn.brandfetch.io/idVmyDyyyZ/theme/dark/logo.svg?c=1dxbfHSJFAPEGdCLU4o5B" 
+                   alt="Payoneer" 
+                   title="Payoneer"
+                   className="pm-icon payoneer-logo"
+                 />
                  {/* Cash App */}
                  <div className="pm-text cashapp" title="Cash App">$ Cash App</div>
                  {/* Wire Transfer */}
