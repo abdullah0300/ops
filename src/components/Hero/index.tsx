@@ -213,7 +213,7 @@ export const Hero = ({ media, products, showcase }: HeroProps) => {
             </h1>
 
             <p className="hero-sub">
-              Premium custom printed packaging for brands that care about every detail. From concept to delivery in 5–8 business days.
+              Premium custom printed packaging for brands that care about every detail. From concept to delivery in 8–12 business days.
             </p>
           </div>
 

@@ -9,7 +9,7 @@ const FAQ_DATA = [
   },
   {
     question: 'Do you ship to all US states?',
-    answer: 'Yes, we provide nationwide shipping across all 50 US states. Standard shipping times typically range from 3-5 business days depending on your location.'
+    answer: 'Yes, we provide nationwide shipping across all 50 US states. Standard shipping times typically range from 8-12 business days depending on your location.'
   },
   {
     question: 'Are your Mylar bags smell-proof and food-safe?',
@@ -25,7 +25,7 @@ const FAQ_DATA = [
   },
   {
     question: 'How long does production and shipping take?',
-    answer: 'Standard production time is 10-12 business days after artwork approval. With shipping, most customers receive their custom orders within 3 weeks.'
+    answer: 'Standard production time is 8-12 business days after artwork approval. With shipping, most customers receive their custom orders within 3 weeks.'
   },
   {
     question: 'Do you offer plain (non-custom) Mylar bags in bulk?',

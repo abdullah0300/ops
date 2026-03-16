@@ -25,7 +25,7 @@ const BENEFITS = [
   },
   {
     title: 'Fast Turnaround',
-    desc: '10–11 business days to your door',
+    desc: '8–12 business days to your door',
     icon: Zap,
   },
 ]

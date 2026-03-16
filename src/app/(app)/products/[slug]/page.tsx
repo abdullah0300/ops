@@ -323,7 +323,7 @@ export default async function ProductDetailPage({
               <span className="pdp-reassurance-dot" />
               <span className="pdp-reassurance-item">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8ca62d" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                Ships in 5–8 Days
+                Ships in 8–12 Days
               </span>
             </div>
 
