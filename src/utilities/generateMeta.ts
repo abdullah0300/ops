@@ -28,9 +28,10 @@ export const generateMeta = async (args: { doc: Page | Product }): Promise<Metad
             },
           ]
         : undefined,
-      title: doc?.meta?.title || doc?.title || 'Payload Ecommerce Template',
-      url: Array.isArray(doc?.slug) ? doc?.slug.join('/') : '/',
+      title: doc?.meta?.title || doc?.title || 'Webcraftio',
+      url: doc?.slug ? `/${doc.slug}` : '/',
     }),
-    title: doc?.meta?.title || doc?.title || 'Payload Ecommerce Template',
+    title: doc?.meta?.title || doc?.title || 'Webcraftio',
   }
 }
+

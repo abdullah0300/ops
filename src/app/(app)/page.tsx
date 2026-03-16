@@ -12,6 +12,17 @@ import { PromoBannerModal } from '@/components/PromoBannerModal'
 import { FactorySlider } from '@/components/FactorySlider'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import { generateMeta } from '@/utilities/generateMeta'
+import type { Metadata } from 'next'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const payload = await getPayload({ config: configPromise })
+  const homePageData = await payload.findGlobal({
+    slug: 'home-page',
+  })
+
+  return generateMeta({ doc: homePageData as any })
+}
 
 export default async function HomePage() {
   const payload = await getPayload({ config: configPromise })

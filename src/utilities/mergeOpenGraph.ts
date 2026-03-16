@@ -2,14 +2,14 @@ import type { Metadata } from 'next'
 
 const defaultOpenGraph: Metadata['openGraph'] = {
   type: 'website',
-  description: 'An open-source website built with Payload and Next.js.',
+  description: 'Premium custom packaging and printing solutions by Webcraftio.',
   images: [
     {
-      url: 'https://payloadcms.com/images/og-image.jpg',
+      url: `${process.env.NEXT_PUBLIC_SERVER_URL}/api/media/file/og-image.jpg`,
     },
   ],
-  siteName: 'Payload Website Template',
-  title: 'Payload Website Template',
+  siteName: 'Webcraftio',
+  title: 'Webcraftio | Premium Custom Packaging & Printing',
 }
 
 export const mergeOpenGraph = (og?: Partial<Metadata['openGraph']>): Metadata['openGraph'] => {
@@ -19,3 +19,4 @@ export const mergeOpenGraph = (og?: Partial<Metadata['openGraph']>): Metadata['o
     images: og?.images ? og.images : defaultOpenGraph.images,
   }
 }
+
