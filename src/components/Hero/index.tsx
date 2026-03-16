@@ -181,7 +181,8 @@ export const Hero = ({ media, products, showcase }: HeroProps) => {
               <span className="hero-eyebrow-text">Custom Packaging & Print</span>
             </div>
 
-            <h1 className="hero-headline">
+            {/* Desktop: 4 lines — hidden on mobile */}
+            <h1 className="hero-headline hero-headline-desktop">
               <span className="hero-headline-line">
                 <span className="hero-headline-inner">Your Brand</span>
               </span>
@@ -196,6 +197,18 @@ export const Hero = ({ media, products, showcase }: HeroProps) => {
               </span>
               <span className="hero-headline-line">
                 <span className="hero-headline-inner">Package.</span>
+              </span>
+            </h1>
+
+            {/* Mobile: 2 lines — hidden on desktop */}
+            <h1 className="hero-headline hero-headline-mobile">
+              <span className="hero-headline-line">
+                <span className="hero-headline-inner">Your Brand Deserves the</span>
+              </span>
+              <span className="hero-headline-line">
+                <span className="hero-headline-inner">
+                  <span className="hero-headline-accent">Perfect</span> Package.
+                </span>
               </span>
             </h1>
 

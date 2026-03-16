@@ -109,6 +109,10 @@
 
 @keyframes heroDrawLine { to { transform: scaleX(1); } }
 
+/* Desktop headline visible, mobile hidden */
+.hero-headline-mobile { display: none; }
+.hero-headline-desktop { display: block; }
+
 .hero-sub {
   font-size: 15px;
   color: #777;
@@ -486,6 +490,10 @@
   .hero-sub { max-width: 100%; }
   .hero-panel-content { padding: 18px 18px 22px; }
   .hero-panel-chips { display: none; }
+
+  /* Show mobile headline, hide desktop */
+  .hero-headline-desktop { display: none; }
+  .hero-headline-mobile { display: block; }
 }
 
 /* ── Mobile (≤640px) ── */
