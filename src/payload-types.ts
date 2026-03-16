@@ -2128,6 +2128,14 @@ export interface HomePage {
         }[]
       | null;
   };
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2237,6 +2245,13 @@ export interface HomePageSelect<T extends boolean = true> {
               btnColor?: T;
               id?: T;
             };
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
       };
   updatedAt?: T;
   createdAt?: T;
