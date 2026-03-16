@@ -56,7 +56,7 @@ const DEFAULT_PRODUCTS = [
 
 const STRIP_ITEMS = [
   'Custom Sizes', 'Full Color CMYK', 'Eco Materials',
-  'Low MOQ', 'Samples', '5–8 Day Ship',
+  'Low MOQ', 'Samples', '8–12 Day Ship',
   'Premium Finish', 'Free Design Proof',
 ]
 
