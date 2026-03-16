@@ -1,29 +1,28 @@
-import React from 'react'
-import { Star, Phone } from 'lucide-react'
+import { Phone, Star } from 'lucide-react'
 import './index.css'
 
 const TESTIMONIALS = [
   {
     id: 1,
-    text: 'Yes, at OPS, we offer free samples for you to evaluate the quality and designs before you order anything in bulk. You only need to contact us, and our team will guide you',
+    text: 'Yes, at OPS, we offer samples for you to evaluate the quality and designs before you order anything in bulk. You only need to contact us, and our team will guide you',
     author: 'Ely James',
     img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&h=150&auto=format&fit=crop'
   },
   {
     id: 2,
-    text: 'Yes, at OPS, we offer free samples for you to evaluate the quality and designs before you order anything in bulk. You only need to contact us, and our team will guide you',
+    text: 'Yes, at OPS, we offer samples for you to evaluate the quality and designs before you order anything in bulk. You only need to contact us, and our team will guide you',
     author: 'Sarah Chen',
     img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&h=150&auto=format&fit=crop'
   },
   {
     id: 3,
-    text: 'Yes, at OPS, we offer free samples for you to evaluate the quality and designs before you order anything in bulk. You only need to contact us, and our team will guide you',
+    text: 'Yes, at OPS, we offer samples for you to evaluate the quality and designs before you order anything in bulk. You only need to contact us, and our team will guide you',
     author: 'Marcus Reed',
     img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=150&h=150&auto=format&fit=crop'
   },
   {
     id: 4,
-    text: 'Yes, at OPS, we offer free samples for you to evaluate the quality and designs before you order anything in bulk. You only need to contact us, and our team will guide you',
+    text: 'Yes, at OPS, we offer samples for you to evaluate the quality and designs before you order anything in bulk. You only need to contact us, and our team will guide you',
     author: 'David Wilson',
     img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150&h=150&auto=format&fit=crop'
   }
@@ -36,7 +35,7 @@ export const ReviewSection = () => {
         {/* Left Side: Header & CTA */}
         <div className="review-intro">
           <h2>Hear What <br /> They're Saying</h2>
-          
+
           <div className="review-stats">
             <div className="stat-avatars">
               <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=100&h=100&auto=format&fit=crop" alt="user" />
