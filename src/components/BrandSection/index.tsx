@@ -30,7 +30,7 @@ const STATS = [
   { number: '4M', suffix: '+', label: 'Units Printed' },
   { number: '500', suffix: '+', label: 'Brand Partners' },
   { number: '99', suffix: '%', label: 'Satisfaction Rate' },
-  { number: '5', suffix: '-8', label: 'Day Turnaround' },
+  { number: '8', suffix: '-12', label: 'Day Turnaround' },
 ]
 
 export const BrandSection = () => {

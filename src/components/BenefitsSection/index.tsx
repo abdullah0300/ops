@@ -38,7 +38,7 @@ export const BenefitsSection = () => {
         <div className="benefits-header">
           <span className="benefits-eyebrow">Why Choose Us</span>
           <h2>One place for all your <span>custom packaging</span></h2>
-          <p>Expert support, fast 10–11 business day turnaround, and pricing built for brands that want to grow.</p>
+          <p>Expert support, fast 10–12 business day turnaround, and pricing built for brands that want to grow.</p>
         </div>
 
         <div className="benefits-grid">
