@@ -425,13 +425,76 @@
     padding: 24px 0;
   }
 
-  /* Hide the payment wrapper on mobile — too wide */
+  /* UPDATED: Show payment methods on mobile in a nice grid layout */
   .payment-icons-wrapper {
-    display: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 12px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e8e4d8;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .payment-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .payment-icons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .pm-icon {
+    width: 28px;
+    height: 28px;
+    filter: grayscale(1);
+    transition: filter 0.2s;
+    cursor: pointer;
+  }
+
+  .pm-text {
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .pm-text.visa { 
+    font-size: 12px; 
+    letter-spacing: -0.3px;
+  }
+
+  .pm-text.amex { 
+    font-size: 9px; 
+    padding: 2px 4px;
+  }
+
+  .pm-text.cashapp { 
+    font-size: 12px;
+  }
+
+  .pm-text.wire { 
+    font-size: 8px; 
+    padding: 2px 4px;
+  }
+
+  .pm-text.zelle { 
+    font-size: 12px;
+    letter-spacing: -0.3px;
   }
 
   .footer-bottom-flex {
-    gap: 16px;
+    gap: 14px;
   }
 
   .bottom-credits-grid {
@@ -495,4 +558,27 @@
   .contact-item:not(:first-child) {
     gap: 10px;
   }
+
+  /* Small mobile payment icons */
+  .payment-icons-wrapper {
+    padding: 12px 8px;
+    gap: 10px;
+  }
+
+  .payment-icons {
+    gap: 10px;
+  }
+
+  .pm-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .pm-text {
+    font-size: 9px;
+  }
+
+  .pm-text.visa { font-size: 11px; }
+  .pm-text.cashapp { font-size: 10px; }
+  .pm-text.zelle { font-size: 10px; }
 }
