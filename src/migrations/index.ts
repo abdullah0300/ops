@@ -1,5 +1,5 @@
 import * as migration_20260308_213755 from './20260308_213755';
-import * as migration_20260316_003729_add_seo_to_homepage from './20260316_003729_add_seo_to_homepage';
+import * as migration_20260316_010714_add_posts_collection from './20260316_010714_add_posts_collection';
 
 export const migrations = [
   {
@@ -8,8 +8,8 @@ export const migrations = [
     name: '20260308_213755',
   },
   {
-    up: migration_20260316_003729_add_seo_to_homepage.up,
-    down: migration_20260316_003729_add_seo_to_homepage.down,
-    name: '20260316_003729_add_seo_to_homepage'
+    up: migration_20260316_010714_add_posts_collection.up,
+    down: migration_20260316_010714_add_posts_collection.down,
+    name: '20260316_010714_add_posts_collection'
   },
 ];

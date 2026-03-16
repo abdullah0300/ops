@@ -14,6 +14,9 @@ export async function Footer() {
     limit: 5,
     sort: '-createdAt',
   })
+  const footer = await payload.findGlobal({
+    slug: 'footer',
+  })
 
   return (
     <footer className="footer">
@@ -75,13 +78,30 @@ export async function Footer() {
           <div className="footer-col">
             <h4 className="footer-title">Informative Pages</h4>
             <ul className="footer-links">
-              <li><Link href="/">Home</Link></li>
-              <li><Link href="/about">About Us</Link></li>
-              <li><Link href="/privacy">Privacy & Security</Link></li>
-              <li><Link href="/terms">Terms & Conditions</Link></li>
-              <li><Link href="/blog">Blog</Link></li>
+              {footer?.navItems?.map((item: any, i) => {
+                const { link } = item
+                const href = link.type === 'reference' 
+                  ? `/${(link.reference.value as any).slug}`
+                  : link.url
+
+                return (
+                  <li key={i}>
+                    <Link href={href || '#'}>{link.label}</Link>
+                  </li>
+                )
+              })}
+              {(!footer?.navItems || footer.navItems.length === 0) && (
+                <>
+                  <li><Link href="/">Home</Link></li>
+                  <li><Link href="/about">About Us</Link></li>
+                  <li><Link href="/privacy">Privacy & Security</Link></li>
+                  <li><Link href="/terms">Terms & Conditions</Link></li>
+                  <li><Link href="/blog">Blog</Link></li>
+                </>
+              )}
             </ul>
           </div>
+
 
           {/* Column 3: Social & Trust */}
           <div className="footer-col">

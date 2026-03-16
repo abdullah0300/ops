@@ -1,0 +1,17 @@
+STARTING HYPER DEBUG
+Attempting connect...
+CONNECTED
+Querying User...
+User found: 1
+Querying Media...
+Media found: 1
+Attempting Category DELETE...
+Category deleted (if existed)
+Attempting Category INSERT...
+CRITICAL ERROR: null value in column "slug" of relation "categories" violates not-null constraint
+DETAIL: Failing row contains (17, Packaging Guides, t, null, 2026-03-16 01:50:26.189+00, 2026-03-16 01:50:26.189+00).
+STACK: error: null value in column "slug" of relation "categories" violates not-null constraint
+    at D:\Webcraftio\ops\node_modules\pg\lib\client.js:545:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async hyperDebug (D:\Webcraftio\ops\hyper-debug.ts:39:20)
+CLIENT CLOSED

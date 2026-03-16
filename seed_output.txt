@@ -1,0 +1,3 @@
+--- CONNECTED ---
+Using Author ID: 1
+Using Image IDs: 1 2

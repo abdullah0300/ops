@@ -1,4 +1,4 @@
-import type { Product, ArchiveBlock as ArchiveBlockProps } from '@/payload-types'
+import type { Product, Post, ArchiveBlock as ArchiveBlockProps } from '@/payload-types'
 
 import configPromise from '@payload-config'
 import { DefaultDocumentIDType, getPayload } from 'payload'
@@ -13,11 +13,11 @@ export const ArchiveBlock: React.FC<
     className?: string
   }
 > = async (props) => {
-  const { id, categories, introContent, limit: limitFromProps, populateBy, selectedDocs } = props
+  const { id, categories, introContent, limit: limitFromProps, populateBy, selectedDocs, relationTo } = props
 
   const limit = limitFromProps || 3
 
-  let posts: Product[] = []
+  let posts: (Product | Post)[] = []
 
   if (populateBy === 'collection') {
     const payload = await getPayload({ config: configPromise })
@@ -25,13 +25,13 @@ export const ArchiveBlock: React.FC<
     const flattenedCategories = categories?.map((category) => {
       if (typeof category === 'object') return category.id
       else return category
-    })
+    }) || []
 
-    const fetchedProducts = await payload.find({
-      collection: 'products',
+    const fetchedDocs = await payload.find({
+      collection: (relationTo as any) || 'products',
       depth: 1,
       limit,
-      ...(flattenedCategories && flattenedCategories.length > 0
+      ...(flattenedCategories.length > 0
         ? {
             where: {
               categories: {
@@ -42,14 +42,12 @@ export const ArchiveBlock: React.FC<
         : {}),
     })
 
-    posts = fetchedProducts.docs
+    posts = fetchedDocs.docs as (Product | Post)[]
   } else {
     if (selectedDocs?.length) {
-      const filteredSelectedPosts = selectedDocs.map((post) => {
+      posts = selectedDocs.map((post) => {
         if (typeof post.value === 'object') return post.value
-      }) as Product[]
-
-      posts = filteredSelectedPosts
+      }).filter(Boolean) as (Product | Post)[]
     }
   }
 
@@ -60,7 +58,8 @@ export const ArchiveBlock: React.FC<
           <RichText className="ml-0 max-w-3xl" data={introContent} enableGutter={false} />
         </div>
       )}
-      <CollectionArchive posts={posts} />
+      <CollectionArchive posts={posts} relationTo={(relationTo as any) || 'products'} />
     </div>
   )
 }
+

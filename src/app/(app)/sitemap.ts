@@ -33,6 +33,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   })
 
+  // Fetch Posts
+  const posts = await payload.find({
+    collection: 'posts',
+    where: {
+      _status: { equals: 'published' },
+    },
+    limit: 1000,
+    select: {
+      slug: true,
+      updatedAt: true,
+    },
+  })
+
   const pageEntries: MetadataRoute.Sitemap = pages.docs.map((page) => ({
     url: `${baseUrl}${page.slug === 'home' ? '' : `/${page.slug}`}`,
     lastModified: new Date(page.updatedAt),
@@ -43,13 +56,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(product.updatedAt),
   }))
 
+  const postEntries: MetadataRoute.Sitemap = posts.docs.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: new Date(post.updatedAt),
+  }))
+
   // Add static routes that are not in the CMS
   const staticEntries: MetadataRoute.Sitemap = [
     {
       url: `${baseUrl}/products`,
       lastModified: new Date(),
     },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+    },
   ]
 
-  return [...staticEntries, ...pageEntries, ...productEntries]
+  return [...staticEntries, ...pageEntries, ...productEntries, ...postEntries]
 }
+
