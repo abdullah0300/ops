@@ -5,6 +5,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { PriceCalculator } from '@/components/PriceCalculator'
 import { RichText } from '@/components/RichText'
+import { Gallery } from '@/components/product/Gallery'
 import { generateMeta } from '@/utilities/generateMeta'
 
 export async function generateMetadata({
@@ -41,6 +42,7 @@ export default async function ProductDetailPage({
   if (result.docs.length === 0) notFound()
 
   const product = result.docs[0] as any
+  const gallery = product.gallery || []
   const imgUrl = product.meta?.image?.url
   const specs: { label: string; value: string }[] = product.specifications || []
   const pricing = product.quantityPricing || []
@@ -216,13 +218,17 @@ export default async function ProductDetailPage({
 
           {/* Image */}
           <div className="pdp-image-panel">
-            <div className="pdp-image-main">
-              {imgUrl ? (
-                <img src={String(imgUrl)} alt={String(product.title)} />
-              ) : (
-                <div className="pdp-image-placeholder">📦</div>
-              )}
-            </div>
+            {gallery?.length > 0 ? (
+              <Gallery gallery={gallery} />
+            ) : (
+              <div className="pdp-image-main">
+                {imgUrl ? (
+                  <img src={String(imgUrl)} alt={String(product.title)} />
+                ) : (
+                  <div className="pdp-image-placeholder">📦</div>
+                )}
+              </div>
+            )}
             <div className="pdp-trust-strip">
               {[
                 { icon: '🎨', label: 'Design Support' },
@@ -393,7 +399,8 @@ export default async function ProductDetailPage({
             </div>
             <div className="pdp-related-grid">
               {relatedProducts.map((rp: any, i: number) => {
-                const rImgUrl = rp.meta?.image?.url
+                const rGallery = rp.gallery || []
+                const rImgUrl = rp.meta?.image?.url || (rGallery.length > 0 ? (typeof rGallery[0].image === 'object' ? rGallery[0].image.url : null) : null)
                 return (
                   <Link key={String(rp.id)} href={`/products/${String(rp.slug)}`} className="pdp-related-card">
                     <div className="pdp-related-img" style={{ background: rImgUrl ? 'transparent' : BG_COLORS[i % BG_COLORS.length] }}>
