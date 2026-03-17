@@ -17,6 +17,7 @@ import {
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 import { slugField } from 'payload'
+import { revalidatePost, revalidateDelete } from './hooks/revalidatePost'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -131,6 +132,10 @@ export const Posts: CollectionConfig = {
     },
     slugField(),
   ],
+  hooks: {
+    afterChange: [revalidatePost],
+    afterDelete: [revalidateDelete],
+  },
   versions: {
     drafts: {
       autosave: true,

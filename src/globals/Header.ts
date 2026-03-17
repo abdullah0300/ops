@@ -2,6 +2,7 @@ import type { GlobalConfig } from 'payload'
 
 import { adminOnly } from '@/access/adminOnly'
 import { link } from '@/fields/link'
+import { revalidateHeader } from '@/hooks/revalidateGlobal'
 
 export const Header: GlobalConfig = {
   slug: 'header',
@@ -37,4 +38,7 @@ export const Header: GlobalConfig = {
       maxRows: 6,
     },
   ],
+  hooks: {
+    afterChange: [revalidateHeader],
+  },
 }

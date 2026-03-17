@@ -7,6 +7,7 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
+import { revalidateHomePage } from '@/hooks/revalidateGlobal'
 
 export const HomePage: GlobalConfig = {
   slug: 'home-page',
@@ -189,4 +190,7 @@ export const HomePage: GlobalConfig = {
       ],
     },
   ],
+  hooks: {
+    afterChange: [revalidateHomePage],
+  },
 }
