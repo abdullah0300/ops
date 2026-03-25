@@ -7,14 +7,24 @@ import { HeaderClient } from './index.client'
 
 export async function Header() {
   const header = await getCachedGlobal('header', 1)()
-  const payload = await getPayload({ config: configPromise })
+  const headerData = header as any
 
-  const { docs: navProducts } = await payload.find({
-    collection: 'products',
-    limit: 3,
-    sort: '-createdAt',
-    depth: 0,
-  })
+  let navProducts: any[]
 
-  return <HeaderClient header={header} navProducts={navProducts as any} />
+  if (headerData.navProducts?.length > 0) {
+    // Admin has manually chosen products — use them directly (already populated at depth 2)
+    navProducts = headerData.navProducts
+  } else {
+    // Fallback: latest 3 products
+    const payload = await getPayload({ config: configPromise })
+    const { docs } = await payload.find({
+      collection: 'products',
+      limit: 3,
+      sort: '-createdAt',
+      depth: 0,
+    })
+    navProducts = docs
+  }
+
+  return <HeaderClient header={header} navProducts={navProducts} />
 }

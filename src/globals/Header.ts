@@ -28,6 +28,17 @@ export const Header: GlobalConfig = {
       defaultValue: '24/7 Support',
     },
     {
+      name: 'navProducts',
+      type: 'relationship',
+      relationTo: 'products',
+      hasMany: true,
+      maxRows: 6,
+      label: 'Nav Products',
+      admin: {
+        description: 'Pick exactly which products appear in the navigation bar (up to 6). If left empty, the 3 most recently created products are shown automatically.',
+      },
+    },
+    {
       name: 'navItems',
       type: 'array',
       fields: [
