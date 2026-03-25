@@ -2117,6 +2117,10 @@ export interface Header {
   topBarEmail?: string | null;
   topBarPhone?: string | null;
   topBarPhoneLabel?: string | null;
+  /**
+   * Pick exactly which products appear in the navigation bar (up to 6). If left empty, the 3 most recently created products are shown automatically.
+   */
+  navProducts?: (number | Product)[] | null;
   navItems?:
     | {
         link: {
@@ -2231,6 +2235,7 @@ export interface HeaderSelect<T extends boolean = true> {
   topBarEmail?: T;
   topBarPhone?: T;
   topBarPhoneLabel?: T;
+  navProducts?: T;
   navItems?:
     | T
     | {
