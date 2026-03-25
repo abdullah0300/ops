@@ -5,7 +5,7 @@ import type { Media as MediaType, Product } from '@/payload-types'
 import { Media } from '@/components/Media'
 import { GridTileImage } from '@/components/Grid/tile'
 import { useSearchParams } from 'next/navigation'
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense } from 'react'
 
 import { Carousel, CarouselApi, CarouselContent, CarouselItem } from '@/components/ui/carousel'
 import { DefaultDocumentIDType } from 'payload'
@@ -14,16 +14,17 @@ type Props = {
   gallery: NonNullable<Product['gallery']>
 }
 
-export const Gallery: React.FC<Props> = ({ gallery }) => {
+// Isolated component so useSearchParams doesn't suspend the whole Gallery
+function GallerySync({
+  gallery,
+  api,
+  setCurrent,
+}: {
+  gallery: Props['gallery']
+  api: CarouselApi | undefined
+  setCurrent: (i: number) => void
+}) {
   const searchParams = useSearchParams()
-  const [current, setCurrent] = React.useState(0)
-  const [api, setApi] = React.useState<CarouselApi>()
-
-  useEffect(() => {
-    if (!api) {
-      return
-    }
-  }, [api])
 
   useEffect(() => {
     const values = Array.from(searchParams.values())
@@ -45,15 +46,28 @@ export const Gallery: React.FC<Props> = ({ gallery }) => {
         api.scrollTo(index, true)
       }
     }
-  }, [searchParams, api, gallery])
+  }, [searchParams, api, gallery, setCurrent])
+
+  return null
+}
+
+export const Gallery: React.FC<Props> = ({ gallery }) => {
+  const [current, setCurrent] = React.useState(0)
+  const [api, setApi] = React.useState<CarouselApi>()
 
   return (
     <div>
+      {/* useSearchParams isolated in Suspense so it never blocks the image */}
+      <Suspense fallback={null}>
+        <GallerySync gallery={gallery} api={api} setCurrent={setCurrent} />
+      </Suspense>
+
       <div className="relative w-full overflow-hidden mb-8">
         <Media
           resource={gallery[current].image}
           className="w-full"
           imgClassName="w-full rounded-lg"
+          priority
         />
       </div>
 
