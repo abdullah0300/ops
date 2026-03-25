@@ -2,6 +2,7 @@
 
 import React, { useRef } from 'react'
 import Link from 'next/link'
+import NextImage from 'next/image'
 import { useRouter } from 'next/navigation'
 import type { Product, Media } from '@/payload-types'
 
@@ -70,7 +71,14 @@ export const ProductCard = ({ product }: { product: Product }) => {
           <span className="product-card-tag">{categoryName}</span>
 
           {imageUrl ? (
-            <img src={imageUrl} alt={product.title} className="product-card-image" />
+            <NextImage
+              src={imageUrl}
+              alt={product.title}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="product-card-image"
+              style={{ objectFit: 'cover' }}
+            />
           ) : (
             <div className="product-card-placeholder">📦</div>
           )}

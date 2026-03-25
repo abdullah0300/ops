@@ -8,6 +8,19 @@ import { RichText } from '@/components/RichText'
 import { Gallery } from '@/components/product/Gallery'
 import { generateMeta } from '@/utilities/generateMeta'
 
+export async function generateStaticParams() {
+  const payload = await getPayload({ config: configPromise })
+  const { docs } = await payload.find({
+    collection: 'products',
+    draft: false,
+    overrideAccess: false,
+    pagination: false,
+    select: { slug: true },
+    where: { _status: { equals: 'published' } },
+  })
+  return docs.map(({ slug }) => ({ slug }))
+}
+
 export async function generateMetadata({
   params,
 }: {

@@ -39,12 +39,12 @@ export const ProductGridItem: React.FC<Props> = ({ product }) => {
           className={clsx(
             'relative aspect-square object-cover border rounded-2xl p-8 bg-primary-foreground',
           )}
-          height={80}
+          fill
           imgClassName={clsx('h-full w-full object-cover rounded-2xl', {
             'transition duration-300 ease-in-out group-hover:scale-102': true,
           })}
           resource={image}
-          width={80}
+          size="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
       ) : null}
 

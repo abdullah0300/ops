@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
+import NextImage from 'next/image'
 import './index.css'
 import type { Media as MediaType, Product } from '@/payload-types'
 
@@ -247,10 +248,13 @@ export const Hero = ({ media, products, showcase }: HeroProps) => {
             style={{ background: product.bg }}
           >
             {product.imageUrl ? (
-              <img
+              <NextImage
                 src={product.imageUrl}
                 alt={product.name}
+                fill
+                sizes="50vw"
                 className="hero-panel-img"
+                priority
               />
             ) : (
               <div className="hero-panel-emoji">{product.emoji}</div>
