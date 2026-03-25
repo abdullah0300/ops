@@ -29,7 +29,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=Afacad:ital,wght@0,400..700;1,400..700&family=Outfit:wght@100..900&display=swap" rel="stylesheet" />
-        <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=81138e11-2d68-4e7d-8967-6050a14e9bad" async />
+        {process.env.VERCEL_ENV === 'production' && (
+          <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=81138e11-2d68-4e7d-8967-6050a14e9bad" async />
+        )}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-C1MF00750G"
           strategy="afterInteractive"
