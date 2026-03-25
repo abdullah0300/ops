@@ -43,13 +43,17 @@ export function HeaderClient({ header, navProducts }: Props) {
           <div className="top-bar-details">
             <div className="top-bar-item">
               <Mail className="top-bar-icon" />
-              <span>{header.topBarEmail || 'sales@onlinepackagingstore.com'}</span>
+              <a href={`mailto:${header.topBarEmail || 'sales@onlinepackagingstore.com'}`}>
+                {header.topBarEmail || 'sales@onlinepackagingstore.com'}
+              </a>
             </div>
             <div className="top-bar-item">
               <Phone className="top-bar-icon" />
               <div className="phone-details">
                 <span className="phone-label">{header.topBarPhoneLabel || '24/7 Support'}</span>
-                <span className="phone-number">{header.topBarPhone || 'Call: 559-205-7588'}</span>
+                <a className="phone-number" href={`tel:${(header.topBarPhone || '559-205-7588').replace(/[^0-9+]/g, '')}`}>
+                  {header.topBarPhone || 'Call: 559-205-7588'}
+                </a>
               </div>
             </div>
           </div>
