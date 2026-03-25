@@ -1,5 +1,5 @@
 import type { GlobalAfterChangeHook } from 'payload'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 
 export const revalidateHomePage: GlobalAfterChangeHook = ({
   doc,
@@ -18,6 +18,7 @@ export const revalidateHeader: GlobalAfterChangeHook = ({
 }) => {
   if (!context.disableRevalidate) {
     payload.logger.info(`Revalidating everything for Header update`)
+    revalidateTag('global_header')
     revalidatePath('/', 'layout')
   }
   return doc

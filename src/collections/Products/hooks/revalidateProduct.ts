@@ -19,14 +19,26 @@ export const revalidateProduct: CollectionAfterChangeHook<Product> = ({
       payload.logger.info(`Revalidating old product at path: ${oldPath}`)
       revalidatePath(oldPath)
     }
+
+    // Revalidate all pages that list or display products
+    revalidatePath('/')
+    revalidatePath('/shop')
+    revalidatePath('/products')
+    revalidatePath('/', 'layout')
   }
   return doc
 }
 
 export const revalidateDelete: CollectionAfterDeleteHook<Product> = ({ doc, req: { context } }) => {
-  if (!context.disableRevalidate && doc?._status === 'published') {
-    const path = `/products/${doc.slug}`
-    revalidatePath(path)
+  if (!context.disableRevalidate) {
+    if (doc?._status === 'published') {
+      const path = `/products/${doc.slug}`
+      revalidatePath(path)
+    }
+    revalidatePath('/')
+    revalidatePath('/shop')
+    revalidatePath('/products')
+    revalidatePath('/', 'layout')
   }
   return doc
 }
