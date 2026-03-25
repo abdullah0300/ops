@@ -4,6 +4,7 @@ import { AdminBar } from '@/components/AdminBar'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
+import { ZendeskTracker } from '@/components/ZendeskTracker'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { GeistSans } from 'geist/font/sans'
@@ -56,6 +57,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <Providers>
           <AdminBar />
           <LivePreviewListener />
+          <ZendeskTracker />
 
           <Header />
 
