@@ -104,6 +104,16 @@ export const HomePage: GlobalConfig = {
               ],
             },
             {
+              name: 'featuredProducts',
+              type: 'relationship',
+              relationTo: 'products',
+              hasMany: true,
+              label: 'Featured Products',
+              admin: {
+                description: 'Pick which products appear in the "Our Products" section on the homepage. If empty, the latest 12 products are shown.',
+              },
+            },
+            {
               name: 'factorySlider',
               type: 'group',
               fields: [
