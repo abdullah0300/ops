@@ -20,7 +20,8 @@
     "stripe-webhooks": "stripe listen --forward-to localhost:3000/api/payments/stripe/webhooks",
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test --config=playwright.config.ts",
-    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
+    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
+    "migrate:cloudinary": "cross-env NODE_OPTIONS=--no-deprecation tsx src/scripts/migrate-to-cloudinary.ts"
   },
   "dependencies": {
     "@payloadcms/admin-bar": "3.79.0",
@@ -46,6 +47,7 @@
     "@stripe/stripe-js": "^4.0.0",
     "@vercel/blob": "^2.3.1",
     "class-variance-authority": "^0.7.0",
+    "cloudinary": "^2.9.0",
     "clsx": "^2.1.0",
     "cross-env": "^7.0.3",
     "date-fns": "^4.1.0",

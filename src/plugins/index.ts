@@ -7,7 +7,8 @@ import { ecommercePlugin } from '@payloadcms/plugin-ecommerce'
 
 import { stripeAdapter } from '@payloadcms/plugin-ecommerce/payments/stripe'
 
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { cloudStoragePlugin } from '@payloadcms/plugin-cloud-storage'
+import { cloudinaryAdapter } from '@/lib/cloudinaryAdapter'
 
 import { Page, Product } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -29,11 +30,13 @@ const generateURL: GenerateURL<Product | Page> = ({ doc }) => {
 }
 
 export const plugins: Plugin[] = [
-  vercelBlobStorage({
+  cloudStoragePlugin({
     collections: {
-      media: true,
+      media: {
+        adapter: cloudinaryAdapter(),
+        disableLocalStorage: true,
+      },
     },
-    token: process.env.BLOB_READ_WRITE_TOKEN,
   }),
   seoPlugin({
     generateTitle,

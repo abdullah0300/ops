@@ -23,10 +23,15 @@ const nextConfig = {
           protocol: url.protocol.replace(':', ''),
         }
       }),
-      // Vercel Blob storage
+      // Vercel Blob (kept so existing images still load until migration is run)
       {
         protocol: 'https',
         hostname: '*.public.blob.vercel-storage.com',
+      },
+      // Cloudinary
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
       },
     ],
   },
