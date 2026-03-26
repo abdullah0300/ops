@@ -2198,6 +2198,10 @@ export interface HomePage {
         }[]
       | null;
   };
+  /**
+   * Pick which products appear in the "Our Products" section on the homepage. If empty, the latest 12 products are shown.
+   */
+  featuredProducts?: (number | Product)[] | null;
   factorySlider?: {
     slides?:
       | {
@@ -2315,6 +2319,7 @@ export interface HomePageSelect<T extends boolean = true> {
               id?: T;
             };
       };
+  featuredProducts?: T;
   factorySlider?:
     | T
     | {
