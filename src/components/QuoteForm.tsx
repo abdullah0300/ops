@@ -35,33 +35,40 @@ export function QuoteForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!formID) {
-      setError('Form system is still initializing. Please try again in a moment.')
-      return
-    }
 
     setLoading(true)
     setError(null)
 
     const formData = new FormData(e.currentTarget)
+    const fields = Object.fromEntries(formData.entries())
     const dataToSend = Array.from(formData.entries()).map(([name, value]) => ({
       field: name,
       value: value.toString(),
     }))
 
     try {
-      const response = await fetch('/api/form-submissions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          form: formID,
-          submissionData: dataToSend,
+      // Submit to Formspree (email notifications) and Payload (storage) in parallel
+      const requests: Promise<Response>[] = [
+        fetch('https://formspree.io/f/xojpqrob', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(fields),
         }),
-      })
+      ]
 
-      if (!response.ok) {
+      if (formID) {
+        requests.push(
+          fetch('/api/form-submissions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ form: formID, submissionData: dataToSend }),
+          }),
+        )
+      }
+
+      const [formspreeRes] = await Promise.all(requests)
+
+      if (!formspreeRes.ok) {
         throw new Error('Failed to submit form')
       }
 
