@@ -99,14 +99,37 @@ async function main() {
         alreadyExists++
         continue
       } catch {
-        // Not found — proceed with upload
+        // Not found on Cloudinary — proceed with upload
       }
 
-      const result = await cloudinary.uploader.upload(vercelUrl, {
-        public_id: publicId,
-        resource_type: rType === 'raw' ? 'auto' : rType,
-        overwrite: true,
-        quality: 'auto:best',
+      // Download from Vercel Blob locally using the token
+      // (Cloudinary can't fetch directly — Vercel Blob CDN returns 403 to external servers)
+      const fetchRes = await fetch(vercelUrl, {
+        headers: { Authorization: `Bearer ${BLOB_TOKEN}` },
+      })
+
+      if (!fetchRes.ok) {
+        throw new Error(`Vercel Blob fetch failed: ${fetchRes.status} ${fetchRes.statusText} — ${vercelUrl}`)
+      }
+
+      const arrayBuffer = await fetchRes.arrayBuffer()
+      const buffer = Buffer.from(arrayBuffer)
+
+      // Upload buffer to Cloudinary via stream
+      const result = await new Promise<any>((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            public_id: publicId,
+            resource_type: rType === 'raw' ? 'auto' : rType,
+            overwrite: true,
+            quality: 'auto:best',
+          },
+          (error, res) => {
+            if (error) return reject(error)
+            resolve(res)
+          },
+        )
+        stream.end(buffer)
       })
 
       console.log(`   ✓ Uploaded → ${result.secure_url}\n`)
