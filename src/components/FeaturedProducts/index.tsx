@@ -5,14 +5,29 @@ import { ProductSlider } from './ProductSlider'
 import Link from 'next/link'
 import './index.css'
 
-export const FeaturedProducts = async () => {
+export const FeaturedProducts = async ({ featuredProducts }: { featuredProducts?: any[] }) => {
   const payload = await getPayload({ config: configPromise })
 
-  const { docs: products } = await payload.find({
-    collection: 'products',
-    limit: 12,
-    sort: '-createdAt',
-  })
+  let products: any[]
+
+  if (featuredProducts && featuredProducts.length > 0) {
+    // Admin has picked specific products — resolve any that are just IDs
+    const resolved = await Promise.all(
+      featuredProducts.map(async (item: any) => {
+        if (typeof item === 'object' && item.slug) return item
+        const id = typeof item === 'object' ? item.id : item
+        return payload.findByID({ collection: 'products', id })
+      }),
+    )
+    products = resolved.filter(Boolean)
+  } else {
+    const { docs } = await payload.find({
+      collection: 'products',
+      limit: 12,
+      sort: '-createdAt',
+    })
+    products = docs
+  }
 
   return (
     <section className="featured-products">
