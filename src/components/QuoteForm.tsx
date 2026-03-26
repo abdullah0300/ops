@@ -437,7 +437,7 @@ export function QuoteForm() {
                     <div className="form-field">
                       <select name="stock">
                         <option value="">Stock</option>
-                        <option value="cardstock">Cardstock</option>
+                         <option value="cardstock">Cardstock</option>
                         <option value="kraft">Kraft</option>
                         <option value="corrugated">Corrugated</option>
                         <option value="custom">Custom</option>
