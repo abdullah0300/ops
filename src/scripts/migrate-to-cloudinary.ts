@@ -1,11 +1,11 @@
 /**
- * Migration script: Vercel Blob → Cloudinary
+ * Migration script: Any storage → Cloudinary
  *
- * Copies every media item (images AND videos) from Vercel Blob to Cloudinary,
+ * Copies every media item (images AND videos) to Cloudinary,
  * then updates the URL stored in the Payload database.
  *
  * Run once with:
- *   npx tsx src/scripts/migrate-to-cloudinary.ts
+ *   npx dotenv-cli -e .env -- npm run migrate:cloudinary
  */
 
 import { getPayload } from 'payload'
@@ -22,6 +22,9 @@ cloudinary.config({
 
 const FOLDER = 'payload-media'
 
+// The production site URL — used to build full URLs for locally-stored files
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://onlinepackagingstore.com'
+
 /** Strip file extension to get a clean Cloudinary public_id */
 function toPublicId(filename: string): string {
   return `${FOLDER}/${filename.replace(/\.[^/.]+$/, '')}`
@@ -32,6 +35,26 @@ function resourceType(mimeType: string): 'image' | 'video' | 'raw' {
   if (mimeType?.startsWith('image/')) return 'image'
   if (mimeType?.startsWith('video/')) return 'video'
   return 'raw'
+}
+
+/** Build the full URL to fetch a media item from */
+function resolveUrl(item: any): string | null {
+  const url: string = item.url || ''
+
+  // Already on Cloudinary — nothing to do
+  if (url.includes('res.cloudinary.com')) return null
+
+  // Full URL (Vercel Blob, S3, CDN, external, etc.)
+  if (url.startsWith('http://') || url.startsWith('https://')) return url
+
+  // Relative path  e.g.  /media/filename.jpg  or  /api/media/file/filename.jpg
+  if (url.startsWith('/')) return `${SERVER_URL}${url}`
+
+  // No URL at all — try to build from filename
+  const filename: string = item.filename || ''
+  if (filename) return `${SERVER_URL}/api/media/file/${encodeURIComponent(filename)}`
+
+  return null
 }
 
 async function main() {
@@ -46,16 +69,22 @@ async function main() {
 
   console.log(`\nFound ${totalDocs} media items total.\n`)
 
+  // Print first 3 URLs so we can confirm the format
+  console.log('Sample URLs from your database:')
+  allMedia.slice(0, 3).forEach((item: any) => {
+    console.log(`  [${item.id}] url="${item.url}" filename="${item.filename}"`)
+  })
+  console.log('')
+
   let migrated = 0
   let skipped = 0
   let failed = 0
 
   for (const item of allMedia) {
-    const url: string = (item as any).url || ''
+    const sourceUrl = resolveUrl(item as any)
 
-    // Only migrate items still on Vercel Blob
-    if (!url.includes('blob.vercel-storage.com')) {
-      console.log(`⏭  Skipping  [${item.id}] ${(item as any).filename} — not a Vercel Blob URL`)
+    if (!sourceUrl) {
+      console.log(`⏭  Already on Cloudinary [${item.id}] ${(item as any).filename}`)
       skipped++
       continue
     }
@@ -65,57 +94,27 @@ async function main() {
     const rType = resourceType(mime)
     const publicId = toPublicId(filename)
 
-    console.log(`⬆  Uploading [${item.id}] ${filename} (${rType}) …`)
+    console.log(`⬆  Uploading [${item.id}] ${filename} (${rType}) from ${sourceUrl}`)
 
     try {
-      // Cloudinary fetches directly from the Vercel Blob URL — no download needed
-      const result = await cloudinary.uploader.upload(url, {
+      const result = await cloudinary.uploader.upload(sourceUrl, {
         public_id: publicId,
         resource_type: rType === 'raw' ? 'auto' : rType,
         overwrite: true,
-        // Preserve original quality for product images
         quality: 'auto:best',
       })
 
-      // Build the sizes map — update any nested size URLs too
-      const existingSizes: Record<string, any> = (item as any).sizes || {}
-      const updatedSizes: Record<string, any> = {}
-
-      for (const [sizeName, sizeData] of Object.entries(existingSizes)) {
-        if (sizeData && typeof sizeData === 'object' && (sizeData as any).url?.includes('blob.vercel-storage.com')) {
-          const sizeFilename: string = (sizeData as any).filename || filename
-          const sizePublicId = toPublicId(sizeFilename)
-          try {
-            const sizeResult = await cloudinary.uploader.upload((sizeData as any).url, {
-              public_id: sizePublicId,
-              resource_type: rType === 'raw' ? 'auto' : rType,
-              overwrite: true,
-            })
-            updatedSizes[sizeName] = { ...(sizeData as any), url: sizeResult.secure_url }
-          } catch {
-            // Keep original if size migration fails
-            updatedSizes[sizeName] = sizeData
-          }
-        } else {
-          updatedSizes[sizeName] = sizeData
-        }
-      }
-
-      // Update the Payload media document with the new Cloudinary URL
       await payload.update({
         collection: 'media',
         id: item.id,
-        data: {
-          url: result.secure_url,
-          ...(Object.keys(updatedSizes).length > 0 ? { sizes: updatedSizes } : {}),
-        } as any,
+        data: { url: result.secure_url } as any,
         overrideAccess: true,
       })
 
-      console.log(`   ✓ Done    → ${result.secure_url}`)
+      console.log(`   ✓ Done → ${result.secure_url}`)
       migrated++
     } catch (err: any) {
-      console.error(`   ✗ Failed  [${item.id}] ${filename}: ${err?.message || err}`)
+      console.error(`   ✗ Failed [${item.id}] ${filename}: ${err?.message || err}`)
       failed++
     }
   }
@@ -123,7 +122,7 @@ async function main() {
   console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
   console.log(`Migration complete!`)
   console.log(`  Migrated : ${migrated}`)
-  console.log(`  Skipped  : ${skipped}`)
+  console.log(`  Skipped  : ${skipped} (already on Cloudinary)`)
   console.log(`  Failed   : ${failed}`)
   console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`)
 
