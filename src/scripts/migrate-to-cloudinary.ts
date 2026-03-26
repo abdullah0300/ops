@@ -1,8 +1,14 @@
 /**
- * Migration script: Any storage → Cloudinary
+ * Migration script: Vercel Blob → Cloudinary
  *
- * Copies every media item (images AND videos) to Cloudinary,
- * then updates the URL stored in the Payload database.
+ * HOW PAYLOAD STORAGE WORKS:
+ * - The `url` field in media documents is NOT stored in the DB.
+ * - It is regenerated dynamically on every read by the active storage plugin.
+ * - After switching to Cloudinary, Payload generates Cloudinary URLs from filenames,
+ *   but the actual files are still only on Vercel Blob.
+ * - This script copies every file from Vercel Blob to Cloudinary using the correct
+ *   public_id so the dynamically generated URLs resolve correctly.
+ * - No database updates are needed.
  *
  * Run once with:
  *   npx dotenv-cli -e .env -- npm run migrate:cloudinary
@@ -12,7 +18,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { v2 as cloudinary } from 'cloudinary'
 
-// ─── Cloudinary config ────────────────────────────────────────────────────────
+// ─── Cloudinary config ─────────────────────────────────────────────────────
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'ddgzjzd9q',
   api_key: process.env.CLOUDINARY_API_KEY || '434747626758977',
@@ -20,41 +26,33 @@ cloudinary.config({
   secure: true,
 })
 
-const FOLDER = 'payload-media'
+// ─── Vercel Blob config ─────────────────────────────────────────────────────
+// Extract store ID from token: vercel_blob_rw_<storeId>_<random>
+const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN || ''
+const storeId = BLOB_TOKEN.match(/^vercel_blob_rw_([a-z\d]+)_[a-z\d]+$/i)?.[1]?.toLowerCase()
 
-// The production site URL — used to build full URLs for locally-stored files
-const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://onlinepackagingstore.com'
-
-/** Strip file extension to get a clean Cloudinary public_id */
-function toPublicId(filename: string): string {
-  return `${FOLDER}/${filename.replace(/\.[^/.]+$/, '')}`
+if (!storeId) {
+  console.error('ERROR: Cannot extract store ID from BLOB_READ_WRITE_TOKEN.')
+  console.error(`Token value: "${BLOB_TOKEN}"`)
+  console.error('Make sure BLOB_READ_WRITE_TOKEN is set in your .env file.')
+  process.exit(1)
 }
 
-/** Detect resource type from mime type */
+const VERCEL_BLOB_BASE = `https://${storeId}.public.blob.vercel-storage.com`
+const CLOUDINARY_FOLDER = 'payload-media'
+
+console.log(`Vercel Blob base URL: ${VERCEL_BLOB_BASE}`)
+
+/** The same public_id formula used in cloudinaryAdapter.ts */
+function toPublicId(filename: string): string {
+  return `${CLOUDINARY_FOLDER}/${filename.replace(/\.[^/.]+$/, '')}`
+}
+
+/** Detect Cloudinary resource type from mime type */
 function resourceType(mimeType: string): 'image' | 'video' | 'raw' {
   if (mimeType?.startsWith('image/')) return 'image'
   if (mimeType?.startsWith('video/')) return 'video'
   return 'raw'
-}
-
-/** Build the full URL to fetch a media item from */
-function resolveUrl(item: any): string | null {
-  const url: string = item.url || ''
-
-  // Already on Cloudinary — nothing to do
-  if (url.includes('res.cloudinary.com')) return null
-
-  // Full URL (Vercel Blob, S3, CDN, external, etc.)
-  if (url.startsWith('http://') || url.startsWith('https://')) return url
-
-  // Relative path  e.g.  /media/filename.jpg  or  /api/media/file/filename.jpg
-  if (url.startsWith('/')) return `${SERVER_URL}${url}`
-
-  // No URL at all — try to build from filename
-  const filename: string = item.filename || ''
-  if (filename) return `${SERVER_URL}/api/media/file/${encodeURIComponent(filename)}`
-
-  return null
 }
 
 async function main() {
@@ -67,63 +65,63 @@ async function main() {
     overrideAccess: true,
   })
 
-  console.log(`\nFound ${totalDocs} media items total.\n`)
+  console.log(`\nFound ${totalDocs} media items.\n`)
 
-  // Print first 3 URLs so we can confirm the format
-  console.log('Sample URLs from your database:')
-  allMedia.slice(0, 3).forEach((item: any) => {
-    console.log(`  [${item.id}] url="${item.url}" filename="${item.filename}"`)
-  })
-  console.log('')
-
-  let migrated = 0
-  let skipped = 0
+  let uploaded = 0
+  let alreadyExists = 0
   let failed = 0
 
   for (const item of allMedia) {
-    const sourceUrl = resolveUrl(item as any)
+    const filename: string = (item as any).filename || ''
+    const mime: string = (item as any).mimeType || ''
 
-    if (!sourceUrl) {
-      console.log(`⏭  Already on Cloudinary [${item.id}] ${(item as any).filename}`)
-      skipped++
+    if (!filename) {
+      console.log(`⏭  Skipping [${item.id}] — no filename`)
       continue
     }
 
-    const filename: string = (item as any).filename || `media-${item.id}`
-    const mime: string = (item as any).mimeType || ''
     const rType = resourceType(mime)
     const publicId = toPublicId(filename)
 
-    console.log(`⬆  Uploading [${item.id}] ${filename} (${rType}) from ${sourceUrl}`)
+    // The Vercel Blob plugin stores files at: {base}/{prefix}/{filename}
+    // Default prefix for the media collection is 'media'
+    const vercelUrl = `${VERCEL_BLOB_BASE}/media/${encodeURIComponent(filename)}`
+
+    console.log(`⬆  [${item.id}] ${filename} (${rType})`)
+    console.log(`   From: ${vercelUrl}`)
+    console.log(`   To:   ${publicId}`)
 
     try {
-      const result = await cloudinary.uploader.upload(sourceUrl, {
+      // Check if already uploaded to Cloudinary
+      try {
+        await cloudinary.api.resource(publicId, { resource_type: rType === 'raw' ? 'auto' : rType })
+        console.log(`   ✓ Already on Cloudinary — skipping\n`)
+        alreadyExists++
+        continue
+      } catch {
+        // Not found — proceed with upload
+      }
+
+      const result = await cloudinary.uploader.upload(vercelUrl, {
         public_id: publicId,
         resource_type: rType === 'raw' ? 'auto' : rType,
         overwrite: true,
         quality: 'auto:best',
       })
 
-      await payload.update({
-        collection: 'media',
-        id: item.id,
-        data: { url: result.secure_url } as any,
-        overrideAccess: true,
-      })
-
-      console.log(`   ✓ Done → ${result.secure_url}`)
-      migrated++
+      console.log(`   ✓ Uploaded → ${result.secure_url}\n`)
+      uploaded++
     } catch (err: any) {
-      console.error(`   ✗ Failed [${item.id}] ${filename}: ${err?.message || err}`)
+      console.error(`   ✗ Failed: ${err?.message || err}\n`)
       failed++
     }
   }
 
-  console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
+  console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
   console.log(`Migration complete!`)
-  console.log(`  Migrated : ${migrated}`)
-  console.log(`  Skipped  : ${skipped} (already on Cloudinary)`)
-  console.log(`  Failed   : ${failed}`)
+  console.log(`  Uploaded        : ${uploaded}`)
+  console.log(`  Already existed : ${alreadyExists}`)
+  console.log(`  Failed          : ${failed}`)
   console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`)
 
   process.exit(failed > 0 ? 1 : 0)
