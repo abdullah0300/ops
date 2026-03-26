@@ -4,7 +4,6 @@
  */
 
 import { v2 as cloudinary } from 'cloudinary'
-import type { Adapter } from '@payloadcms/plugin-cloud-storage/types'
 
 const FOLDER = 'payload-media'
 
@@ -25,7 +24,12 @@ function buildCloudinaryURL(filename: string, mimeType = ''): string {
   return `https://res.cloudinary.com/${cloudName}/${rType}/upload/${publicId}`
 }
 
-export function cloudinaryAdapter(): Adapter {
+/**
+ * cloudinaryAdapter() returns a factory function.
+ * @payloadcms/plugin-cloud-storage calls adapter({ collection, prefix }) to
+ * get the actual adapter object — so we return a function, not an object.
+ */
+export function cloudinaryAdapter() {
   cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'ddgzjzd9q',
     api_key: process.env.CLOUDINARY_API_KEY || '434747626758977',
@@ -33,50 +37,52 @@ export function cloudinaryAdapter(): Adapter {
     secure: true,
   })
 
-  return {
-    name: 'cloudinary',
+  // The plugin calls this factory with { collection, prefix }
+  return function adapterFactory(_args: any) {
+    return {
+      name: 'cloudinary',
 
-    generateURL({ filename, data }) {
-      const mimeType = (data as any)?.mimeType || ''
-      return buildCloudinaryURL(filename, mimeType)
-    },
+      generateURL({ filename, data }: any) {
+        const mimeType = data?.mimeType || ''
+        return buildCloudinaryURL(filename, mimeType)
+      },
 
-    async handleUpload({ data, file }) {
-      const mimeType = (data as any)?.mimeType || file.mimetype || ''
-      const rType = resourceType(mimeType)
-      const publicId = toPublicId(file.name || (data as any)?.filename || 'upload')
+      async handleUpload({ data, file }: any) {
+        const mimeType = data?.mimeType || file?.mimetype || ''
+        const rType = resourceType(mimeType)
+        const publicId = toPublicId(file?.name || data?.filename || 'upload')
 
-      await new Promise<void>((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          {
-            public_id: publicId,
-            resource_type: rType,
-            overwrite: true,
-            quality: 'auto:best',
-          },
-          (error, result) => {
-            if (error) return reject(error)
-            // Write the Cloudinary URL back so Payload stores it
-            ;(data as any).url = result!.secure_url
-            resolve()
-          },
-        )
-        const buf = file.buffer instanceof Buffer ? file.buffer : Buffer.from(file.buffer as any)
-        stream.end(buf)
-      })
-    },
-
-    async handleDelete({ filename, doc }) {
-      const mimeType = (doc as any)?.mimeType || ''
-      const rType = resourceType(mimeType)
-      const publicId = toPublicId(filename)
-      try {
-        await cloudinary.uploader.destroy(publicId, {
-          resource_type: rType === 'auto' ? 'image' : rType,
+        await new Promise<void>((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            {
+              public_id: publicId,
+              resource_type: rType,
+              overwrite: true,
+              quality: 'auto:best',
+            },
+            (error, result) => {
+              if (error) return reject(error)
+              data.url = result!.secure_url
+              resolve()
+            },
+          )
+          const buf = file.buffer instanceof Buffer ? file.buffer : Buffer.from(file.buffer)
+          stream.end(buf)
         })
-      } catch {
-        // Non-fatal — file may already be gone
-      }
-    },
+      },
+
+      async handleDelete({ filename, doc }: any) {
+        const mimeType = doc?.mimeType || ''
+        const rType = resourceType(mimeType)
+        const publicId = toPublicId(filename)
+        try {
+          await cloudinary.uploader.destroy(publicId, {
+            resource_type: rType === 'auto' ? 'image' : rType,
+          })
+        } catch {
+          // Non-fatal — file may already be gone
+        }
+      },
+    }
   }
 }
