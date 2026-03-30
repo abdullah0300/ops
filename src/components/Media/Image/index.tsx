@@ -39,9 +39,12 @@ export const Image: React.FC<MediaProps> = (props) => {
       alt: altFromResource,
       filename: fullFilename,
       height: fullHeight,
-      url,
+      url: urlFromResource,
       width: fullWidth,
     } = resource
+
+    const cloudinaryUrl = (resource as any).cloudinary?.secure_url
+    const url = cloudinaryUrl || urlFromResource
 
     width = widthFromProps ?? fullWidth
     height = heightFromProps ?? fullHeight

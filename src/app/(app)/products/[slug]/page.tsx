@@ -57,7 +57,8 @@ export default async function ProductDetailPage({
 
   const product = result.docs[0] as any
   const gallery = product.gallery || []
-  const imgUrl = product.meta?.image?.url
+  const metaImg = product.meta?.image
+  const imgUrl = metaImg?.cloudinary?.secure_url || metaImg?.url
   const specs: { label: string; value: string }[] = product.specifications || []
   const pricing = product.quantityPricing || []
   const addons = product.addons || []

@@ -11,7 +11,8 @@ export const ProductCard = ({ product }: { product: Product }) => {
   const cardRef = useRef<HTMLDivElement>(null)
 
   const mainImage = (product.gallery?.[0]?.image as Media) || product.meta?.image
-  const imageUrl = typeof mainImage === 'object' ? mainImage?.url : null
+  const cloudinaryUrl = typeof mainImage === 'object' ? (mainImage as any).cloudinary?.secure_url : null
+  const imageUrl = typeof mainImage === 'object' ? (cloudinaryUrl || mainImage?.url) : null
 
   const categoryName =
     product.categories?.[0] && typeof product.categories[0] === 'object'

@@ -87,7 +87,7 @@ export const Hero = ({ media, products, showcase }: HeroProps) => {
   const showcaseProducts: ShowcaseProduct[] = showcase && showcase.length > 0
     ? showcase.map((item, i) => {
         const img = item.image
-        const imgUrl = typeof img === 'object' ? img?.url : null
+        const imgUrl = typeof img === 'object' ? ((img as any)?.cloudinary?.secure_url || img?.url) : null
         return {
           id: `showcase-${i}`,
           name: item.title,
@@ -101,9 +101,9 @@ export const Hero = ({ media, products, showcase }: HeroProps) => {
     : products && products.length > 0
       ? products.slice(0, 5).map((p, i) => {
           const img = (p as any).gallery?.[0]?.image
-          const imgUrl = typeof img === 'object' ? img?.url : null
+          const imgUrl = typeof img === 'object' ? ((img as any)?.cloudinary?.secure_url || img?.url) : null
           const metaImg = (p as any).meta?.image
-          const metaUrl = typeof metaImg === 'object' ? metaImg?.url : null
+          const metaUrl = typeof metaImg === 'object' ? ((metaImg as any)?.cloudinary?.secure_url || metaImg?.url) : null
           return {
             id: p.id,
             name: p.title,
