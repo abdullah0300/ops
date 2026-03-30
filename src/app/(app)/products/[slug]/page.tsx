@@ -415,7 +415,8 @@ export default async function ProductDetailPage({
             <div className="pdp-related-grid">
               {relatedProducts.map((rp: any, i: number) => {
                 const rGallery = rp.gallery || []
-                const rImgUrl = rp.meta?.image?.url || (rGallery.length > 0 ? (typeof rGallery[0].image === 'object' ? rGallery[0].image.url : null) : null)
+                const rImgObj = rp.meta?.image || (rGallery.length > 0 ? rGallery[0].image : null)
+                const rImgUrl = typeof rImgObj === 'object' && rImgObj ? (rImgObj.cloudinary?.secure_url || rImgObj.url) : null
                 return (
                   <Link key={String(rp.id)} href={`/products/${String(rp.slug)}`} className="pdp-related-card">
                     <div className="pdp-related-img" style={{ background: rImgUrl ? 'transparent' : BG_COLORS[i % BG_COLORS.length] }}>
