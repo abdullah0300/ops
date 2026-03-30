@@ -17,7 +17,7 @@ interface SlideData {
 const DEFAULT_SLIDES: SlideData[] = [
   {
     id: 1,
-    video: '/media/first.mp4',
+    video: 'https://res.cloudinary.com/dtkk92mfs/video/upload/v1774863686/first_nsyl4k.mp4',
     title: 'It All Starts With Quality',
     subtitle: 'Step 01 · Raw Materials',
     body: 'Every great print begins long before the ink touches the surface. At our facility, we source only premium-grade raw sheets and blank bags that meet our strict quality standards.',
@@ -25,7 +25,7 @@ const DEFAULT_SLIDES: SlideData[] = [
   },
   {
     id: 2,
-    video: '/media/second.mp4',
+    video: 'https://res.cloudinary.com/dtkk92mfs/video/upload/v1774863687/second_idlfs3.mp4',
     title: 'Where Your Design Comes to Life',
     subtitle: 'Step 02 · High-Precision Printing',
     body: 'Using advanced printing technology, our machines deliver sharp, vibrant, and consistent results across every single unit — monitored in real time.',
@@ -33,7 +33,7 @@ const DEFAULT_SLIDES: SlideData[] = [
   },
   {
     id: 3,
-    video: '/media/third.mp4',
+    video: 'https://res.cloudinary.com/dtkk92mfs/video/upload/v1774863686/third_bh3hbr.mp4',
     title: 'Ready. Packed. Delivered.',
     subtitle: 'Step 03 · Quality Check & Dispatch',
     body: 'Every item goes through a quality inspection before packing. What leaves our factory is exactly what your customers will see — clean, vibrant, professional.',
