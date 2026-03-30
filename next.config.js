@@ -33,6 +33,7 @@ const nextConfig = {
 
   reactStrictMode: true,
   redirects,
+  transpilePackages: ['payload-cloudinary'],
 
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
