@@ -23,10 +23,10 @@ const nextConfig = {
           protocol: url.protocol.replace(':', ''),
         }
       }),
-      // Vercel Blob storage
+      // Cloudinary storage
       {
         protocol: 'https',
-        hostname: '*.public.blob.vercel-storage.com',
+        hostname: 'res.cloudinary.com',
       },
     ],
   },
