@@ -389,11 +389,13 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({
             value={selectedQty}
             onChange={(e) => setSelectedQty(Number(e.target.value))}
           >
-            {currentPricingTable.map((tier) => (
-              <option key={tier.quantity} value={tier.quantity}>
-                {tier.quantity.toLocaleString()} Units
-              </option>
-            ))}
+            {[...currentPricingTable]
+  .sort((a, b) => b.quantity - a.quantity)
+  .map((tier) => (
+    <option key={tier.quantity} value={tier.quantity}>
+      {tier.quantity.toLocaleString()} Units
+    </option>
+))}
           </select>
           <span className="pc-select-arrow">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
