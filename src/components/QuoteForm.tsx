@@ -436,10 +436,13 @@ export function QuoteForm() {
                    <div className="form-grid-3">
                     <div className="form-field">
                       <select name="stock">
-                        <option value="">Stock</option>
-                         <option value="cardstock">Cardstock</option>
-                        <option value="kraft">Kraft</option>
-                        <option value="corrugated">Corrugated</option>
+                        <option value="">Mpet/Vmpet 4mil thickness 
+</option>
+                         <option value="cardstock">Mpet/Vmpet 5mil thickness
+</option>
+                        <option value="kraft">Foil pet material
+</option>
+                        <option value="corrugated">Food grade material</option>
                         <option value="custom">Custom</option>
                       </select>
                     </div>
