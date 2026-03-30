@@ -433,7 +433,7 @@ export function QuoteForm() {
 
                   {/* Choose Materials */}
                   <div className="form-section-label">Choose Materials</div>
-                  <div className="form-grid-3">
+                   <div className="form-grid-3">
                     <div className="form-field">
                       <select name="stock">
                         <option value="">Stock</option>
