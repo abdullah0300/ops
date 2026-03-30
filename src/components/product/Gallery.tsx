@@ -62,13 +62,15 @@ export const Gallery: React.FC<Props> = ({ gallery }) => {
         <GallerySync gallery={gallery} api={api} setCurrent={setCurrent} />
       </Suspense>
 
-      <div className="relative w-full overflow-hidden mb-8">
-        <Media
-          resource={gallery[current].image}
-          className="w-full"
-          imgClassName="w-full rounded-lg"
-          priority
-        />
+      <div className="relative w-full overflow-hidden mb-8" style={{ aspectRatio: '1 / 1' }}>
+        {typeof gallery[current].image === 'object' && gallery[current].image ? (
+          <Media
+            fill
+            resource={gallery[current].image}
+            imgClassName="w-full rounded-lg object-contain"
+            priority
+          />
+        ) : null}
       </div>
 
       <Carousel setApi={setApi} className="w-full" opts={{ align: 'start', loop: false }}>
