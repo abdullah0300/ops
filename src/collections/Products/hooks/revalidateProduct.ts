@@ -11,19 +11,19 @@ export const revalidateProduct: CollectionAfterChangeHook<Product> = ({
     if (doc._status === 'published') {
       const path = `/products/${doc.slug}`
       payload.logger.info(`Revalidating product at path: ${path}`)
-      revalidatePath(path)
+      revalidatePath(path, 'page')
     }
 
     if (previousDoc?._status === 'published' && doc._status !== 'published') {
       const oldPath = `/products/${previousDoc.slug}`
       payload.logger.info(`Revalidating old product at path: ${oldPath}`)
-      revalidatePath(oldPath)
+      revalidatePath(oldPath, 'page')
     }
 
     // Revalidate all pages that list or display products
-    revalidatePath('/')
-    revalidatePath('/shop')
-    revalidatePath('/products')
+    revalidatePath('/', 'page')
+    revalidatePath('/shop', 'page')
+    revalidatePath('/products', 'page')
     revalidatePath('/', 'layout')
   }
   return doc
@@ -33,11 +33,11 @@ export const revalidateDelete: CollectionAfterDeleteHook<Product> = ({ doc, req:
   if (!context.disableRevalidate) {
     if (doc?._status === 'published') {
       const path = `/products/${doc.slug}`
-      revalidatePath(path)
+      revalidatePath(path, 'page')
     }
-    revalidatePath('/')
-    revalidatePath('/shop')
-    revalidatePath('/products')
+    revalidatePath('/', 'page')
+    revalidatePath('/shop', 'page')
+    revalidatePath('/products', 'page')
     revalidatePath('/', 'layout')
   }
   return doc
