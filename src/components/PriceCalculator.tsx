@@ -48,14 +48,16 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({
     return defaultQuantityPricing || []
   }, [hasSizes, sizes, selectedSizeIndex, defaultQuantityPricing])
 
-  const [selectedQty, setSelectedQty] = useState<number>(100)
+  const [selectedQty, setSelectedQty] = useState<number>(0)
 
   useEffect(() => {
-    if (currentPricingTable.length > 0) {
-      const exists = currentPricingTable.some((p) => p.quantity === selectedQty)
-      if (!exists) setSelectedQty(currentPricingTable[0].quantity)
-    }
-  }, [currentPricingTable])
+  if (currentPricingTable.length > 0) {
+    const highestQty = [...currentPricingTable]
+      .sort((a, b) => b.quantity - a.quantity)[0].quantity
+
+    setSelectedQty(highestQty)
+  }
+}, [currentPricingTable])
 
   const [selectedAddons, setSelectedAddons] = useState<string[]>([])
   const [isAdding, setIsAdding] = useState(false)
