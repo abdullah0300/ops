@@ -243,7 +243,7 @@ export default async function PostPage({ params: paramsPromise }: any) {
         .pd-content {
           font-family: 'Afacad', sans-serif;
           font-size: 18px;
-          color: #333;
+          color: #1a1a1a;
           line-height: 1.85;
           overflow-wrap: break-word;
           word-break: break-word;
@@ -453,7 +453,7 @@ export default async function PostPage({ params: paramsPromise }: any) {
           </div>
 
           <div className="pd-content">
-            <RichText data={post.content as any} />
+            <RichText data={post.content as any} enableProse={false} enableGutter={false} />
           </div>
         </div>
 
