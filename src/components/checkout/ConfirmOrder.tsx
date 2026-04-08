@@ -42,6 +42,15 @@ export const ConfirmOrder: React.FC = () => {
               queryParams.set('accessToken', accessToken)
             }
 
+            // Fire Google Ads purchase conversion
+            if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+              ;(window as any).gtag('event', 'conversion', {
+                send_to: 'AW-18071348988/tspICLzR05ccEPzNi6lD',
+                currency: 'PKR',
+                transaction_id: result.orderID,
+              })
+            }
+
             const queryString = queryParams.toString()
             router.push(`/orders/${result.orderID}${queryString ? `?${queryString}` : ''}`)
           }
