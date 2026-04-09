@@ -23,7 +23,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     >
       <head>
         <InitTheme />
-        <meta name="google-site-verification" content="7f_YVvQqfNTuFRpA8fnyYHgQDHzq8Qlnqd4o21Rw5V8" />
+        <meta name="google-site-verification" content="mYPbLa4qtkPFNGskg4LsuW4ZGfAfOB80w7UVsH8HyJo" />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
