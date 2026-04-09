@@ -73,6 +73,15 @@ export function QuoteForm() {
       }
 
       setSubmitted(true)
+
+      // Fire Google Ads quote form conversion
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        ;(window as any).gtag('event', 'conversion', {
+          send_to: 'AW-11435750216/TTPcCILy-5gcEMjm_swq',
+          value: 1.0,
+          currency: 'USD',
+        })
+      }
     } catch (err) {
       console.error('Submission error:', err)
       setError('Something went wrong. Please try again or contact us directly.')
