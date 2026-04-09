@@ -33,15 +33,16 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=81138e11-2d68-4e7d-8967-6050a14e9bad" async />
         )}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=AW-18071348988"
+          src="https://www.googletagmanager.com/gtag/js?id=G-8Y0CQ5QB8V"
           strategy="afterInteractive"
         />
-        <Script id="google-ads" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
 
+            gtag('config', 'G-8Y0CQ5QB8V');
             gtag('config', 'AW-18071348988');
           `}
         </Script>
