@@ -44,6 +44,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
 
             gtag('config', 'G-8Y0CQ5QB8V');
             gtag('config', 'AW-18071348988');
+            gtag('config', 'AW-11435750216');
           `}
         </Script>
         <Script id="microsoft-clarity" strategy="afterInteractive">
