@@ -515,5 +515,5 @@ export async function generateStaticParams() {
     limit: 1000,
     select: { slug: true },
   })
-  return posts.docs.map(({ slug }) => ({ slug }))
+  return posts.docs.filter(({ slug }) => typeof slug === 'string').map(({ slug }) => ({ slug: slug as string }))
 }
