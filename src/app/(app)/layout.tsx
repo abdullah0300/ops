@@ -23,15 +23,37 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     >
       <head>
         <InitTheme />
-        <meta name="google-site-verification" content="mYPbLa4qtkPFNGskg4LsuW4ZGfAfOB80w7UVsH8HyJo" />
+
+        <meta
+          name="google-site-verification"
+          content="mYPbLa4qtkPFNGskg4LsuW4ZGfAfOB80w7UVsH8HyJo"
+        />
+
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=Afacad:ital,wght@0,400..700;1,400..700&family=Outfit:wght@100..900&display=swap" rel="stylesheet" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+
+        <link
+          href="https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=Afacad:ital,wght@0,400..700;1,400..700&family=Outfit:wght@100..900&display=swap"
+          rel="stylesheet"
+        />
+
+        {/* Zendesk */}
         {process.env.VERCEL_ENV === 'production' && (
-          <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=81138e11-2d68-4e7d-8967-6050a14e9bad" async />
+          <Script
+            id="zendesk"
+            src="https://static.zdassets.com/ekr/snippet.js?key=81138e11-2d68-4e7d-8967-6050a14e9bad"
+            strategy="afterInteractive"
+          />
         )}
+
+        {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-8Y0CQ5QB8V"
           strategy="afterInteractive"
@@ -47,14 +69,19 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             gtag('config', 'AW-11435750216');
           `}
         </Script>
-        <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "w9nsw6meyn");
-</script>
+
+        {/* Microsoft Clarity */}
+        <Script id="clarity" strategy="afterInteractive">
+          {`
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "w9nsw6meyn");
+          `}
+        </Script>
       </head>
+
       <body>
         <Providers>
           <AdminBar />
@@ -67,9 +94,11 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <div className="header-spacer" aria-hidden="true" />
 
           <main>{children}</main>
+
           <React.Suspense fallback={null}>
             <FloatingWhatsApp />
           </React.Suspense>
+
           <Footer />
         </Providers>
       </body>
