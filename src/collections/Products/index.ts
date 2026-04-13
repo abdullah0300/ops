@@ -151,7 +151,11 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
         },
         {
           fields: [
-            ...defaultCollection.fields,
+            // Filter out slug/title fields already defined at the top level
+            // to avoid duplicate field names which cause admin/URL mismatches.
+            ...defaultCollection.fields.filter(
+              (f: any) => !('name' in f) || !['slug', 'slugLock', 'title'].includes(f.name),
+            ),
             {
               name: 'quantityPricing',
               type: 'array',

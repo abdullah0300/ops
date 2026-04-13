@@ -28,7 +28,7 @@ const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
 export async function generateMetadata({ params: paramsPromise }: any): Promise<Metadata> {
   const { slug } = await paramsPromise
   const post = await queryPostBySlug({ slug })
-  return generateMeta({ doc: post as any })
+  return generateMeta({ doc: post as any, collection: 'posts' })
 }
 
 export default async function PostPage({ params: paramsPromise }: any) {

@@ -35,7 +35,7 @@ export async function generateMetadata({
     limit: 1,
   })
 
-  return generateMeta({ doc: result.docs?.[0] as any })
+  return generateMeta({ doc: result.docs?.[0] as any, collection: 'products' })
 }
 
 export default async function ProductDetailPage({
@@ -80,8 +80,35 @@ export default async function ProductDetailPage({
 
   const BG_COLORS = ['#f5dde8','#f0eaf5','#f5f0e0','#f0e8e0','#e0edf5','#e8f0e0','#f5e8e0','#e0e8f5']
 
+  // Build JSON-LD Product schema for Google / rich results
+  const priceList = pricing.map((p: any) => Number(p.price)).filter((n: number) => !isNaN(n))
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.title,
+    description: product.meta?.description || product.shortDescription || '',
+    image: imgUrl ? [imgUrl] : [],
+    brand: { '@type': 'Brand', name: 'Online Packaging Store' },
+    ...(priceList.length > 0
+      ? {
+          offers: {
+            '@type': 'AggregateOffer',
+            priceCurrency: 'USD',
+            lowPrice: Math.min(...priceList),
+            highPrice: Math.max(...priceList),
+            availability: 'https://schema.org/InStock',
+            seller: { '@type': 'Organization', name: 'Online Packaging Store' },
+          },
+        }
+      : {}),
+  }
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Amaranth:wght@400;700&family=Arya:wght@400;700&family=Afacad:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 

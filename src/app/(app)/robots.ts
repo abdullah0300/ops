@@ -1,16 +1,19 @@
 /* eslint-disable no-restricted-exports */
-const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-  : 'http://localhost:3000'
+import { getServerSideURL } from '@/utilities/getURL'
 
 export default function robots() {
+  const baseUrl = getServerSideURL()
+
   return {
     host: baseUrl,
+    sitemap: `${baseUrl}/sitemap.xml`,
     rules: [
       {
         userAgent: '*',
+        allow: '/',
+        // Keep admin panel and internal API routes out of search indexes.
+        disallow: ['/admin', '/api', '/next/'],
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
   }
 }

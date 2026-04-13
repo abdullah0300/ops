@@ -19,13 +19,17 @@ import { isAdmin } from '@/access/isAdmin'
 import { isDocumentOwner } from '@/access/isDocumentOwner'
 
 const generateTitle: GenerateTitle<Product | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Payload Ecommerce Template` : 'Payload Ecommerce Template'
+  return doc?.title ? `${doc.title} | Online Packaging Store` : 'Online Packaging Store'
 }
 
-const generateURL: GenerateURL<Product | Page> = ({ doc }) => {
+const generateURL: GenerateURL<Product | Page> = ({ doc, collectionConfig }) => {
   const url = getServerSideURL()
+  if (!doc?.slug) return url
 
-  return doc?.slug ? `${url}/${doc.slug}` : url
+  const collection = (collectionConfig as any)?.slug
+  if (collection === 'products') return `${url}/products/${doc.slug}`
+  if (collection === 'posts') return `${url}/blog/${doc.slug}`
+  return `${url}/${doc.slug}`
 }
 
 export const plugins: Plugin[] = [
